@@ -1,0 +1,21 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.pyc
+.python-version
+.venv/
+venv/
+
+# Project config (local only)
+CLAUDE.md
+
+# Node
+node_modules/

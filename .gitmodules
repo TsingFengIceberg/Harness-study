@@ -1,0 +1,15 @@
+[submodule "deer-flow"]
+	path = deer-flow
+	url = https://github.com/bytedance/deer-flow.git
+[submodule "hermes-agent"]
+	path = hermes-agent
+	url = https://github.com/NousResearch/hermes-agent.git
+[submodule "claw-code"]
+	path = claw-code
+	url = https://github.com/ultraworkers/claw-code.git
+[submodule "learn-claude-code"]
+	path = learn-claude-code
+	url = https://github.com/shareAI-lab/learn-claude-code.git
+[submodule "openclaw"]
+	path = openclaw
+	url = https://github.com/openclaw/openclaw.git
