@@ -11,6 +11,7 @@
 | [claw-code/](claw-code/) | Claude Code 的开源替代实现 | [ultraworkers/claw-code](https://github.com/ultraworkers/claw-code) |
 | [openclaw/](openclaw/) | 另一个 Claude Code 开源替代 | [openclaw/openclaw](https://github.com/openclaw/openclaw) |
 | [learn-claude-code/](learn-claude-code/) | 手把手教你构建 Claude Code 同款 Agent Harness，20 个模块从 Agent Loop 到完整系统 | [shareAI-lab/learn-claude-code](https://github.com/shareAI-lab/learn-claude-code) |
+| [openhands/](openhands/) | 平台化 SWE Agent Harness，覆盖 Agent Canvas、Agent Server、自动化与多后端运行 | [OpenHands/OpenHands](https://github.com/OpenHands/OpenHands) |
 
 ## 文档导航
 
@@ -19,7 +20,8 @@
 ```
 DOCS/
 ├── projects/          ← 纵向深挖：每个项目的研读笔记
-│   └── deer-flow/     ← DeerFlow 笔记（含早期归档 docs-old/）
+│   ├── deer-flow/     ← DeerFlow 笔记（含早期归档 docs-old/）
+│   └── openhands/     ← OpenHands 笔记（平台化 SWE Agent Harness）
 ├── comparison/        ← 横向对比：同一维度横切多个项目
 └── synthesis/         ← 拔高归纳：共性设计模式与架构分类
 ```

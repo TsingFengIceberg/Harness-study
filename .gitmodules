@@ -13,3 +13,6 @@
 [submodule "openclaw"]
 	path = openclaw
 	url = https://github.com/openclaw/openclaw.git
+[submodule "openhands"]
+	path = openhands
+	url = git@github.com:OpenHands/OpenHands.git
