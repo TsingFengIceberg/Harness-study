@@ -13,6 +13,12 @@
 | [learn-claude-code/](learn-claude-code/) | 手把手教你构建 Claude Code 同款 Agent Harness，20 个模块从 Agent Loop 到完整系统 | [shareAI-lab/learn-claude-code](https://github.com/shareAI-lab/learn-claude-code) |
 | [openhands/](openhands/) | 平台化 SWE Agent Harness，覆盖 Agent Canvas、Agent Server、自动化与多后端运行 | [OpenHands/OpenHands](https://github.com/OpenHands/OpenHands) |
 
+## 学习参考
+
+| 资料 | 说明 | 官方仓库 |
+|---|---|---|
+| [claude-code-complete-guide_v2/](claude-code-complete-guide_v2/) | Claude Code 完全指南 V2，作为理解 Claude Code-like Harness 架构、工具系统、权限、安全、上下文、多 Agent、Hooks / Skills / Plugins 等机制的学习参考；不作为本仓库核心 Harness 实现项目 | [bcefghj/claude-code-complete-guide_v2](https://github.com/bcefghj/claude-code-complete-guide_v2) |
+
 ## 文档导航
 
 学习笔记位于 `DOCS/` 目录，按**三层金字塔**组织：
@@ -25,6 +31,8 @@ DOCS/
 ├── comparison/        ← 横向对比：同一维度横切多个项目
 └── synthesis/         ← 拔高归纳：共性设计模式与架构分类
 ```
+
+此外，[claude-code-complete-guide_v2/](claude-code-complete-guide_v2/) 作为 Claude Code 架构学习参考资料，以 submodule 形式保留在仓库根目录，不纳入 `DOCS/projects/` 的核心项目研读目录。
 
 | 想看什么 | 去哪里 |
 |---|---|

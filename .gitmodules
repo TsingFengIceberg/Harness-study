@@ -16,3 +16,6 @@
 [submodule "openhands"]
 	path = openhands
 	url = git@github.com:OpenHands/OpenHands.git
+[submodule "claude-code-complete-guide_v2"]
+	path = claude-code-complete-guide_v2
+	url = https://github.com/bcefghj/claude-code-complete-guide_v2.git
