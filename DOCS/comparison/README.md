@@ -10,6 +10,18 @@
 | [agent-harness-architecture-six-projects.md](agent-harness-architecture-six-projects.md) | DeerFlow / Hermes Agent / Claw-Code / OpenClaw / learn-claude-code / OpenHands | Deep Research 六项目扩展版：在五项目 Base 基础上补入 OpenHands，并加强平台化 SWE Agent、SDK / Server / Canvas / Automation 趋势讨论。文中可信度标注仍需后续源码研读逐项复核。 |
 | [agent-harness-local-source-verification.md](agent-harness-local-source-verification.md) | Claw-Code / OpenClaw / learn-claude-code / OpenHands | Claude workflow 本地源码核验补充：成功读取四个 submodule 并提炼源码路径与工程判断；DeerFlow / Hermes Agent 因 API 524 timeout 未完成，本文不替代六项目调研 Base。 |
 
+## QA / 讨论记录
+
+| 文档 | 说明 |
+|---|---|
+| [qa.md](qa.md) | 横向学习 QA：收集跨项目问题、阶段性讨论结论与待核验点，后续成熟后迁移到 synthesis FAQ 或具体专题正文。 |
+
+## 已完成专题
+
+| 文档 | 涉及项目 | 说明 |
+|---|---|---|
+| [project-positioning.md](project-positioning.md) | DeerFlow / Hermes Agent / Claw-Code / OpenClaw / learn-claude-code / OpenHands / Claude Code guide | 第一轮整体功能特色分析：说明这些项目是否同类、各自在 Agent Harness 演化树上的位置、Claude Code-like 基准、OpenHands 与 Claw-Code 差异、Hermes / DeerFlow / OpenClaw 的特色分工。 |
+
 ## 对比专题（待撰写）
 
 | 专题 | 涉及项目 | 说明 |

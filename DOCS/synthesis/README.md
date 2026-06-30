@@ -8,6 +8,7 @@
 |---|---|
 | `design-patterns.md` | 各 Harness 的共性设计模式总结 |
 | `architecture-taxonomy.md` | 架构分类学：不同流派的划分与特征 |
+| [faq.md](faq.md) | Agent Harness FAQ：沉淀经过核验、可复用的核心问答 |
 
 ## 依赖
 

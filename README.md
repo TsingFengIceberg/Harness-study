@@ -29,7 +29,9 @@ DOCS/
 │   ├── deer-flow/     ← DeerFlow 笔记（含早期归档 docs-old/）
 │   └── openhands/     ← OpenHands 笔记（平台化 SWE Agent Harness）
 ├── comparison/        ← 横向对比：同一维度横切多个项目
+│   └── qa.md          ← 横向学习 QA：跨项目问题、讨论结论、待核验点
 └── synthesis/         ← 拔高归纳：共性设计模式与架构分类
+    └── faq.md         ← 最终沉淀 FAQ：已验证、可复用的核心问答
 ```
 
 此外，[claude-code-complete-guide_v2/](claude-code-complete-guide_v2/) 作为 Claude Code 架构学习参考资料，以 submodule 形式保留在仓库根目录，不纳入 `DOCS/projects/` 的核心项目研读目录。
@@ -37,8 +39,20 @@ DOCS/
 | 想看什么 | 去哪里 |
 |---|---|
 | 某个项目的源码怎么设计的 | [`DOCS/projects/<项目名>/`](DOCS/projects/) |
+| 整体功能特色与项目定位分析 | [`DOCS/comparison/project-positioning.md`](DOCS/comparison/project-positioning.md) |
 | 多个项目在某个维度上怎么不同 | [`DOCS/comparison/`](DOCS/comparison/) |
+| 学习过程中的横向问题与讨论结论 | [`DOCS/comparison/qa.md`](DOCS/comparison/qa.md) |
 | 从这些项目中提炼的通用设计模式 | [`DOCS/synthesis/`](DOCS/synthesis/) |
+| 已验证、可复用的最终 FAQ | [`DOCS/synthesis/faq.md`](DOCS/synthesis/faq.md) |
+
+### QA 记录方式
+
+学习过程中会持续产生 QA。采用**文档内局部 QA + 横向 QA 总集 + 最终 FAQ 沉淀**的方式管理：
+
+- 局部问题：附在对应项目笔记或专题文档末尾的 `## QA / 讨论记录`
+- 横向问题：先收集到 [`DOCS/comparison/qa.md`](DOCS/comparison/qa.md)，例如“OpenHands 和 Claw-Code 是否重复？”、“Claude Code 算不算 SWE Agent？”
+- 最终结论：经过源码或官方文档核验后，再沉淀到 [`DOCS/synthesis/faq.md`](DOCS/synthesis/faq.md)
+- 每个 QA 尽量标注状态：`draft` / `to-verify` / `verified`，避免把讨论结论误当最终结论
 
 ## 使用方式
 
