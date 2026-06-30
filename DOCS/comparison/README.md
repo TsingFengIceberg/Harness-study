@@ -2,6 +2,12 @@
 
 > 跨项目的专题对比分析——同一维度，横切多个 Harness。
 
+## 已归档报告
+
+| 文档 | 涉及项目 | 说明 |
+|---|---|---|
+| [agent-harness-architecture.md](agent-harness-architecture.md) | DeerFlow / Hermes Agent / Claw-Code / OpenClaw / learn-claude-code | Deep Research 调研 Base：按 15 个维度比较五个 Agent Harness，作为后续自研专题拆分和综合归纳的底稿。注：本文生成早于 OpenHands 接入，暂未覆盖 OpenHands；文中判断后续需回到源码与官方文档逐项核验。 |
+
 ## 对比专题（待撰写）
 
 | 专题 | 涉及项目 | 说明 |
