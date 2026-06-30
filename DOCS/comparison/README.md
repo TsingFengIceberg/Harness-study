@@ -40,7 +40,7 @@
 |---|---|
 | DeerFlow | [DOCS/projects/deer-flow/](../projects/deer-flow/README.md) |
 | OpenClaw | [DOCS/projects/openclaw/](../projects/openclaw/) (待建立) |
-| Claw-Code | [DOCS/projects/claw-code/](../projects/claw-code/) (待建立) |
+| Claw-Code | [DOCS/projects/claw-code/](../projects/claw-code/README.md) |
 | Hermes Agent | [DOCS/projects/hermes-agent/](../projects/hermes-agent/) (待建立) |
 | learn-claude-code | [DOCS/projects/learn-claude-code/](../projects/learn-claude-code/) (待建立) |
 
