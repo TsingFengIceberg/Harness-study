@@ -32,9 +32,13 @@
 
 两份导出覆盖的 DeerFlow 主题：HITL 中断机制、三层线程池并发调度、沙箱控制面/计算面分离、中间件五大阵营与洋葱模型、多模态图片注入、Prompt 动态装配、Agent 组装与中间件注册顺序。
 
-### 新笔记（待补充）
+### 新笔记
 
-后续 DeerFlow 深入研读的新笔记将直接放在本目录下，例如：
+| 文档 | 主题 | 状态 |
+|---|---|---|
+| [agent-loop.md](agent-loop.md) | Gateway Run + LangGraph agent runtime 控制流：run 创建、`agent.astream(...)`、middleware、工具调用、状态与终止条件 | draft |
+
+后续 DeerFlow 深入研读的新笔记将继续放在本目录下，例如：
 
 - `architecture.md` — 整体架构梳理
 - `middleware.md` — 中间件体系深入
