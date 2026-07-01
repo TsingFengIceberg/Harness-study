@@ -28,6 +28,7 @@ DOCS/
 ├── projects/          ← 纵向深挖：每个项目的研读笔记
 │   ├── deer-flow/     ← DeerFlow 笔记（含早期归档 docs-old/）
 │   ├── claw-code/     ← Claw-Code 笔记（本地 Coding CLI runtime / Agent Loop）
+│   ├── hermes-agent/  ← Hermes Agent 笔记（长期个人 Agent / run_conversation）
 │   └── openhands/     ← OpenHands 笔记（平台化 SWE Agent Harness）
 ├── comparison/        ← 横向对比：同一维度横切多个项目
 │   └── qa.md          ← 横向学习 QA：跨项目问题、讨论结论、待核验点
@@ -41,6 +42,7 @@ DOCS/
 |---|---|
 | 某个项目的源码怎么设计的 | [`DOCS/projects/<项目名>/`](DOCS/projects/) |
 | Claw-Code 本地 Agent Loop | [`DOCS/projects/claw-code/agent-loop.md`](DOCS/projects/claw-code/agent-loop.md) |
+| DeerFlow / Hermes Agent Loop | [`DOCS/projects/deer-flow/agent-loop.md`](DOCS/projects/deer-flow/agent-loop.md)、[`DOCS/projects/hermes-agent/agent-loop.md`](DOCS/projects/hermes-agent/agent-loop.md) |
 | 整体功能特色与项目定位分析 | [`DOCS/comparison/project-positioning.md`](DOCS/comparison/project-positioning.md) |
 | 多个项目在某个维度上怎么不同 | [`DOCS/comparison/`](DOCS/comparison/) |
 | 学习过程中的横向问题与讨论结论 | [`DOCS/comparison/qa.md`](DOCS/comparison/qa.md) |

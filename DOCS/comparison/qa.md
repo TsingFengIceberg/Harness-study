@@ -165,6 +165,55 @@ A: 如果严格说 LangChain `AgentMiddleware` 这种统一 middleware chain，C
 
 A: DeerFlow 主要通过多层机制处理：`RunManager` 管理同一 thread 上的并发 run，支持 reject / interrupt / rollback；worker 支持 cancel 和 abort event；middleware 链里有 `LoopDetectionMiddleware` 检测重复工具调用循环，也有 `TokenBudgetMiddleware` 限制 token 预算；`ClarificationMiddleware` 可以用 `Command(goto=END)` 把控制权交回用户。具体默认配置和触发条件后续应在配置专题继续核验。
 
+### Q: Hermes 的 `run_conversation` 和 Claw-Code 的 `run_turn` 都是手写 loop，为什么 Hermes 长这么多？
+
+> **状态**: draft  
+> **来源**: discussion / source-code
+
+A: Hermes 的 loop 更像典型 agent-loop god function：Agent Loop 天然是“控制流磁铁”，memory prefetch、plugin hooks、provider fallback、empty response recovery、interrupt / steer、session persistence、context compression、tool guardrails 等都依赖模型调用前后、工具执行前后、turn 结束等精确位置，因此容易聚到 `run_conversation` 周边。Hermes 已经把部分细节外提到 `build_turn_context(...)`、`tool_executor.py`、transport normalize、`finalize_turn(...)` 等模块，但主循环仍保留大量 retry / fallback / continue / break / final 的流程分叉。它的长函数是维护性风险，但也反映真实长期个人 Agent 在多 provider、多工具、多中断场景下的工程压力。
+
+### Q: Hermes 的 loop 准备过程和 Claw-Code 基本类似吗？
+
+> **状态**: draft  
+> **来源**: discussion / source-code
+
+A: 在结构角色上类似：两者进入模型/工具循环前都要准备 messages、system prompt、历史上下文、工具/配置、压缩和本轮状态。但 Claw-Code 准备的是 coding turn runtime，偏本地 session、项目上下文、权限、工具和 `maybe_auto_compact`；Hermes 准备的是 personal agent turn context，`build_turn_context(...)` 还会处理 memory prefetch、plugin context、todo/nudge hydration、session persistence、crash-resilience、external memory 等长期协作上下文。也就是说，Hermes 不是只“多了个人历史”，还多了长期运行和多入口协作所需的上下文准备。
+
+### Q: Hermes 的 `interrupt` 和 `steer` 有什么区别，为什么适合长期个人 Agent？
+
+> **状态**: draft  
+> **来源**: discussion / source-code
+
+A: `interrupt` 是硬打断，语义是“停下当前 loop，优先响应用户新消息”，会影响主 loop、当前执行线程、并发工具 worker 和子 agent。`steer` 是软引导，语义是“不要停，当前工具跑完后把用户补充方向带给下一轮模型”。长期个人 Agent 经常遇到用户中途补充方向但不想完全打断的情况，因此 `steer` 相当于“扶方向盘”，`interrupt` 相当于“踩刹车”。源码层面 Hermes 会把 steer 文本暂存在 `_pending_steer`，在工具结果产生后追加到 tool message 中，让下一轮 API 调用看到。
+
+### Q: 软引导是不是简单地在下一轮插一句 user message？
+
+> **状态**: draft  
+> **来源**: discussion / source-code
+
+A: 概念上像“下一轮补一句方向”，工程上不能随便插入新的 user message。tool-calling 协议通常要求 assistant 的 tool_calls 后面跟对应 tool result；如果 tool result 未补齐就插 user message，可能破坏 role alternation 或 tool_call_id 对齐。Hermes 的做法是把 steer 文本暂存后追加到最后一个 tool result，保持消息序列类似 `assistant(tool_calls) -> tool(result + steer) -> assistant(next)`。这个点和 Agent Loop 有关，但完整机制更适合后续放到 HITL / interaction runtime / message protocol 或 tool-calling 专题继续核验。
+
+### Q: Hermes 的 `IterationBudget` 和 Claw-Code 的 `max_iterations` 本质差在哪？
+
+> **状态**: draft  
+> **来源**: discussion / source-code
+
+A: 两者都防止工具循环无限跑，但抽象层级不同。Claw-Code 的 `max_iterations` 更像“当前 `run_turn` 最多循环 N 次”的刹车。Hermes 也有 `max_iterations`，但还引入 `IterationBudget`，更像 agent / subagent 的运行额度账户，支持 `consume()`、`refund()` 和线程安全的 `remaining` 查询；某些程序化工具调用还可以 refund。可以概括为：Claw-Code 的 `max_iterations` 是循环刹车，Hermes 的 `IterationBudget` 是运行额度账户。
+
+### Q: Hermes 的 memory / session persistence 属于 Agent Loop 还是后续 memory 专题？
+
+> **状态**: draft  
+> **来源**: discussion
+
+A: 两者都有关，但层次不同。Agent Loop 阶段只需要说明 memory / session persistence 如何影响当前 turn：turn 开始时 memory prefetch 可能注入输入，API call 前会拼接外部上下文，工具调用前后会 flush session，工具结果进入 messages 后影响下一轮模型调用，上下文过长会触发 compression。memory 数据结构、事实提取、偏好沉淀、procedural memory、技能演化、污染防护等内部机制，应留到后续 memory / session 专题深入。
+
+### Q: Hermes 这么多 provider fallback / empty response recovery，是不是说明它只是“多模型兼容壳”？
+
+> **状态**: draft  
+> **来源**: discussion / source-code
+
+A: Hermes 确实有很厚的多 provider 兼容层，loop 里大量处理 OpenAI-compatible、Anthropic Messages、Bedrock、Codex Responses、OpenRouter、本地模型、空响应、thinking-only、partial stream、invalid tool args、fallback provider 等问题。但它不只是通用 LLM SDK；这些兼容和恢复能力服务于“长期个人 Agent 在真实、多变、不稳定模型环境里持续协作”的目标。provider fallback 是长期稳定性的底层能力，而不是 Hermes 的全部定位。
+
 ## 调研材料使用
 
 ### Q: Deep Research 报告能不能直接作为最终结论？
