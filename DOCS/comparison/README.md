@@ -26,7 +26,7 @@
 
 | 专题 | 涉及项目 | 说明 |
 |---|---|---|
-| `agent-loop.md` | DeerFlow / OpenClaw / Claw-Code | 主循环设计：Event Loop vs Graph vs Reactive |
+| `agent-loop.md` | DeerFlow / OpenClaw / Claw-Code / Hermes Agent | 主循环设计：函数式 turn loop、生命周期 run driver、事件驱动 session loop 与长期个人 Agent conversation loop。 |
 | `sandbox-systems.md` | DeerFlow / OpenClaw / Claw-Code | 沙箱方案对比：Docker / Local / 远程 RPC |
 | `tool-calling.md` | 全部 | 工具调用模型：定义、执行、结果回写 |
 | `hitl-patterns.md` | DeerFlow / Hermes Agent | 人机协同模式：中断、审批、澄清 |
@@ -39,7 +39,7 @@
 | 项目 | 笔记目录 |
 |---|---|
 | DeerFlow | [DOCS/projects/deer-flow/](../projects/deer-flow/README.md) |
-| OpenClaw | [DOCS/projects/openclaw/](../projects/openclaw/) (待建立) |
+| OpenClaw | [DOCS/projects/openclaw/](../projects/openclaw/README.md) |
 | Claw-Code | [DOCS/projects/claw-code/](../projects/claw-code/README.md) |
 | Hermes Agent | [DOCS/projects/hermes-agent/](../projects/hermes-agent/README.md) |
 | learn-claude-code | [DOCS/projects/learn-claude-code/](../projects/learn-claude-code/) (待建立) |

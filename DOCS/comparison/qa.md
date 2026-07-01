@@ -214,6 +214,48 @@ A: 两者都有关，但层次不同。Agent Loop 阶段只需要说明 memory /
 
 A: Hermes 确实有很厚的多 provider 兼容层，loop 里大量处理 OpenAI-compatible、Anthropic Messages、Bedrock、Codex Responses、OpenRouter、本地模型、空响应、thinking-only、partial stream、invalid tool args、fallback provider 等问题。但它不只是通用 LLM SDK；这些兼容和恢复能力服务于“长期个人 Agent 在真实、多变、不稳定模型环境里持续协作”的目标。provider fallback 是长期稳定性的底层能力，而不是 Hermes 的全部定位。
 
+### Q: OpenClaw Agent Loop 是否只是普通 `while tool_use`？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: 不是。OpenClaw 的核心模型/工具循环确实是手写在 [agent-loop.ts](../../openclaw/packages/agent-core/src/agent-loop.ts) 中，尤其是 `runAgentLoop(...)`、`runAgentLoopContinue(...)` 和 `runLoop(...)`；但它不是单纯的 `while tool_use`。它外面还有 [Agent](../../openclaw/packages/agent-core/src/agent.ts) 负责状态、事件和 `steer` / `followUp` 队列，再外面由 [AgentSession](../../openclaw/src/agents/sessions/agent-session.ts) 接入产品会话、hook、compaction、retry、持久化和事件处理。更准确地说，OpenClaw 是“手写 core double loop + Agent 事件状态机 + AgentSession 产品会话外壳”。
+
+### Q: OpenClaw 的 double loop 怎么理解？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: 可以把 OpenClaw 的 double loop 理解成“外层处理追加消息，内层处理当前任务”。内层 loop 处理普通模型/工具循环：模型要工具、工具返回结果、模型继续思考；同时也处理运行中用户发来的 `steer`。外层 loop 处理 Agent 到结束点后用户追加的 `followUp`，如果还有 follow-up，就再开下一轮。口语化地说：内层是“这件事没干完，继续干”；外层是“这件事干完了，但用户又追加了，接着干下一件”。源码主线见 [agent-loop.ts](../../openclaw/packages/agent-core/src/agent-loop.ts)，入口包括 `runLoop(...)`、`streamAssistantResponse(...)` 和 `executeToolCalls(...)`。
+
+### Q: OpenClaw 的 `steer` / `followUp` 队列有什么价值？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: 它把用户中途输入拆成两种不同语义：`steer` 是 Agent 正在运行时用户补充方向，类似“扶方向盘”，影响当前任务后续模型调用；`followUp` 是 Agent 准备结束或已经结束后用户追加下一句，类似“再补一张工单”，由外层 loop 开启下一轮处理。这样可以避免把运行中引导、结束后追加和硬打断都混成一种普通 user message。源码入口见 [Agent.steer(...)](../../openclaw/packages/agent-core/src/agent.ts) 和 [Agent.followUp(...)](../../openclaw/packages/agent-core/src/agent.ts)，执行调度见 [runLoop(...)](../../openclaw/packages/agent-core/src/agent-loop.ts)。
+
+### Q: OpenClaw 的 Session 层分离和 double loop 是一回事吗？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: 相关但不是一回事。Session 层分离是架构分层：`AgentSession` 负责产品会话、模型校验、hook、compaction、retry、持久化和事件处理，`Agent` / `runLoop` 负责 Agent 状态与模型/工具执行。double loop 是运行控制流分层：外层处理 `followUp` / 追加消息，内层处理 tool call / tool result / `steer`。可以记成：Session 分离回答“谁负责产品会话”，double loop 回答“运行时怎么处理消息和工具”。
+
+### Q: OpenClaw 与 DeerFlow / Claw-Code 的精髓差异是什么？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: 和 DeerFlow 比，DeerFlow 更像“长任务工作流平台的 run 控制”，核心是 Gateway run lifecycle、LangGraph runtime、run/thread/checkpoint/stream/middleware/cancel/clarification 等生命周期治理；OpenClaw 更像“聊天式 Agent 产品的实时会话控制”，核心是手写 `runLoop`、事件状态、`steer` / `followUp` 队列和 session runtime。和 Claw-Code 比，Claw-Code 更像“本地 CLI 一轮干到底”，核心是 `ConversationRuntime::run_turn` 主干；OpenClaw 更像“有事件、有队列、有状态的 Agent session runtime”，核心是 `AgentSession -> Agent -> runLoop` 分层。
+
+### Q: OpenClaw 的 steer 和 DeerFlow 的 HITL / clarification 有什么区别？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: OpenClaw 的 `steer` 更贴近聊天产品里的运行中软引导：Agent 正在执行，用户补一句方向，系统把它放入 steering queue，让后续模型调用看到。DeerFlow 也有人机协同和中断 / 澄清能力，但更偏 run lifecycle / middleware / checkpoint 级别：例如 `ClarificationMiddleware` 可以把控制权交回用户，`RunManager` 管理 run 的并发、取消、interrupt / rollback 策略。可以类比为：OpenClaw 像“副驾扶方向盘”，DeerFlow 像“工作流节点暂停等待用户确认”。两者不是谁有谁没有，而是控制粒度和架构位置不同。
+
 ## 调研材料使用
 
 ### Q: Deep Research 报告能不能直接作为最终结论？
