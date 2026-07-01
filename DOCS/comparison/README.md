@@ -20,13 +20,13 @@
 
 | 文档 | 涉及项目 | 说明 |
 |---|---|---|
+| [agent-loop.md](agent-loop.md) | Claw-Code / DeerFlow / Hermes Agent / OpenClaw / OpenHands | Agent Loop 第一轮横向总结：共同骨架、五类 loop 形态、工作组织 / 开车 / 公司组织比喻、关键维度对比与分类法。 |
 | [project-positioning.md](project-positioning.md) | DeerFlow / Hermes Agent / Claw-Code / OpenClaw / learn-claude-code / OpenHands / Claude Code guide | 第一轮整体功能特色分析：说明这些项目是否同类、各自在 Agent Harness 演化树上的位置、Claude Code-like 基准、OpenHands 与 Claw-Code 差异、Hermes / DeerFlow / OpenClaw 的特色分工。 |
 
 ## 对比专题（待撰写）
 
 | 专题 | 涉及项目 | 说明 |
 |---|---|---|
-| `agent-loop.md` | DeerFlow / OpenClaw / Claw-Code / Hermes Agent | 主循环设计：函数式 turn loop、生命周期 run driver、事件驱动 session loop 与长期个人 Agent conversation loop。 |
 | `sandbox-systems.md` | DeerFlow / OpenClaw / Claw-Code | 沙箱方案对比：Docker / Local / 远程 RPC |
 | `tool-calling.md` | 全部 | 工具调用模型：定义、执行、结果回写 |
 | `hitl-patterns.md` | DeerFlow / Hermes Agent | 人机协同模式：中断、审批、澄清 |
@@ -42,6 +42,7 @@
 | OpenClaw | [DOCS/projects/openclaw/](../projects/openclaw/README.md) |
 | Claw-Code | [DOCS/projects/claw-code/](../projects/claw-code/README.md) |
 | Hermes Agent | [DOCS/projects/hermes-agent/](../projects/hermes-agent/README.md) |
+| OpenHands | [DOCS/projects/openhands/](../projects/openhands/README.md) |
 | learn-claude-code | [DOCS/projects/learn-claude-code/](../projects/learn-claude-code/) (待建立) |
 
 ## 相关文档

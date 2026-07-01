@@ -43,7 +43,8 @@ DOCS/
 |---|---|
 | 某个项目的源码怎么设计的 | [`DOCS/projects/<项目名>/`](DOCS/projects/) |
 | Claw-Code 本地 Agent Loop | [`DOCS/projects/claw-code/agent-loop.md`](DOCS/projects/claw-code/agent-loop.md) |
-| DeerFlow / Hermes / OpenClaw Agent Loop | [`DOCS/projects/deer-flow/agent-loop.md`](DOCS/projects/deer-flow/agent-loop.md)、[`DOCS/projects/hermes-agent/agent-loop.md`](DOCS/projects/hermes-agent/agent-loop.md)、[`DOCS/projects/openclaw/agent-loop.md`](DOCS/projects/openclaw/agent-loop.md) |
+| DeerFlow / Hermes / OpenClaw / OpenHands Agent Loop | [`DOCS/projects/deer-flow/agent-loop.md`](DOCS/projects/deer-flow/agent-loop.md)、[`DOCS/projects/hermes-agent/agent-loop.md`](DOCS/projects/hermes-agent/agent-loop.md)、[`DOCS/projects/openclaw/agent-loop.md`](DOCS/projects/openclaw/agent-loop.md)、[`DOCS/projects/openhands/agent-loop.md`](DOCS/projects/openhands/agent-loop.md) |
+| Agent Loop 横向总结 | [`DOCS/comparison/agent-loop.md`](DOCS/comparison/agent-loop.md) |
 | 整体功能特色与项目定位分析 | [`DOCS/comparison/project-positioning.md`](DOCS/comparison/project-positioning.md) |
 | 多个项目在某个维度上怎么不同 | [`DOCS/comparison/`](DOCS/comparison/) |
 | 学习过程中的横向问题与讨论结论 | [`DOCS/comparison/qa.md`](DOCS/comparison/qa.md) |
@@ -58,6 +59,20 @@ DOCS/
 - 横向问题：先收集到 [`DOCS/comparison/qa.md`](DOCS/comparison/qa.md)，例如“OpenHands 和 Claw-Code 是否重复？”、“Claude Code 算不算 SWE Agent？”
 - 最终结论：经过源码或官方文档核验后，再沉淀到 [`DOCS/synthesis/faq.md`](DOCS/synthesis/faq.md)
 - 每个 QA 尽量标注状态：`draft` / `to-verify` / `verified`，避免把讨论结论误当最终结论
+
+## Agent Loop 第一轮总结
+
+五个主线 Harness 的 Agent Loop 第一轮研读已形成稳定比较，详见 [`DOCS/comparison/agent-loop.md`](DOCS/comparison/agent-loop.md)：
+
+| 项目 | Agent Loop 精髓 | 比喻 |
+|---|---|---|
+| Claw-Code | 本地 CLI `run_turn`，一轮干到底 | 本地老师傅 / 本地老司机 |
+| DeerFlow | Gateway run lifecycle + LangGraph runtime | 工作流调度中心 / 交通调度系统 |
+| Hermes Agent | 大型 `run_conversation` + memory / fallback / steer | 长期私人助理 / 长期私人司机兼管家 |
+| OpenClaw | AgentSession + Agent + double loop + steer/followUp | 可实时插话的聊天工作室 / 网约车系统 |
+| OpenHands | App Server + Agent Server + SDK action/observation loop | 远程开发控制中心 / 车队运营平台 |
+
+最浓缩的理解是：**Agent Loop 的本质都是“模型决策 -> 外部动作 -> 环境反馈 -> 再决策”，差异在于这个循环被放在本地函数里、框架 runtime 里、长期记忆大脑里、聊天 session runtime 里，还是平台化 Agent Server 里。**
 
 ## 使用方式
 
