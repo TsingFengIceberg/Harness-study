@@ -27,12 +27,12 @@ Claw-Code 在本仓库中定位为 **Claude Code-like 本地 Coding CLI Harness*
 | 文档 | 主题 | 状态 |
 |---|---|---|
 | [agent-loop.md](agent-loop.md) | `ConversationRuntime::run_turn` 控制流：模型流式输出、ToolUse 提取、权限检查、工具执行、tool_result 回写与终止条件 | draft |
+| [tool-system.md](tool-system.md) | 集中式工具中枢：`ToolSpec` / `GlobalToolRegistry`、allowed tools、hooks、两道权限门、ToolSearch 延迟工具发现与工具能力总线 | draft |
 
 ## 后续待研读主题
 
 | 主题 | 说明 | 状态 |
 |---|---|---|
-| `tool-system.md` | `ToolExecutor`、工具注册、内置工具、MCP / plugin 工具面 | planned |
 | `permission-security.md` | `PermissionPolicy`、`PermissionPrompter`、allow / deny / ask、bash/path/file safety | planned |
 | `sandbox-runtime.md` | Linux `unshare`、workspace 边界、本机 sandbox 与跨平台差异 | planned |
 | `session-state.md` | `Session`、message 持久化、branch/fork、`TurnSummary` 调用方 | planned |
@@ -42,6 +42,6 @@ Claw-Code 在本仓库中定位为 **Claude Code-like 本地 Coding CLI Harness*
 
 - 整体定位：[项目定位与功能特色对比](../../comparison/project-positioning.md)
 - 横向 QA：[Harness Study 横向 QA](../../comparison/qa.md)
-- Agent Loop 横向专题：`../../comparison/agent-loop-patterns.md`（待撰写）
-- 工具系统横向专题：`../../comparison/tool-calling.md`（待撰写）
+- Agent Loop 横向专题：[Agent Loop 横向总结](../../comparison/agent-loop.md)
+- 工具系统横向专题：[Tool System 横向总结](../../comparison/tool-system.md)
 - 权限安全横向专题：`../../comparison/permission-security.md`（待撰写）

@@ -2,6 +2,12 @@
 
 > OpenClaw 是 Claude Code-like / 多端 Agent 控制面方向的开源实现。本目录用于记录对 OpenClaw 源码的纵向研读，先从 Agent Loop / Session Runtime 开始。
 
+## 源码
+
+- **Submodule**: [openclaw/](../../../openclaw/) — 指向 `openclaw/openclaw`
+- **官方仓库**: [github.com/openclaw/openclaw](https://github.com/openclaw/openclaw)
+- **当前快照**: `cb44f40474bd88d3ba2e1c3c3f60767c9f6194e5`
+
 ## 笔记索引
 
 | 文档 | 状态 | 说明 |

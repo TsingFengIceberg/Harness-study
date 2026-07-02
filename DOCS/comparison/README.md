@@ -21,6 +21,7 @@
 | 文档 | 涉及项目 | 说明 |
 |---|---|---|
 | [agent-loop.md](agent-loop.md) | Claw-Code / DeerFlow / Hermes Agent / OpenClaw / OpenHands | Agent Loop 第一轮横向总结：共同骨架、五类 loop 形态、工作组织 / 开车 / 公司组织比喻、关键维度对比与分类法。 |
+| [tool-system.md](tool-system.md) | Claw-Code / DeerFlow / OpenHands / OpenClaw / Hermes Agent | Tool System 第一轮横向总结：以 Claw-Code 源码核验为起点，提炼集中式工具中枢、两道权限门、ToolSearch 延迟工具发现，并建立后续跨项目工具体系比较框架。 |
 | [project-positioning.md](project-positioning.md) | DeerFlow / Hermes Agent / Claw-Code / OpenClaw / learn-claude-code / OpenHands / Claude Code guide | 第一轮整体功能特色分析：说明这些项目是否同类、各自在 Agent Harness 演化树上的位置、Claude Code-like 基准、OpenHands 与 Claw-Code 差异、Hermes / DeerFlow / OpenClaw 的特色分工。 |
 
 ## 对比专题（待撰写）
@@ -28,7 +29,6 @@
 | 专题 | 涉及项目 | 说明 |
 |---|---|---|
 | `sandbox-systems.md` | DeerFlow / OpenClaw / Claw-Code | 沙箱方案对比：Docker / Local / 远程 RPC |
-| `tool-calling.md` | 全部 | 工具调用模型：定义、执行、结果回写 |
 | `hitl-patterns.md` | DeerFlow / Hermes Agent | 人机协同模式：中断、审批、澄清 |
 | `memory-context.md` | DeerFlow / Hermes Agent | 记忆 & 上下文管理 |
 | `middleware-pipeline.md` | DeerFlow / OpenClaw | 中间件 / 拦截器管道设计 |
@@ -43,7 +43,7 @@
 | Claw-Code | [DOCS/projects/claw-code/](../projects/claw-code/README.md) |
 | Hermes Agent | [DOCS/projects/hermes-agent/](../projects/hermes-agent/README.md) |
 | OpenHands | [DOCS/projects/openhands/](../projects/openhands/README.md) |
-| learn-claude-code | [DOCS/projects/learn-claude-code/](../projects/learn-claude-code/) (待建立) |
+| learn-claude-code | `DOCS/projects/learn-claude-code/`（待建立） |
 
 ## 相关文档
 

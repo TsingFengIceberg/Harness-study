@@ -291,6 +291,44 @@ A: 优点是适合多 backend、远程运行、长时间任务、团队共享、
 
 A: OpenClaw 更像“聊天式 Agent 产品的实时会话控制”，loop 本体在本仓库内，核心是 `AgentSession -> Agent -> runLoop`、事件状态和 `steer` / `followUp` 队列；OpenHands 更像“平台化 SWE Agent 的控制面 / 执行面分离”，核心是 App Server / Sandbox / Agent Server / SDK action-observation loop。DeerFlow 更像“长任务工作流平台的 run 控制”，核心是 Gateway run lifecycle、LangGraph runtime 和 middleware；OpenHands 更像“能托管很多 coding agents 的远程开发控制中心”，核心是 workspace/sandbox、Agent Server backend、多 conversation、event storage 和 automation。Claw-Code 则更像“本地 CLI 一轮干到底”，主线集中在本地 `run_turn`。
 
+
+## Tool System / 工具体系
+
+### Q: 为什么后续专题叫 Tool System，而不是只叫 tool-calling？
+
+> **状态**: draft
+> **来源**: discussion
+
+A: `tool-calling` 更像协议层术语，强调模型发起工具调用、Harness 返回工具结果；`tool-system` 覆盖范围更大，包括工具定义、schema、注册、可见性、权限、hook / middleware、sandbox、执行分发、结果回写、MCP / plugin / runtime 扩展，以及子 agent、task、worker 等高阶能力工具化。研究 Agent Harness 时，后者更能表达真实工程复杂度。
+
+### Q: Claw-Code 的工具系统为什么可以称为“集中式工具中枢”？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: Claw-Code 将 `ToolSpec`、`GlobalToolRegistry`、allowed tools 过滤、ToolSearch、权限规格、动态权限分类和 `execute_tool_with_enforcer(...)` 执行分发集中在 [tools/src/lib.rs](../../claw-code/rust/crates/tools/src/lib.rs)，再由 [conversation.rs](../../claw-code/rust/crates/runtime/src/conversation.rs) 的 `run_turn` 内联串起 hook、permission、execute、tool_result 回写。优点是直接、内联、可控；代价是工具越来越多后，中心模块会变重。
+
+### Q: Claw-Code 为什么需要两道权限门？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: 第一扇门在 `run_turn`，通过 `PreToolUse` hook、`PermissionPolicy` 和 `PermissionPrompter` 判断“这个工具类型当前能不能用”；第二扇门在工具执行层，通过 `PermissionEnforcer` 和动态权限分类判断“这个具体调用参数会不会越界”。例如 `bash git status` 与 `bash rm -rf /` 都是 `bash`，但风险不同；`read_file README.md` 与 `read_file /etc/passwd` 都是 `read_file`，但边界不同。
+
+### Q: Claw-Code 的 ToolSearch 精髓是什么？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: ToolSearch 是内置工具目录检索器，不是智能搜索 Agent。Claw-Code 默认暴露 `bash`、`read_file`、`write_file`、`edit_file`、`glob_search`、`grep_search` 等基础工具；其他专用工具作为 deferred tools，需要时通过 ToolSearch 按工具名和描述做关键词检索。这个设计的精髓是：工具系统不只是“工具越多越好”，还要控制模型每轮看到的工具表规模。
+
+### Q: Claw-Code 与 OpenHands / DeerFlow 的工具系统风格差异是什么？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: Claw-Code 更像本地万能工具箱 / 集中式工具中枢，适合本地 CLI、源码主线短、调试直观；OpenHands 更像远程工程平台，把工具执行放在 Agent Server / SDK / tools package / sandbox 执行面，用 ActionEvent / ObservationEvent 做平台事件流；DeerFlow 更像工作流工厂，把工具调用放进 LangGraph runtime、run lifecycle 和 middleware 体系中治理。差异不是谁“有工具”，而是工具治理被放在本地函数、平台执行面，还是工作流 runtime 中。
+
 ## 调研材料使用
 
 ### Q: Deep Research 报告能不能直接作为最终结论？

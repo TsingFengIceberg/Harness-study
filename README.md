@@ -32,6 +32,8 @@ DOCS/
 │   ├── openclaw/      ← OpenClaw 笔记（事件驱动 Session / Message loop）
 │   └── openhands/     ← OpenHands 笔记（平台化 SWE Agent Harness）
 ├── comparison/        ← 横向对比：同一维度横切多个项目
+│   ├── agent-loop.md  ← Agent Loop 横向总结
+│   ├── tool-system.md ← Tool System 横向总结
 │   └── qa.md          ← 横向学习 QA：跨项目问题、讨论结论、待核验点
 └── synthesis/         ← 拔高归纳：共性设计模式与架构分类
     └── faq.md         ← 最终沉淀 FAQ：已验证、可复用的核心问答
@@ -43,8 +45,10 @@ DOCS/
 |---|---|
 | 某个项目的源码怎么设计的 | [`DOCS/projects/<项目名>/`](DOCS/projects/) |
 | Claw-Code 本地 Agent Loop | [`DOCS/projects/claw-code/agent-loop.md`](DOCS/projects/claw-code/agent-loop.md) |
+| Claw-Code Tool System | [`DOCS/projects/claw-code/tool-system.md`](DOCS/projects/claw-code/tool-system.md) |
 | DeerFlow / Hermes / OpenClaw / OpenHands Agent Loop | [`DOCS/projects/deer-flow/agent-loop.md`](DOCS/projects/deer-flow/agent-loop.md)、[`DOCS/projects/hermes-agent/agent-loop.md`](DOCS/projects/hermes-agent/agent-loop.md)、[`DOCS/projects/openclaw/agent-loop.md`](DOCS/projects/openclaw/agent-loop.md)、[`DOCS/projects/openhands/agent-loop.md`](DOCS/projects/openhands/agent-loop.md) |
 | Agent Loop 横向总结 | [`DOCS/comparison/agent-loop.md`](DOCS/comparison/agent-loop.md) |
+| Tool System 横向总结 | [`DOCS/comparison/tool-system.md`](DOCS/comparison/tool-system.md) |
 | 整体功能特色与项目定位分析 | [`DOCS/comparison/project-positioning.md`](DOCS/comparison/project-positioning.md) |
 | 多个项目在某个维度上怎么不同 | [`DOCS/comparison/`](DOCS/comparison/) |
 | 学习过程中的横向问题与讨论结论 | [`DOCS/comparison/qa.md`](DOCS/comparison/qa.md) |
@@ -73,6 +77,20 @@ DOCS/
 | OpenHands | App Server + Agent Server + SDK action/observation loop | 远程开发控制中心 / 车队运营平台 |
 
 最浓缩的理解是：**Agent Loop 的本质都是“模型决策 -> 外部动作 -> 环境反馈 -> 再决策”，差异在于这个循环被放在本地函数里、框架 runtime 里、长期记忆大脑里、聊天 session runtime 里，还是平台化 Agent Server 里。**
+
+
+## Tool System 第一轮总结
+
+Tool System 专题已从 Claw-Code 开始第一轮源码研读，详见 [`DOCS/projects/claw-code/tool-system.md`](DOCS/projects/claw-code/tool-system.md) 与 [`DOCS/comparison/tool-system.md`](DOCS/comparison/tool-system.md)：
+
+| 观察点 | Claw-Code 阶段性结论 |
+|---|---|
+| 工具系统定位 | Agent 触达外部世界的统一能力总线，不只是几个 function call。 |
+| 架构风格 | 集中式工具中枢：`ToolSpec`、`GlobalToolRegistry`、执行分发、权限分类、ToolSearch 都集中在本地 tools 模块附近。 |
+| 权限模型 | 第一扇门判断工具类型能不能用；第二扇门根据真实参数判断具体调用是否越界。 |
+| ToolSearch 精髓 | 内置工具目录检索器：常用工具默认可见，专用工具延迟发现，控制模型每轮看到的工具表规模。 |
+
+第一轮横向理解是：**Tool System 的差异不只在“有哪些工具”，更在于工具定义、可见性、权限、执行、结果回写和横切治理被放在什么架构位置。**
 
 ## 使用方式
 

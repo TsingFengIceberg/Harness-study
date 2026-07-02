@@ -6,7 +6,7 @@
 
 - **Submodule**: [openhands/](../../../openhands/) — 指向 `OpenHands/OpenHands`
 - **官方仓库**: [github.com/OpenHands/OpenHands](https://github.com/OpenHands/OpenHands)
-- **当前快照**: `0571ff530fa6114360feb10d2d1a0c2570987450`
+- **当前快照**: `ae5b8a995deb68bd00b8f3af0e87e4c2f3c580a6`
 
 ## 研究定位
 
