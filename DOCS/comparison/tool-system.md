@@ -365,6 +365,38 @@ clarify / delegate_task / cronjob / homeassistant / kanban / computer_use
 
 这说明 Hermes 的工具系统天然服务“长期私人助理”：工具不是只帮它改代码，而是帮它记事、查历史、沉淀技能、追踪任务、询问用户、派发子 agent。
 
+但这个“菜单”不是死菜单。Hermes 还可以通过 MCP、plugin、context engine、memory provider 等来源把新工具登记进 [ToolRegistry](../../hermes-agent/tools/registry.py)，并挂到动态 toolset 或 provider-specific 工具入口上。更准确的说法是：
+
+> **Hermes 有可扩展菜单系统：菜单可以加菜，但不能绕过点菜系统。**
+
+无论工具来自内置模块、MCP、plugin 还是 memory provider，正常执行前都要进入 `registry` / `toolsets` / `get_tool_definitions(...)` / `agent.valid_tool_names` / `tool_call` scope gate 这套约束。模型如果直接调用当前 session 不可见的工具，主循环会修复或拒绝；模型如果通过 `tool_call` 调隐藏工具，也必须属于当前 session 的 scoped deferrable names。
+
+### 精髓一补充：OpenClaw 和 Hermes 都动态，但动态依据不同
+
+这里容易误解成“OpenClaw 是动态组装，Hermes 是预定义菜单”。更准确是：两者都动态，只是动态依据不同。
+
+```text
+OpenClaw：
+  动态性来自产品会话上下文。
+  run / session / channel / model / sandbox / sender / policy 决定工具面。
+
+Hermes：
+  动态性来自工具总账 + 工具菜单。
+  registry / toolsets / enabled_toolsets / disabled_toolsets / check_fn 决定工具面。
+```
+
+比喻：
+
+```text
+OpenClaw：多端工作室经理按当前工单场景配工具车。
+  这次是 Web 端、IM channel、sandbox、subagent，都会影响工具车怎么配。
+
+Hermes：私人助理按任务菜单从工具总账里拿工具摆上桌。
+  今天启用 research 菜单、file 菜单、memory 菜单，或者接入 plugin / MCP 扩展菜单。
+```
+
+这个点是本轮讨论中比较稳定的横向结论：**OpenClaw 的动态性偏产品上下文，Hermes 的动态性偏 registry + toolsets。**
+
 ### 精髓二：Tool Search 是渐进式工具发现
 
 Hermes 的 [tools/tool_search.py](../../hermes-agent/tools/tool_search.py) 和 Claw-Code / OpenClaw 都不同。
@@ -414,6 +446,58 @@ unwrap tool_call 到真实 underlying tool
 
 所以 Hermes 的工具执行器更像私人助理的“工作台”：每张工具工单都要记账、归档、防止原地打转，并允许用户中途补一句方向。
 
+更精确地说，Hermes 的工具调用像一个“厚执行外壳”：
+
+```text
+conversation_loop 协议卫生层：
+  修复 tool name、校验 JSON args、处理 unknown tool、追加 assistant tool-call message
+
+tool_executor 执行前门：
+  Tool Search unwrap、scope gate、request middleware、plugin block、guardrail、checkpoint、interrupt check、并发判定
+
+执行与分发：
+  agent._invoke_tool / model_tools.handle_function_call / registry.dispatch
+
+执行后处理：
+  post_tool_call、transform_tool_result、result budget、大结果持久化、SessionDB flush、steer 注入
+```
+
+这和 OpenClaw 的差异不能简单写成“谁复杂谁简单”。更准确的阶段性说法是：
+
+```text
+OpenClaw：
+  更像 AgentTool 对象的标准工单生命周期。
+  工具对象自带 execute / executionMode / prepareArguments，执行过程伴随 tool_execution_* 与 message_* 事件。
+
+Hermes：
+  更像 function_name + function_args 进入厚执行器外壳。
+  执行器负责协议修复、Tool Search unwrap、middleware、plugin block、guardrail、checkpoint、registry dispatch、result budget、SessionDB flush 和 steer 注入。
+```
+
+不过这个点当前仍是待讲清事项：用户已经明确表示经过多轮解释后仍未真正理解 OpenClaw 和 Hermes 在“工具调用本体”上的差异。后续应选一个具体工具调用做源码级 trace，而不是继续只用“工单生命周期 vs 厚执行外壳”的抽象比喻。
+
+### 精髓五：Hermes 的治理不能都叫权限
+
+本轮讨论也修正了一个表达误区：不要把 Hermes 的 toolsets、scope gate、plugin hook、checkpoint、guardrail、result budget 都笼统叫“权限”。它们都是工具治理，但性质不同。
+
+| 机制 | 问的问题 | 是否是权限？ | 比喻 |
+|---|---|---|---|
+| `toolsets` | 当前 Agent 能看到哪些工具？ | 不是严格权限，更像可见性 / 菜单控制 | 今天桌上摆哪些工具。 |
+| `tool_call` scope gate | 通过 Tool Search bridge 调的底层工具是否属于当前 session？ | 很接近权限 | 不能拿仓库目录绕过当前授权。 |
+| plugin `pre_tool_call` | 插件是否允许这次调用？ | 是执行前门 | 助理主管说这事不能办。 |
+| ACP edit approval | 写文件 / patch 是否需要审批？ | 是权限 / HITL | 改文件前要用户盖章。 |
+| checkpoint | 执行前是否保存现场？ | 不是权限，是回滚保险 | 动工前拍照留档。 |
+| guardrail | 是否重复失败 / 无进展？ | 不是权限，是防循环 | 别在同一个抽屉翻五遍。 |
+| result budget | 工具结果是否太大、会污染上下文？ | 不是权限，是上下文保护 | 文件太厚就归档，不全塞桌面。 |
+| SessionDB flush | 工具结果是否及时落盘？ | 不是权限，是持久化 / 恢复 | 每办完一件事马上写日志。 |
+| steer injection | 用户中途补充方向如何进入下一轮？ | 不是权限，是交互控制 | 在工具回执上贴便签。 |
+
+一句话：
+
+> **toolsets 管“看得见”；scope gate 管“别越权绕路”；plugin / approval 管“能不能执行”；checkpoint 管“能不能回滚”；guardrail 管“别原地打转”；result budget 管“别撑爆上下文”。**
+
+这也让横向比较更严谨：Claw-Code / OpenClaw / Hermes 都有可见性门、执行前门、参数风险、审批、执行后 hook 和错误/循环处理；差异在于这些门被放在本地 runtime、产品 policy pipeline，还是 Hermes 的 toolsets + plugin hook + executor 外壳中。
+
 ### 和 Claw-Code / OpenClaw 对比
 
 | 维度 | Claw-Code | OpenClaw | Hermes Agent |
@@ -423,12 +507,135 @@ unwrap tool_call 到真实 underlying tool
 | 工具可见性 | allowed tools + deferred ToolSearch | policy pipeline + 大工具目录服务 | enabled/disabled toolsets + check_fn + Tool Search progressive disclosure |
 | Tool Search | 轻量关键词目录 | search / describe / call / code-mode | core tools 永不 deferred；MCP / plugin 非核心工具用 BM25 search + describe + call |
 | 并发策略 | 已读主线固定串行 | 默认并行，遇 sequential 整批降级 | 白名单式并发：safe tools、path 不重叠、MCP opt-in 才并发 |
-| 治理重点 | 权限两道门 | policy pipeline / approval / event lifecycle | middleware / plugin hook / edit approval / checkpoint / tool loop guardrail |
+| 治理重点 | 权限两道门 | policy pipeline / approval / event lifecycle | toolsets 可见性、scope gate、plugin hook、ACP approval、checkpoint、guardrail、result budget 分工治理 |
 | 长期个人能力 | 非核心定位 | 多端 session 产品能力强 | memory / todo / session_search / skills 深度工具化 |
 
 可以概括为：
 
 > **Hermes 的 Tool System 不是最集中，也不是最事件化，而是最“个人 Agent 化”：工具菜单、记忆、技能、历史检索、子 agent、用户 steer、会话持久化和多 provider 兼容被缝在同一条工具执行链上。**
+
+## 三者对比：工具箱、后厨工单、私人助理工作台
+
+本轮讨论中，Claw-Code / OpenClaw / Hermes 的工具系统可以用三个工作场所来理解：
+
+| 项目 | 总比喻 | Tool System 的核心气质 |
+|---|---|---|
+| Claw-Code | 本地老师傅 / 单人工具箱 | 工具集中、主线直接、一个个干。 |
+| OpenClaw | 多端工作室 / 餐厅后厨工单系统 | 工单化、事件化、默认追求并行效率。 |
+| Hermes Agent | 长期私人助理的工作台 | 工具 + 记忆 + 技能 + 历史 + 用户插话融合在一起。 |
+
+### 工具组装：不是“动态 vs 静态”，而是动态依据不同
+
+OpenClaw 和 Hermes 都不是简单静态工具列表。区别在于动态依据：
+
+```text
+OpenClaw：产品上下文驱动
+  run / session / channel / model / sandbox / sender / policy
+  -> 当前这辆工具车怎么配
+
+Hermes：工具总账 + 工具菜单驱动
+  registry / toolsets / enabled_toolsets / disabled_toolsets / check_fn
+  -> 当前桌面摆哪些工具
+```
+
+比喻上：
+
+```text
+OpenClaw 像多端工作室经理：
+  看这次工单来自 Web、IM、sandbox、subagent 还是某个 group/sender，
+  再按产品上下文配一辆工具车。
+
+Hermes 像长期私人助理：
+  办公室里有工具总账，桌上有任务菜单，
+  今天做 research 就拿 web / session_search，
+  今天做 coding 就拿 file / terminal / patch，
+  接了 MCP / plugin 就把新能力登记成扩展菜单。
+```
+
+所以“toolsets 是预定义菜单”不等于 Hermes 不能有菜单之外的工具。MCP、plugin、context engine、memory provider 都可能加菜；但它们仍要进入 registry / toolsets / valid_tool_names / scope gate，不能绕过点菜系统。
+
+### 工具可见性：谁放桌面，谁放仓库
+
+| 项目 | Tool Search 比喻 | 核心策略 |
+|---|---|---|
+| Claw-Code | 工具箱旁边的轻量目录 | 基础工具默认可见，专用工具 deferred。 |
+| OpenClaw | 多端工作室的中央工具仓库服务 | 面向 OpenClaw / MCP / client 多来源 catalog，支持 search / describe / call / code-mode。 |
+| Hermes | 私人助理的桌面核心工具 + 插件仓库 | `_HERMES_CORE_TOOLS` 永不 deferred；MCP / plugin 非核心工具过大时用 search / describe / call 渐进暴露。 |
+
+这个差异说明 Tool Search 不只是“有没有搜索工具”，而是在管理模型每轮看到的工具表规模：Claw-Code 控制本地工具箱噪音，OpenClaw 管理多来源大 catalog，Hermes 保护 memory / todo / session_search / skills 等个人核心工具始终在桌面上。
+
+### 串行 / 并发：性能细节背后的架构性格
+
+本轮最重要的结论之一是：串行 / 并发不是单纯性能优化，而是架构取舍。
+
+| 项目 | 策略 | 比喻 | 体现的架构性格 |
+|---|---|---|---|
+| Claw-Code | 已读主线中固定串行 | 老师傅一个人按顺序干活 | 本地 CLI，清楚、直接、可控。 |
+| OpenClaw | 默认并发；任一 sequential 工具让整批降级 | 后厨默认多窗口，有特殊菜就整批排队 | 多端产品 runtime，追求效率和事件调度。 |
+| Hermes | 白名单式并发；确认安全才并发 | 私人助理只把安全快办件并行分派 | 长期个人 Agent，保守处理状态、副作用和用户交互。 |
+
+最浓缩可以记成：
+
+```text
+Claw-Code：顺序是默认秩序。
+OpenClaw：并发是默认效率，sequential 是刹车。
+Hermes：安全是默认前提，并发是通过审查后的加速。
+```
+
+这点尤其能解释 OpenClaw 和 Hermes 的差异：OpenClaw 让工具对象自己声明 `executionMode`，执行器默认争取 batch 并发；Hermes 没有统一把并发标签放在工具对象上，而是由 `_should_parallelize_tool_batch(...)` 依据 safe 白名单、path overlap 和 MCP opt-in 判断。
+
+### 工具调用本体：当前待继续讲清
+
+三者最小 loop 都是：模型发起 tool call，Harness 执行工具，tool result 回写给模型。因此不能把差异夸大成“完全不同物种”。当前阶段的阶段性解释是：
+
+```text
+Claw-Code：
+  本地 runtime 直接提取 ToolUse，逐个执行并回写 ContentBlock::ToolResult。
+
+OpenClaw：
+  更像 AgentTool 对象的标准工单生命周期。
+  工具对象自带 execute / executionMode / prepareArguments，
+  执行过程伴随 tool_execution_* 与 message_* 事件。
+
+Hermes：
+  更像 function_name + function_args 进入厚执行器外壳。
+  执行器负责协议修复、Tool Search unwrap、middleware、plugin block、guardrail、checkpoint、registry dispatch、result budget、SessionDB flush 和 steer 注入。
+```
+
+但必须明确标记：**OpenClaw vs Hermes 在“工具调用本体”上的差异目前仍未讲清**。用户已明确反馈，多轮“AgentTool 生命周期 vs function_name + args 厚执行外壳”的解释仍不够直观。后续应选同一个具体工具调用（如 `read_file` 或 `write_file`），逐行 trace 两边源码：模型输出后是什么结构、在哪里 resolve 工具、哪里执行、哪里生成 result、哪些 hook / events / persistence 发生。
+
+### 权限 / 治理：先承认共性，再看组织位置
+
+此前若写成“Claw-Code 是权限、OpenClaw 是 policy、Hermes 是 guardrail”，会显得强行贴标签。更准确的说法是：成熟工具系统都会面对同一组门：
+
+```text
+工具是否可见？
+当前 session 是否允许？
+参数是否危险？
+是否需要用户审批？
+执行前后是否要 hook？
+失败 / 循环是否要拦？
+```
+
+差异在这些门放在哪：
+
+| 项目 | 更中心的位置 | 更准确说法 |
+|---|---|---|
+| Claw-Code | 本地 runtime + tools enforcer | 集中式权限门比较清楚，尤其是工具类型与具体参数两道门。 |
+| OpenClaw | 产品 policy pipeline + before_tool_call runtime | 多上下文产品策略更突出。 |
+| Hermes | toolsets / plugin hooks / ACP approval / scope gate / checkpoint / guardrail 分散在执行链 | 治理更分散；guardrail 主要防循环，不应等同权限。 |
+
+Hermes 尤其需要拆开：`toolsets` 管“看得见”；`tool_call` scope gate 管“别越权绕路”；plugin / ACP approval 管“能不能执行”；checkpoint 管“能不能回滚”；guardrail 管“别原地打转”；result budget 管“别撑爆上下文”。
+
+### 工具结果回写：结果不是简单字符串
+
+| 项目 | 结果回写重点 |
+|---|---|
+| Claw-Code | 工具 output 转成 `ToolResult` / session content，下一轮模型继续。 |
+| OpenClaw | `tool_execution_*` 记录执行生命周期，`message_*` 记录 tool result 消息生命周期；二者服务 UI/runtime 与 transcript/model context 的不同需求。 |
+| Hermes | 工具结果还要经过 multimodal 适配、大结果持久化、turn budget、SessionDB flush 和 pending steer 注入；结果是长期协作状态载体。 |
+
+比喻上：Claw-Code 是老师傅把结果写回工作单；OpenClaw 是后厨大屏和账单归档分开；Hermes 是私人助理把结果写日志、归档厚材料，并把用户中途补充贴成便签。
 
 ## 横向分类法
 
