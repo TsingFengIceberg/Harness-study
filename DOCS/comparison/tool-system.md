@@ -9,6 +9,7 @@
   - [Claw-Code Agent Loop](../projects/claw-code/agent-loop.md)
   - [DeerFlow Agent Loop](../projects/deer-flow/agent-loop.md)
   - [OpenHands Agent Loop](../projects/openhands/agent-loop.md)
+  - [OpenClaw Tool System](../projects/openclaw/tool-system.md)
   - [OpenClaw Agent Loop](../projects/openclaw/agent-loop.md)
   - [Hermes Agent Loop](../projects/hermes-agent/agent-loop.md)
 - 横向 QA：[qa.md](qa.md#tool-system--工具体系)
@@ -16,9 +17,9 @@
 
 ## 本文范围
 
-本文是 Tool System 专题的第一轮横向总结，重点基于已经完成的 [Claw-Code Tool System](../projects/claw-code/tool-system.md) 源码研读，先建立一组后续比较 DeerFlow / OpenHands / OpenClaw / Hermes Agent 时可复用的问题框架。
+本文是 Tool System 专题的第一轮横向总结，已经完成 [Claw-Code Tool System](../projects/claw-code/tool-system.md) 与 [OpenClaw Tool System](../projects/openclaw/tool-system.md) 的源码研读，并用它们建立后续比较 DeerFlow / OpenHands / Hermes Agent 时可复用的问题框架。
 
-因此本文中的 Claw-Code 判断已结合源码路径；其他项目的工具系统判断暂时主要来自已完成的 Agent Loop 笔记和阶段性讨论，后续需要在各项目 `tool-system.md` 中继续源码核验。
+因此本文中的 Claw-Code / OpenClaw 判断已结合源码路径；DeerFlow / OpenHands / Hermes Agent 的工具系统判断暂时主要来自已完成的 Agent Loop 笔记和阶段性讨论，后续需要在各项目 `tool-system.md` 中继续源码核验。
 
 ## Tool System 不是只有 tool call
 
@@ -231,28 +232,108 @@ sandbox / checkpoint / stream / cancel / clarification
 
 > **Claw-Code 把工具系统写成可顺代码读下来的本地能力中枢；DeerFlow 把工具调用放进 run lifecycle 和 middleware 体系里治理。**
 
-## OpenClaw / Hermes：后续工具系统比较的问题清单
+## OpenClaw：事件化工具调度与产品级治理
 
-OpenClaw 和 Hermes 的 Agent Loop 笔记已经完成，但工具系统还需要后续单独研读。
+OpenClaw 的工具系统主线见 [OpenClaw Tool System](../projects/openclaw/tool-system.md)。它可以概括为：
 
-从已有 Agent Loop 讨论可以先提出问题清单。
+> **工具装配工厂 + 策略管线 + hook wrapper + 事件化执行流。**
 
-### OpenClaw 后续应看什么？
+核心源码分布在 [agent-loop.ts](../../openclaw/packages/agent-core/src/agent-loop.ts)、[types.ts](../../openclaw/packages/agent-core/src/types.ts)、[agent-tools.ts](../../openclaw/src/agents/agent-tools.ts)、[agent-tools.before-tool-call.ts](../../openclaw/src/agents/agent-tools.before-tool-call.ts) 和 [tool-search.ts](../../openclaw/src/agents/tool-search.ts)。
 
-参考 [OpenClaw Agent Loop](../projects/openclaw/agent-loop.md)，OpenClaw 的工具系统应重点核验：
+| 层级 | OpenClaw 做法 |
+|---|---|
+| 工具定义 | `AgentTool` 继承 provider-facing `Tool`，并增加 `label`、`prepareArguments`、`execute`、`executionMode`。 |
+| 工具结果 | `AgentToolResult` 包含 `content`、`details`、`progress`、`terminate`，同时服务模型、UI、日志和 runtime。 |
+| 工具装配 | `createOpenClawCodingTools(...)` 按 run / session / channel / model / sandbox / policy 动态组装工具面。 |
+| 工具过滤 | `applyToolPolicyPipeline(...)` 按 profile、provider、agent、group、sender、sandbox、subagent、inherited policies 分层过滤。 |
+| 工具治理 | `wrapToolWithBeforeToolCallHook(...)` 把 plugin hooks、trusted policies、approval、diagnostics、loop detection 包进工具执行。 |
+| 工具执行 | `executeToolCalls(...)` 按全局配置和工具级 `executionMode` 判断 sequential / parallel。 |
+| 事件流 | `tool_execution_start/update/end` 记录工具生命周期；`message_start/end` 记录 tool result 消息生命周期。 |
+| 工具目录 | `tool_search` / `tool_describe` / `tool_call` / `tool_search_code` 管理 OpenClaw / MCP / client 大工具目录。 |
+
+### 精髓一：工具像工单，不是裸函数
+
+OpenClaw 可以用“餐厅后厨 / 工单调度系统”理解：
 
 ```text
-AgentTool 类型如何定义？
-工具如何注册到 AgentLoopConfig？
-executeToolCalls 如何处理并发、错误和结果回写？
-AgentSession hook 如何包裹工具调用？
-steer / followUp 与工具结果的消息协议如何保持一致？
-工具权限、审批、队列、节点能力路由在哪里做？
+模型输出 toolCall
+  -> 像客人点菜 / 下工单
+prepareToolCall
+  -> 前台核单：工具是否存在、参数是否正确、hook 是否允许
+executePreparedToolCall
+  -> 厨师真正做菜 / 工人真正施工
+finalizeExecutedToolCall
+  -> 出餐前质检、afterToolCall patch 结果
+ToolResultMessage
+  -> 出餐回执 / 工单验收单，写回给模型
 ```
 
-它可能更像：
+所以 OpenClaw 的重点不只是执行工具，而是把工具调用变成可观测、可审批、可并发、可持久化的事件化工单。
 
-> **事件驱动 session runtime 里的工具系统。**
+### 精髓二：默认并行，但遇到串行约束整批降级
+
+OpenClaw 的 `executeToolCalls(...)` 判定逻辑是：
+
+```text
+如果 config.toolExecution === "sequential"：
+  整批串行
+否则：
+  预扫描本批 toolCalls，解析真实 AgentTool
+  如果任一工具 executionMode === "sequential"：
+    整批串行
+  否则：
+    整批并发
+```
+
+这是一种：
+
+> **默认并行提升效率，但遇到任何串行约束就保守降级。**
+
+它不像 Claw-Code 那样在 `run_turn` 中固定 for-loop 串行；OpenClaw 会把一轮 assistant message 的多个 tool calls 作为 batch 调度。
+
+### 精髓三：事件流分离“执行生命周期”和“消息生命周期”
+
+OpenClaw 同时发两类事件：
+
+| 事件 | 含义 |
+|---|---|
+| `tool_execution_start/update/end` | 工具工单被受理、进度更新、处理结束。 |
+| `message_start/message_end` | 工具结果消息正式进入 transcript / session。 |
+
+parallel 模式下，`tool_execution_end` 可以按真实完成顺序发；但最终 `ToolResultMessage` 仍按模型原始 tool call 顺序回写，保证模型上下文稳定。
+
+### 精髓四：Tool Search 是大工具目录服务
+
+OpenClaw 的 Tool Search 比 Claw-Code 更重。Claw-Code 的 ToolSearch 更像内置工具目录检索器；OpenClaw 的 Tool Search 则是：
+
+```text
+tool_search
+tool_describe
+tool_call
+tool_search_code
+```
+
+它面向 OpenClaw / MCP / client 多来源大工具目录，支持搜索、查看 schema、代为调用，甚至 code-mode 受控探索。
+
+### 和 Claw-Code 对比
+
+| 维度 | Claw-Code | OpenClaw |
+|---|---|---|
+| 比喻 | 本地万能工具箱 / 老师傅 | 多端工作室 / 后厨工单调度系统 |
+| 工具抽象 | `ToolSpec` + `ToolExecutor` | `AgentTool` + `AgentToolResult` |
+| 工具装配 | `GlobalToolRegistry` 汇总 builtin/plugin/runtime | `createOpenClawCodingTools` 动态组装 effective tool surface |
+| 工具执行 | `run_turn` 逐个串行执行 `ToolUse` | `executeToolCalls` batch 调度，支持 sequential / parallel |
+| 工具结果 | 字符串 output 转 `ToolResult` | `content/details/progress/terminate` 结构化结果 |
+| 权限 / policy | PermissionPolicy + PermissionEnforcer 两道门 | tool policy pipeline + before_tool_call runtime + approval / diagnostics / loop detection |
+| ToolSearch | 轻量目录检索器 | 大工具目录服务，支持 search / describe / call / code-mode |
+
+可以概括为：
+
+> **Claw-Code 把工具系统集中在本地 runtime 中；OpenClaw 把工具系统拆成工具对象、装配管线、策略管线、hook wrapper、事件流和大工具目录。**
+
+## Hermes：后续工具系统比较的问题清单
+
+Hermes 的 Agent Loop 笔记已经完成，但工具系统还需要后续单独研读。
 
 ### Hermes 后续应看什么？
 
@@ -308,13 +389,11 @@ provider fallback 与工具协议差异如何兼容？
 
 ### 事件驱动 session 工具系统
 
-代表候选：OpenClaw。
+代表：OpenClaw。
 
 ```text
-工具调用被 AgentSession / Agent / runLoop 的事件状态机包裹，需要结合 steer / followUp 队列理解。
+工具调用被 AgentSession / Agent / runLoop 的事件状态机包裹，通过工具装配工厂、策略管线、before_tool_call wrapper、sequential/parallel 调度和 Tool Search 目录服务治理。
 ```
-
-后续需要源码核验。
 
 ### 长期个人 Agent 工具系统
 
@@ -342,11 +421,26 @@ provider fallback 与工具协议差异如何兼容？
 Claw-Code：本地万能工具箱 / 集中式工具中枢
 OpenHands：远程工程平台 / 控制面与执行面分离
 DeerFlow：工作流工厂 / LangGraph + middleware 治理
-OpenClaw：聊天工作室 / 事件驱动 session 工具系统
+OpenClaw：多端工作室 / 事件化工具调度与产品级治理
 Hermes：长期私人助理 / 记忆与技能融合的工具系统
 ```
 
 ## QA / 讨论记录
+
+
+### Q: OpenClaw 的工具执行为什么要区分 sequential / parallel？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: 因为一轮 assistant message 可能包含多个 tool calls，其中有些天然可以并发，如读取、查询、远程 fetch；有些则可能有共享状态或外部副作用，如写文件、发消息、操作进程、审批型工具。OpenClaw 默认并行提升效率，但如果全局配置或任一工具 `executionMode` 要求 sequential，就整批保守降级为串行，避免状态和副作用交错。
+
+### Q: OpenClaw 的 `tool_execution_end` 和 `message_end` 是重复的吗？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: 不是。`tool_execution_end` 表示工具工单处理结束，主要服务 UI / runtime / diagnostics；`message_end` 表示工具结果消息已经进入 transcript / session，主要服务消息生命周期和下一轮模型上下文。parallel 模式下工具完成顺序和 tool result 回写顺序可能不同，因此二者需要分离。
 
 ### Q: 为什么 Tool System 专题不继续叫 tool-calling？
 

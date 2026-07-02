@@ -329,6 +329,28 @@ A: ToolSearch 是内置工具目录检索器，不是智能搜索 Agent。Claw-C
 
 A: Claw-Code 更像本地万能工具箱 / 集中式工具中枢，适合本地 CLI、源码主线短、调试直观；OpenHands 更像远程工程平台，把工具执行放在 Agent Server / SDK / tools package / sandbox 执行面，用 ActionEvent / ObservationEvent 做平台事件流；DeerFlow 更像工作流工厂，把工具调用放进 LangGraph runtime、run lifecycle 和 middleware 体系中治理。差异不是谁“有工具”，而是工具治理被放在本地函数、平台执行面，还是工作流 runtime 中。
 
+
+### Q: OpenClaw 的工具系统和 Claw-Code 的工具系统最大差异是什么？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: Claw-Code 更像本地万能工具箱，工具定义、权限、搜索和执行分发集中在 Rust tools 模块与 `run_turn` 主线中；OpenClaw 更像多端 Agent 产品里的工具调度与治理平台，工具先由 `createOpenClawCodingTools` 按 run/session/channel/model/sandbox/policy 动态装配，再经过 tool policy pipeline、before_tool_call wrapper、sequential/parallel batch 调度和事件流回写。简单说，Claw-Code 是集中式工具中枢，OpenClaw 是工具装配工厂 + 策略管线 + 事件化执行流。
+
+### Q: OpenClaw 为什么要把工具执行做成事件化生命周期？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: OpenClaw 面向多端 Agent 产品，不只是本地 CLI。工具执行过程要服务 Web UI、IM channel、session persistence、diagnostics、approval、progress display 和 audit，因此需要 `tool_execution_start/update/end` 表示执行生命周期，同时用 `message_start/end` 表示 tool result 消息进入 transcript。前者服务 UI / runtime，后者服务会话记录和下一轮模型上下文。
+
+### Q: OpenClaw 如何决定工具调用串行还是并发？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: 如果全局 `config.toolExecution === "sequential"`，整批工具调用串行；否则先预扫描这一批 tool calls 并解析真实工具对象，如果任一工具声明 `executionMode === "sequential"`，整批串行；否则整批并发。这是一种“默认并行，但遇到任何串行约束就保守降级”的策略。Claw-Code 在已读 `run_turn` 主线中则是 for loop 逐个执行，没有这种 batch-level parallel 调度。
+
 ## 调研材料使用
 
 ### Q: Deep Research 报告能不能直接作为最终结论？

@@ -81,16 +81,17 @@ DOCS/
 
 ## Tool System 第一轮总结
 
-Tool System 专题已从 Claw-Code 开始第一轮源码研读，详见 [`DOCS/projects/claw-code/tool-system.md`](DOCS/projects/claw-code/tool-system.md) 与 [`DOCS/comparison/tool-system.md`](DOCS/comparison/tool-system.md)：
+Tool System 专题已完成 Claw-Code 与 OpenClaw 的第一轮源码研读，详见 [`DOCS/projects/claw-code/tool-system.md`](DOCS/projects/claw-code/tool-system.md)、[`DOCS/projects/openclaw/tool-system.md`](DOCS/projects/openclaw/tool-system.md) 与 [`DOCS/comparison/tool-system.md`](DOCS/comparison/tool-system.md)：
 
-| 观察点 | Claw-Code 阶段性结论 |
+| 观察点 | 阶段性结论 |
 |---|---|
 | 工具系统定位 | Agent 触达外部世界的统一能力总线，不只是几个 function call。 |
-| 架构风格 | 集中式工具中枢：`ToolSpec`、`GlobalToolRegistry`、执行分发、权限分类、ToolSearch 都集中在本地 tools 模块附近。 |
-| 权限模型 | 第一扇门判断工具类型能不能用；第二扇门根据真实参数判断具体调用是否越界。 |
-| ToolSearch 精髓 | 内置工具目录检索器：常用工具默认可见，专用工具延迟发现，控制模型每轮看到的工具表规模。 |
+| Claw-Code 风格 | 集中式工具中枢：`ToolSpec`、`GlobalToolRegistry`、执行分发、权限分类、ToolSearch 都集中在本地 tools 模块附近。 |
+| OpenClaw 风格 | 事件化工具调度与产品级治理：`AgentTool`、`createOpenClawCodingTools`、policy pipeline、before_tool_call wrapper、sequential / parallel batch 调度和 Tool Search 目录服务。 |
+| 权限 / 治理 | Claw-Code 强调两道权限门；OpenClaw 强调多层 tool policy pipeline 与 before_tool_call approval / diagnostics / loop detection。 |
+| 工具目录精髓 | Claw-Code ToolSearch 是轻量目录检索器；OpenClaw Tool Search 是 search / describe / call / code-mode 的大工具目录服务。 |
 
-第一轮横向理解是：**Tool System 的差异不只在“有哪些工具”，更在于工具定义、可见性、权限、执行、结果回写和横切治理被放在什么架构位置。**
+第一轮横向理解是：**Tool System 的差异不只在“有哪些工具”，更在于工具定义、可见性、权限 / policy、串并行执行、结果回写、事件观测和横切治理被放在什么架构位置。**
 
 ## 使用方式
 

@@ -13,6 +13,7 @@
 | 文档 | 状态 | 说明 |
 |---|---|---|
 | [agent-loop.md](agent-loop.md) | draft | OpenClaw Agent Loop：AgentSession / Agent / runLoop 三层结构、double loop、steer/followUp 队列与事件状态机。 |
+| [tool-system.md](tool-system.md) | draft | OpenClaw Tool System：AgentTool、createOpenClawCodingTools、policy pipeline、before_tool_call runtime、sequential/parallel 执行与 Tool Search。 |
 
 ## 源码入口
 
@@ -22,6 +23,9 @@
 | Agent 核心 | [agent.ts](../../../openclaw/packages/agent-core/src/agent.ts) | Agent 状态、事件订阅、`prompt()` / `continue()` / `steer()` / `followUp()`、队列管理。 |
 | Loop 本体 | [agent-loop.ts](../../../openclaw/packages/agent-core/src/agent-loop.ts) | `runAgentLoop()` / `runAgentLoopContinue()` / `runLoop()`，负责模型流式调用、工具执行与 steer/followUp 调度。 |
 | 类型定义 | [types.ts](../../../openclaw/packages/agent-core/src/types.ts) | `AgentEvent`、`AgentState`、`AgentTool`、`AgentMessage`、`AgentLoopConfig` 等类型。 |
+| 工具装配 | [agent-tools.ts](../../../openclaw/src/agents/agent-tools.ts) | `createOpenClawCodingTools` 按 run/session/channel/model/sandbox/policy 动态组装工具面。 |
+| 工具治理 | [agent-tools.before-tool-call.ts](../../../openclaw/src/agents/agent-tools.before-tool-call.ts) | before_tool_call policy runtime：plugin hooks、approval、diagnostics、loop detection 等。 |
+| Tool Search | [tool-search.ts](../../../openclaw/src/agents/tool-search.ts) | search / describe / call / code-mode 工具目录服务。 |
 
 ## 阶段性定位
 
@@ -36,3 +40,4 @@ OpenClaw 的 Agent Loop 可以概括为：
 - 横向 QA：[OpenClaw Agent Loop 是否只是普通 `while tool_use`？](../../comparison/qa.md#q-openclaw-agent-loop-是否只是普通-while-tool_use)
 - 横向 QA：[OpenClaw 与 DeerFlow / Claw-Code 的精髓差异是什么？](../../comparison/qa.md#q-openclaw-与-deerflow--claw-code-的精髓差异是什么)
 - 横向 QA：[OpenClaw 的 steer / followUp 队列有什么价值？](../../comparison/qa.md#q-openclaw-的-steer--followup-队列有什么价值)
+- Tool System 横向专题：[Tool System 横向总结](../../comparison/tool-system.md)
