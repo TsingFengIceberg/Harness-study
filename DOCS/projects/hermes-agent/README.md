@@ -25,13 +25,13 @@ Hermes Agent 在本仓库中定位为 **Memory-evolving personal agent harness**
 | 文档 | 主题 | 状态 |
 |---|---|---|
 | [agent-loop.md](agent-loop.md) | `run_conversation` 手写对话循环：API 调用、tool_calls、tool result 回写、interrupt / steer / iteration budget、最终响应 | draft |
+| [tool-system.md](tool-system.md) | Hermes Tool System：toolsets、registry、Tool Search、sequential/concurrent 执行、guardrail、memory / skills / todo 工具化 | draft |
 
 ## 后续待研读主题
 
 | 主题 | 说明 | 状态 |
 |---|---|---|
 | `memory-system.md` | 长期记忆、external memory prefetch、session history、memory tool | planned |
-| `tool-system.md` | 工具注册、toolsets、tool_search、guardrails、middleware hooks | planned |
 | `interrupt-steer.md` | interrupt / steer / gateway 多消息交互与线程中断 | planned |
 | `skills-evolution.md` | skill_manage、经验沉淀与程序化技能 | planned |
 | `session-persistence.md` | SessionDB、trajectory、crash recovery 与 resume | planned |

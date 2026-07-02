@@ -351,6 +351,34 @@ A: OpenClaw 面向多端 Agent 产品，不只是本地 CLI。工具执行过程
 
 A: 如果全局 `config.toolExecution === "sequential"`，整批工具调用串行；否则先预扫描这一批 tool calls 并解析真实工具对象，如果任一工具声明 `executionMode === "sequential"`，整批串行；否则整批并发。这是一种“默认并行，但遇到任何串行约束就保守降级”的策略。Claw-Code 在已读 `run_turn` 主线中则是 for loop 逐个执行，没有这种 batch-level parallel 调度。
 
+### Q: Hermes Agent 的 Tool System 为什么更像“长期个人 Agent 工具工作台”？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: 因为 Hermes 的工具系统不只负责外部动作，还承载长期个人 Agent 的核心能力。`memory`、`todo`、`session_search`、`skills_list` / `skill_view` / `skill_manage`、`delegate_task`、`clarify` 等都进入 `_HERMES_CORE_TOOLS` 或 toolsets，通过同一套 `ToolRegistry`、`get_tool_definitions(...)`、`tool_executor.py`、middleware / hooks、guardrail 和 tool result 回写进入模型循环。工具结果还会触发 SessionDB flush 与 pending steer 注入，因此它同时是执行层、记忆/技能入口和长期协作交汇点。
+
+### Q: Hermes 的 Tool Search 和 Claw-Code / OpenClaw 有什么差异？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: Claw-Code 的 ToolSearch 是轻量内置目录检索器；OpenClaw 的 Tool Search 是面向 OpenClaw / MCP / client 多来源的大工具目录服务，还支持 code-mode；Hermes 的 Tool Search 是 progressive disclosure：核心 Hermes 工具永不 deferred，MCP / plugin 非核心工具在工具表过大时被 `tool_search` / `tool_describe` / `tool_call` 三个 bridge 替代。Hermes 还特别强调 session toolset scope，避免受限 subagent / kanban worker 通过 `tool_call` 调到未授权的全局工具。
+
+### Q: Hermes 如何决定工具调用串行还是并发？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: Hermes 采用白名单式并发。`_should_parallelize_tool_batch(...)` 要求工具数量大于 1、没有 `clarify` 等 never-parallel 工具、参数 JSON 可解析、`read_file` / `write_file` / `patch` 等 path-scoped 工具目标路径不重叠，并且每个工具都在 parallel-safe 白名单中或所属 MCP server 显式 `supports_parallel_tool_calls`。否则整批回到 sequential 路径。它比 OpenClaw 的“默认并行，遇 sequential 整批降级”更保守。
+
+### Q: Hermes 的 tool guardrail 是权限系统吗？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: 不是。`ToolCallGuardrailController` 主要防止工具循环和无进展重复调用，例如相同参数重复失败、同一工具多次失败、只读工具重复返回相同结果等。默认启用 warning，不默认 hard stop；hard stop 需要配置打开。权限 / 审批更多由 plugin hook、ACP edit approval、checkpoint 和具体工具安全策略承担。
+
 ## 调研材料使用
 
 ### Q: Deep Research 报告能不能直接作为最终结论？

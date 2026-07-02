@@ -11,15 +11,16 @@
   - [OpenHands Agent Loop](../projects/openhands/agent-loop.md)
   - [OpenClaw Tool System](../projects/openclaw/tool-system.md)
   - [OpenClaw Agent Loop](../projects/openclaw/agent-loop.md)
+  - [Hermes Agent Tool System](../projects/hermes-agent/tool-system.md)
   - [Hermes Agent Loop](../projects/hermes-agent/agent-loop.md)
 - 横向 QA：[qa.md](qa.md#tool-system--工具体系)
 - 上一专题：[Agent Loop 横向总结](agent-loop.md)
 
 ## 本文范围
 
-本文是 Tool System 专题的第一轮横向总结，已经完成 [Claw-Code Tool System](../projects/claw-code/tool-system.md) 与 [OpenClaw Tool System](../projects/openclaw/tool-system.md) 的源码研读，并用它们建立后续比较 DeerFlow / OpenHands / Hermes Agent 时可复用的问题框架。
+本文是 Tool System 专题的第一轮横向总结，已经完成 [Claw-Code Tool System](../projects/claw-code/tool-system.md)、[OpenClaw Tool System](../projects/openclaw/tool-system.md) 与 [Hermes Agent Tool System](../projects/hermes-agent/tool-system.md) 的源码研读，并用它们建立后续比较 DeerFlow / OpenHands 时可复用的问题框架。
 
-因此本文中的 Claw-Code / OpenClaw 判断已结合源码路径；DeerFlow / OpenHands / Hermes Agent 的工具系统判断暂时主要来自已完成的 Agent Loop 笔记和阶段性讨论，后续需要在各项目 `tool-system.md` 中继续源码核验。
+因此本文中的 Claw-Code / OpenClaw / Hermes 判断已结合源码路径；DeerFlow / OpenHands 的工具系统判断暂时主要来自已完成的 Agent Loop 笔记和阶段性讨论，后续需要在各项目 `tool-system.md` 中继续源码核验。
 
 ## Tool System 不是只有 tool call
 
@@ -331,27 +332,103 @@ tool_search_code
 
 > **Claw-Code 把工具系统集中在本地 runtime 中；OpenClaw 把工具系统拆成工具对象、装配管线、策略管线、hook wrapper、事件流和大工具目录。**
 
-## Hermes：后续工具系统比较的问题清单
+## Hermes Agent：长期个人 Agent 的工具工作台
 
-Hermes 的 Agent Loop 笔记已经完成，但工具系统还需要后续单独研读。
+Hermes 的工具系统主线见 [Hermes Agent Tool System](../projects/hermes-agent/tool-system.md)。它可以概括为：
 
-### Hermes 后续应看什么？
+> **toolsets 工具菜单 + registry 工具总账 + Tool Search 渐进式发现 + tool_executor 执行工作台。**
 
-参考 [Hermes Agent Loop](../projects/hermes-agent/agent-loop.md)，Hermes 的工具系统应重点核验：
+核心源码分布在 [tools/registry.py](../../hermes-agent/tools/registry.py)、[toolsets.py](../../hermes-agent/toolsets.py)、[model_tools.py](../../hermes-agent/model_tools.py)、[tool_executor.py](../../hermes-agent/agent/tool_executor.py)、[tool_dispatch_helpers.py](../../hermes-agent/agent/tool_dispatch_helpers.py)、[tools/tool_search.py](../../hermes-agent/tools/tool_search.py) 和 [tool_guardrails.py](../../hermes-agent/agent/tool_guardrails.py)。
+
+| 层级 | Hermes 做法 |
+|---|---|
+| 工具注册 | 各 `tools/*.py` 模块顶层调用 `registry.register(...)` 自注册 schema / handler / check_fn / toolset。 |
+| 工具菜单 | `toolsets.py` 定义 `_HERMES_CORE_TOOLS` 和可组合 `TOOLSETS`，按 `enabled_toolsets` / `disabled_toolsets` 计算工具面。 |
+| 工具装配 | `get_tool_definitions(...)` 解析 toolsets、按 check_fn 过滤可用性、动态修正 schema、再做 Tool Search assembly。 |
+| 工具执行 | `_execute_tool_calls(...)` 根据 `_should_parallelize_tool_batch(...)` 分派 sequential / concurrent。 |
+| 并发策略 | 白名单式并发：safe tools、path 不重叠、MCP server opt-in 才并发。 |
+| 工具治理 | request / execution middleware、plugin pre_tool_call、ACP edit approval、checkpoint、tool loop guardrail。 |
+| 工具目录 | `tool_search` / `tool_describe` / `tool_call` 折叠 MCP / plugin 非核心工具；核心 Hermes 工具永不 deferred。 |
+| 个人能力 | `memory`、`todo`、`session_search`、`skills_*`、`delegate_task`、`clarify` 等作为核心工具进入同一执行链。 |
+
+### 精髓一：toolsets 是工具菜单，不是单个 allowed-tools 列表
+
+Hermes 的 [toolsets.py](../../hermes-agent/toolsets.py) 把工具组织成 `web`、`terminal`、`file`、`skills`、`memory`、`session_search`、`clarify`、`delegation`、`browser`、`kanban` 等菜单。
+
+`_HERMES_CORE_TOOLS` 包含的不只是 coding tools，还有长期个人 Agent 常用能力：
 
 ```text
-toolsets 如何注册？
-tool_search 如何发现工具？
-tool_executor.py 如何串行 / 并发执行？
-interrupt / steer 如何影响工具 worker？
-工具 guardrail 如何做？
-长期记忆、todo、skill_manage 这些个人能力如何工具化？
-provider fallback 与工具协议差异如何兼容？
+web / terminal / file / browser
+memory / todo / session_search / skills
+clarify / delegate_task / cronjob / homeassistant / kanban / computer_use
 ```
 
-它可能更像：
+这说明 Hermes 的工具系统天然服务“长期私人助理”：工具不是只帮它改代码，而是帮它记事、查历史、沉淀技能、追踪任务、询问用户、派发子 agent。
 
-> **长期个人 Agent 的工具执行与记忆 / 技能能力融合层。**
+### 精髓二：Tool Search 是渐进式工具发现
+
+Hermes 的 [tools/tool_search.py](../../hermes-agent/tools/tool_search.py) 和 Claw-Code / OpenClaw 都不同。
+
+它的核心规则是：
+
+```text
+_HERMES_CORE_TOOLS 永远可见，不 deferred
+MCP / plugin 非核心工具可被 deferred
+当 deferrable schema 成本超过阈值时：
+  保留 core tools
+  用 tool_search / tool_describe / tool_call 代替 deferred tools
+```
+
+搜索逻辑是轻量 BM25 + 工具名 substring fallback；调用 deferred tool 时还会按当前 session 的 `enabled_toolsets` / `disabled_toolsets` 做 scope gate，避免受限 subagent / kanban worker 通过 `tool_call` 绕到全局工具。
+
+### 精髓三：白名单式并发，而不是默认并行
+
+Hermes 的并发判定在 [_should_parallelize_tool_batch(...)](../../hermes-agent/agent/tool_dispatch_helpers.py)。逻辑是：
+
+```text
+单工具不并发
+clarify 等 never-parallel 工具不并发
+参数 JSON 解析失败不并发
+read_file / write_file / patch 必须有 path 且路径不重叠
+工具必须在 parallel-safe 白名单，或 MCP server 显式 supports_parallel_tool_calls
+全部通过才并发
+```
+
+这和 OpenClaw 的默认并行不同。Hermes 更像“安全快办窗口”：只有确认互不影响的 read/search/非重叠 path 工具才开多窗口。
+
+### 精髓四：tool_executor 同时处理执行、记账、防循环和 steer
+
+Hermes 的 [tool_executor.py](../../hermes-agent/agent/tool_executor.py) 不只是调用 handler。它还会：
+
+```text
+unwrap tool_call 到真实 underlying tool
+运行 request middleware / execution middleware
+运行 plugin pre_tool_call block
+运行 tool guardrail
+对文件修改 / 破坏性 terminal 做 checkpoint preflight
+管理并发 worker thread 和 interrupt fan-out
+持久化大工具结果并执行 turn budget
+工具结果 append 后立即 flush SessionDB
+把 pending steer 注入到 tool result
+```
+
+所以 Hermes 的工具执行器更像私人助理的“工作台”：每张工具工单都要记账、归档、防止原地打转，并允许用户中途补一句方向。
+
+### 和 Claw-Code / OpenClaw 对比
+
+| 维度 | Claw-Code | OpenClaw | Hermes Agent |
+|---|---|---|---|
+| 比喻 | 本地万能工具箱 / 老师傅 | 多端工作室 / 后厨工单调度系统 | 长期私人助理的工具工作台 |
+| 工具注册 | `ToolSpec` + `GlobalToolRegistry` 中心化 | 多 TS factory 组装 `AgentTool` | tools 模块自注册到 `ToolRegistry`，toolsets 组合工具面 |
+| 工具可见性 | allowed tools + deferred ToolSearch | policy pipeline + 大工具目录服务 | enabled/disabled toolsets + check_fn + Tool Search progressive disclosure |
+| Tool Search | 轻量关键词目录 | search / describe / call / code-mode | core tools 永不 deferred；MCP / plugin 非核心工具用 BM25 search + describe + call |
+| 并发策略 | 已读主线固定串行 | 默认并行，遇 sequential 整批降级 | 白名单式并发：safe tools、path 不重叠、MCP opt-in 才并发 |
+| 治理重点 | 权限两道门 | policy pipeline / approval / event lifecycle | middleware / plugin hook / edit approval / checkpoint / tool loop guardrail |
+| 长期个人能力 | 非核心定位 | 多端 session 产品能力强 | memory / todo / session_search / skills 深度工具化 |
+
+可以概括为：
+
+> **Hermes 的 Tool System 不是最集中，也不是最事件化，而是最“个人 Agent 化”：工具菜单、记忆、技能、历史检索、子 agent、用户 steer、会话持久化和多 provider 兼容被缝在同一条工具执行链上。**
 
 ## 横向分类法
 
@@ -397,13 +474,13 @@ provider fallback 与工具协议差异如何兼容？
 
 ### 长期个人 Agent 工具系统
 
-代表候选：Hermes Agent。
+代表：Hermes Agent。
 
 ```text
-工具系统和 memory、skill、todo、interrupt、steer、provider fallback 深度交织。
+toolsets / registry / Tool Search / tool_executor 共同组成个人 Agent 工具工作台；memory、todo、session_search、skills、delegate_task、clarify 等长期协作能力通过同一工具执行链进入模型循环。
 ```
 
-后续需要源码核验。
+优势是个人能力和工具执行融合深，适合跨会话长期协作；代价是执行器要同时处理 provider 兼容、middleware、guardrail、interrupt、steer、budget、persistence，工程复杂度高。
 
 ## 最浓缩版
 
@@ -415,6 +492,14 @@ provider fallback 与工具协议差异如何兼容？
 
 > **Claw-Code 是集中式工具中枢：直接、内联、可控；ToolSearch 则通过“常用工具默认可见 + 专用工具延迟发现”控制工具表规模。**
 
+如果只记 OpenClaw：
+
+> **OpenClaw 是事件化工具调度：工具像工单，经过装配、策略过滤、hook wrapper、sequential / parallel batch 调度和事件生命周期。**
+
+如果只记 Hermes：
+
+> **Hermes 是长期个人 Agent 的工具工作台：toolsets 是工具菜单，registry 是工具总账，Tool Search 是工具仓库目录，tool_executor 把记忆、技能、steer、防循环和会话持久化缝进工具执行链。**
+
 如果和其他项目比：
 
 ```text
@@ -422,7 +507,7 @@ Claw-Code：本地万能工具箱 / 集中式工具中枢
 OpenHands：远程工程平台 / 控制面与执行面分离
 DeerFlow：工作流工厂 / LangGraph + middleware 治理
 OpenClaw：多端工作室 / 事件化工具调度与产品级治理
-Hermes：长期私人助理 / 记忆与技能融合的工具系统
+Hermes：长期私人助理 / toolsets + memory + skills 的工具工作台
 ```
 
 ## QA / 讨论记录

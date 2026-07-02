@@ -45,7 +45,7 @@ DOCS/
 |---|---|
 | 某个项目的源码怎么设计的 | [`DOCS/projects/<项目名>/`](DOCS/projects/) |
 | Claw-Code 本地 Agent Loop | [`DOCS/projects/claw-code/agent-loop.md`](DOCS/projects/claw-code/agent-loop.md) |
-| Claw-Code Tool System | [`DOCS/projects/claw-code/tool-system.md`](DOCS/projects/claw-code/tool-system.md) |
+| Tool System 项目笔记 | [`DOCS/projects/claw-code/tool-system.md`](DOCS/projects/claw-code/tool-system.md)、[`DOCS/projects/openclaw/tool-system.md`](DOCS/projects/openclaw/tool-system.md)、[`DOCS/projects/hermes-agent/tool-system.md`](DOCS/projects/hermes-agent/tool-system.md) |
 | DeerFlow / Hermes / OpenClaw / OpenHands Agent Loop | [`DOCS/projects/deer-flow/agent-loop.md`](DOCS/projects/deer-flow/agent-loop.md)、[`DOCS/projects/hermes-agent/agent-loop.md`](DOCS/projects/hermes-agent/agent-loop.md)、[`DOCS/projects/openclaw/agent-loop.md`](DOCS/projects/openclaw/agent-loop.md)、[`DOCS/projects/openhands/agent-loop.md`](DOCS/projects/openhands/agent-loop.md) |
 | Agent Loop 横向总结 | [`DOCS/comparison/agent-loop.md`](DOCS/comparison/agent-loop.md) |
 | Tool System 横向总结 | [`DOCS/comparison/tool-system.md`](DOCS/comparison/tool-system.md) |
@@ -81,15 +81,16 @@ DOCS/
 
 ## Tool System 第一轮总结
 
-Tool System 专题已完成 Claw-Code 与 OpenClaw 的第一轮源码研读，详见 [`DOCS/projects/claw-code/tool-system.md`](DOCS/projects/claw-code/tool-system.md)、[`DOCS/projects/openclaw/tool-system.md`](DOCS/projects/openclaw/tool-system.md) 与 [`DOCS/comparison/tool-system.md`](DOCS/comparison/tool-system.md)：
+Tool System 专题已完成 Claw-Code、OpenClaw 与 Hermes Agent 的第一轮源码研读，详见 [`DOCS/projects/claw-code/tool-system.md`](DOCS/projects/claw-code/tool-system.md)、[`DOCS/projects/openclaw/tool-system.md`](DOCS/projects/openclaw/tool-system.md)、[`DOCS/projects/hermes-agent/tool-system.md`](DOCS/projects/hermes-agent/tool-system.md) 与 [`DOCS/comparison/tool-system.md`](DOCS/comparison/tool-system.md)：
 
 | 观察点 | 阶段性结论 |
 |---|---|
 | 工具系统定位 | Agent 触达外部世界的统一能力总线，不只是几个 function call。 |
 | Claw-Code 风格 | 集中式工具中枢：`ToolSpec`、`GlobalToolRegistry`、执行分发、权限分类、ToolSearch 都集中在本地 tools 模块附近。 |
 | OpenClaw 风格 | 事件化工具调度与产品级治理：`AgentTool`、`createOpenClawCodingTools`、policy pipeline、before_tool_call wrapper、sequential / parallel batch 调度和 Tool Search 目录服务。 |
-| 权限 / 治理 | Claw-Code 强调两道权限门；OpenClaw 强调多层 tool policy pipeline 与 before_tool_call approval / diagnostics / loop detection。 |
-| 工具目录精髓 | Claw-Code ToolSearch 是轻量目录检索器；OpenClaw Tool Search 是 search / describe / call / code-mode 的大工具目录服务。 |
+| Hermes 风格 | 长期个人 Agent 工具工作台：toolsets 菜单、registry 总账、Tool Search 渐进式发现、tool_executor 串起 memory / skills / todo / steer / guardrail / persistence。 |
+| 权限 / 治理 | Claw-Code 强调两道权限门；OpenClaw 强调多层 tool policy pipeline 与 before_tool_call approval / diagnostics / loop detection；Hermes 强调 middleware / plugin hook / edit approval / checkpoint / tool loop guardrail。 |
+| 工具目录精髓 | Claw-Code ToolSearch 是轻量目录检索器；OpenClaw Tool Search 是 search / describe / call / code-mode 的大工具目录服务；Hermes Tool Search 用 search / describe / call 把 MCP / plugin 非核心工具延迟暴露，同时保证核心工具永不 deferred。 |
 
 第一轮横向理解是：**Tool System 的差异不只在“有哪些工具”，更在于工具定义、可见性、权限 / policy、串并行执行、结果回写、事件观测和横切治理被放在什么架构位置。**
 
