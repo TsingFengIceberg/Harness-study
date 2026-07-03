@@ -38,6 +38,7 @@
 | 文档 | 主题 | 状态 |
 |---|---|---|
 | [agent-loop.md](agent-loop.md) | Gateway Run + LangGraph agent runtime 控制流：run 创建、`agent.astream(...)`、middleware、工具调用、状态与终止条件 | draft |
+| [tool-system.md](tool-system.md) | LangGraph 标准生产线 + middleware 化工具治理：`BaseTool` / `ToolCallRequest` / `ToolMessage` / `Command`、sandbox 工具、deferred MCP Tool Search 与生产部署取舍 | draft |
 
 后续 DeerFlow 深入研读的新笔记将继续放在本目录下，例如：
 

@@ -7,6 +7,7 @@
 - 项目笔记：
   - [Claw-Code Tool System](../projects/claw-code/tool-system.md)
   - [Claw-Code Agent Loop](../projects/claw-code/agent-loop.md)
+  - [DeerFlow Tool System](../projects/deer-flow/tool-system.md)
   - [DeerFlow Agent Loop](../projects/deer-flow/agent-loop.md)
   - [OpenHands Agent Loop](../projects/openhands/agent-loop.md)
   - [OpenClaw Tool System](../projects/openclaw/tool-system.md)
@@ -14,13 +15,14 @@
   - [Hermes Agent Tool System](../projects/hermes-agent/tool-system.md)
   - [Hermes Agent Loop](../projects/hermes-agent/agent-loop.md)
 - 横向 QA：[qa.md](qa.md#tool-system--工具体系)
+- 生产部署取舍：[production-deployment-tradeoffs.md](production-deployment-tradeoffs.md)
 - 上一专题：[Agent Loop 横向总结](agent-loop.md)
 
 ## 本文范围
 
-本文是 Tool System 专题的第一轮横向总结，已经完成 [Claw-Code Tool System](../projects/claw-code/tool-system.md)、[OpenClaw Tool System](../projects/openclaw/tool-system.md) 与 [Hermes Agent Tool System](../projects/hermes-agent/tool-system.md) 的源码研读，并用它们建立后续比较 DeerFlow / OpenHands 时可复用的问题框架。
+本文是 Tool System 专题的第一轮横向总结，已经完成 [Claw-Code Tool System](../projects/claw-code/tool-system.md)、[OpenClaw Tool System](../projects/openclaw/tool-system.md)、[Hermes Agent Tool System](../projects/hermes-agent/tool-system.md) 与 [DeerFlow Tool System](../projects/deer-flow/tool-system.md) 的源码研读，并用它们建立后续比较 OpenHands 时可复用的问题框架。
 
-因此本文中的 Claw-Code / OpenClaw / Hermes 判断已结合源码路径；DeerFlow / OpenHands 的工具系统判断暂时主要来自已完成的 Agent Loop 笔记和阶段性讨论，后续需要在各项目 `tool-system.md` 中继续源码核验。
+因此本文中的 Claw-Code / OpenClaw / Hermes / DeerFlow 判断已结合源码路径；OpenHands 的工具系统判断暂时主要来自已完成的 Agent Loop 笔记和阶段性讨论，后续需要在 [OpenHands](../projects/openhands/README.md) 下继续源码核验。
 
 ## Tool System 不是只有 tool call
 
@@ -207,31 +209,119 @@ ActionEvent
 
 > **Claw-Code 像本地万能工具箱；OpenHands 像远程工程平台。**
 
-## DeerFlow：LangGraph / middleware 化的工具治理
+## DeerFlow：LangGraph 标准生产线与 middleware 化工具治理
 
-DeerFlow 的 Agent Loop 笔记见 [DeerFlow Agent Loop](../projects/deer-flow/agent-loop.md)。它的工具系统不像 Claw-Code 那样围绕一个本地 `run_turn + tools.rs` 大中枢展开，而是嵌在：
+DeerFlow 的工具系统主线见 [DeerFlow Tool System](../projects/deer-flow/tool-system.md)。它的工具系统不像 Claw-Code 那样围绕一个本地 `run_turn + tools.rs` 大中枢展开，也不像 OpenClaw 自研 `AgentTool` 工单对象，或 Hermes 自研厚 `tool_executor`。它更像：
+
+> **LangGraph 标准生产线 + DeerFlow middleware 卡口群。**
+
+### 精髓一：标准化首先来自 LangGraph / LangChain
+
+DeerFlow 显得非常流水线化、标准化、原子化，首要原因是它直接使用 LangGraph / LangChain agent runtime：
 
 ```text
-Gateway run lifecycle
-LangGraph agent runtime
-middleware chain
-sandbox / checkpoint / stream / cancel / clarification
+BaseTool / @tool
+ToolCallRequest
+ToolMessage
+Command
+AgentMiddleware
+ThreadState / state schema
+checkpoint / graph execution
 ```
 
-里治理。
+但这不是唯一原因。DeerFlow 自己也沿着框架方向，把 Gateway run lifecycle、ThreadState、SandboxMiddleware、ToolErrorHandling、Clarification、TokenBudget、LoopDetection 等生产治理能力拆成中间件和 run 生命周期组件。
 
-和 Claw-Code 对比：
+所以 DeerFlow 的标准化来自两层：
+
+```text
+框架标准化：
+  LangGraph / LangChain 提供标准工具接口和图执行模型。
+
+产品架构标准化：
+  DeerFlow 把 run、thread、sandbox、stream、middleware、checkpoint 全部按生产线方式组织。
+```
+
+### 精髓二：工具执行主语是框架生产线
+
+DeerFlow 的工具装配入口是 [get_available_tools(...)](../projects/deer-flow/tool-system.md#工具来源配置内置mcpacpsubagentvision)，最终把 config tools、builtins、sandbox tools、MCP、ACP、subagent、vision 等汇总成 `list[BaseTool]`。
+
+lead agent factory 再调用：
+
+```text
+create_agent(
+  model=...,
+  tools=final_tools,
+  middleware=build_middlewares(...),
+  state_schema=ThreadState,
+)
+```
+
+也就是说，DeerFlow 自己不手写一个大工具执行器，而是把 `BaseTool` 交给 LangGraph / LangChain agent runtime / ToolNode 执行；DeerFlow 负责工具面装配、middleware、state、sandbox 和 Gateway run lifecycle。
+
+如果沿用“工具调用承载物”的比较：
+
+```text
+Claw-Code：ToolUse -> ToolExecutor
+OpenClaw：toolCall -> AgentTool
+Hermes：tool_call -> function_name + args -> tool_executor
+DeerFlow：ToolCallRequest -> BaseTool -> ToolMessage / Command
+```
+
+### 精髓三：middleware 是主要治理面
+
+DeerFlow 的工具治理不集中在一个厚 executor，而是挂在一串 middleware 上：
+
+```text
+InputSanitizationMiddleware
+ToolOutputBudgetMiddleware
+ThreadDataMiddleware
+UploadsMiddleware
+SandboxMiddleware
+DanglingToolCallMiddleware
+LLMErrorHandlingMiddleware
+GuardrailMiddleware
+SandboxAuditMiddleware
+ToolErrorHandlingMiddleware
+DynamicContextMiddleware
+SkillActivationMiddleware
+DurableContextMiddleware
+SummarizationMiddleware
+TodoListMiddleware
+MemoryMiddleware
+DeferredToolFilterMiddleware
+LoopDetectionMiddleware
+TokenBudgetMiddleware
+SafetyFinishReasonMiddleware
+ClarificationMiddleware
+```
+
+这套设计在生产上意味着：工具异常、输出预算、sandbox 生命周期、上传文件、循环检测、token 预算、deferred tool、clarification / HITL 等横切能力都可以作为生产线卡口插入，而不是不断膨胀一个 tool executor。
+
+### 精髓四：工具调用可以变成图控制流
+
+DeerFlow 的 `ask_clarification` 不是普通字符串结果，而是被 `ClarificationMiddleware` 转成：
+
+```text
+ToolCallRequest
+  -> ToolMessage(question)
+  -> Command(goto=END)
+```
+
+这说明 DeerFlow 的工具系统不只是“执行外部动作”，也能改变 LangGraph 图的控制流：某个工具调用可以让 run 停到 END，把问题交回用户。
+
+### 和其他项目对比
 
 | 维度 | Claw-Code | DeerFlow |
 |---|---|---|
-| Loop 位置 | 本地 `ConversationRuntime::run_turn` | Gateway worker + LangGraph runtime |
-| 工具循环 | 手写提取 ToolUse、执行、回写 | 主要交给 LangGraph / LangChain agent runtime |
-| 横切能力 | hook / permission / compaction 等内联插入主线 | middleware、RunManager、checkpointer、StreamBridge 等分层处理 |
-| 适合场景 | 本地 Coding CLI | 长任务、图式编排、run 生命周期治理 |
+| 运行形态 | 本地 CLI runtime | Gateway run lifecycle + LangGraph runtime |
+| 工具定义 | `ToolSpec` / tools crate | LangChain `BaseTool` / `@tool` |
+| 工具执行 | 本地 `ToolExecutor` | LangGraph / LangChain ToolNode |
+| 横切治理 | 多数内联在 `run_turn` / tools enforcer 附近 | middleware 卡口群 |
+| 长任务能力 | 依赖本地进程 / session | run / thread / checkpoint / stream / cancel / rollback |
 
 可以概括为：
 
-> **Claw-Code 把工具系统写成可顺代码读下来的本地能力中枢；DeerFlow 把工具调用放进 run lifecycle 和 middleware 体系里治理。**
+> **Claw-Code 是本地老师傅；DeerFlow 是标准化工作流工厂。**
 
 ## OpenClaw：事件化工具调度与产品级治理
 

@@ -21,7 +21,8 @@
 | 文档 | 涉及项目 | 说明 |
 |---|---|---|
 | [agent-loop.md](agent-loop.md) | Claw-Code / DeerFlow / Hermes Agent / OpenClaw / OpenHands | Agent Loop 第一轮横向总结：共同骨架、五类 loop 形态、工作组织 / 开车 / 公司组织比喻、关键维度对比与分类法。 |
-| [tool-system.md](tool-system.md) | Claw-Code / DeerFlow / OpenHands / OpenClaw / Hermes Agent | Tool System 第一轮横向总结：覆盖 Claw-Code 集中式工具中枢、OpenClaw 事件化工具调度与 Hermes toolsets / Tool Search / guardrail / memory-skills 工具工作台，提炼两道权限门、ToolSearch / Tool Search、sequential / parallel 调度等跨项目比较框架。 |
+| [tool-system.md](tool-system.md) | Claw-Code / DeerFlow / OpenHands / OpenClaw / Hermes Agent | Tool System 第一轮横向总结：覆盖 Claw-Code 集中式工具中枢、DeerFlow LangGraph 标准生产线、OpenClaw 事件化工具调度与 Hermes toolsets / Tool Search / guardrail / memory-skills 工具工作台，提炼两道权限门、ToolSearch / Tool Search、sequential / parallel 调度等跨项目比较框架。 |
+| [production-deployment-tradeoffs.md](production-deployment-tradeoffs.md) | Claw-Code / OpenClaw / Hermes Agent / DeerFlow / OpenHands | 生产部署取舍：从实际运行、部署、长期运维、多用户、多端交互、长任务可靠性、安全隔离和成本角度比较五类 Agent Harness 设计。 |
 | [project-positioning.md](project-positioning.md) | DeerFlow / Hermes Agent / Claw-Code / OpenClaw / learn-claude-code / OpenHands / Claude Code guide | 第一轮整体功能特色分析：说明这些项目是否同类、各自在 Agent Harness 演化树上的位置、Claude Code-like 基准、OpenHands 与 Claw-Code 差异、Hermes / DeerFlow / OpenClaw 的特色分工。 |
 
 ## 对比专题（待撰写）
