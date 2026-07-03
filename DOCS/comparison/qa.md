@@ -409,10 +409,24 @@ A: 不能把 toolsets、scope gate、plugin hook、checkpoint、guardrail、resu
 
 ### Q: OpenClaw 和 Hermes 在工具调用本体上的差异是否已经讲清？
 
-> **状态**: to-verify
+> **状态**: draft
 > **来源**: discussion / source-code
 
-A: 还没有。当前阶段的解释是：OpenClaw 更像 `AgentTool` 对象的标准工单生命周期，工具对象自带 `execute` / `executionMode` / `prepareArguments`，执行过程伴随 `tool_execution_*` 与 `message_*` 事件；Hermes 更像 `function_name + function_args` 进入厚执行器外壳，执行器负责协议修复、Tool Search unwrap、middleware、plugin block、guardrail、checkpoint、registry dispatch、result budget、SessionDB flush 和 steer 注入。但用户已经明确表示这个解释经过多轮仍不够直观。后续需要选一个具体工具调用，如 `read_file` 或 `write_file`，逐行对照 OpenClaw 与 Hermes 的源码数据流，而不是继续只用抽象比喻。
+A: 已经比上一轮更清楚。关键不在“谁有工具对象、谁没有工具对象”，也不在“OpenClaw 会不会用完重建对象”。OpenClaw 的 `AgentTool` 更像长期存在的工具定义 / 工位 / 菜谱；每次模型产生的 `toolCall` 是一次性调用实例 / 工单。OpenClaw 的执行阶段会先把这次 `toolCall` 匹配到当前工具列表里的已有 `AgentTool`，再围绕这个工具定义跑 `prepareArguments`、参数校验、`beforeToolCall`、`execute`、`afterToolCall`、`tool_execution_*` 事件和 `ToolResultMessage` 回写。Hermes 也有 registry / schema / handler 等工具定义，但执行阶段的主变量更像 `function_name + function_args + tool_call_id + agent context`；executor 先拆包，再经过 Tool Search unwrap、scope gate、middleware、plugin block、guardrail、checkpoint、并发 worker、`agent._invoke_tool(function_name, function_args)`、result budget、SessionDB flush、steer 注入等厚执行管线。可以记成：OpenClaw 是 `toolCall -> AgentTool -> 标准工单流程`；Hermes 是 `tool_call -> function_name + args -> 厚执行器流水线 -> handler dispatch`。
+
+### Q: OpenClaw 的“AgentTool 生命周期”是不是指工具对象用完要重新生成？
+
+> **状态**: draft
+> **来源**: discussion / source-code
+
+A: 不是。这里“生命周期”容易误导，更准确应叫“一次工具调用的标准工单流程”。`AgentTool` 是工具定义对象，通常长期存在，像菜谱或工位；模型每次输出的 `toolCall` 才是一次性的调用实例，像某桌客人的一张点菜单。每次调用会根据 `toolCall.name` 找到已有 `AgentTool`，然后跑准备参数、校验、执行前 hook、执行、执行后 hook、事件和结果回写。候选工具列表每轮可能重算，但那是为了告诉模型本轮能看见哪些工具，不是因为上一次工具对象被“用掉”。
+
+### Q: 能不能理解成 OpenClaw 先生成工具执行对象，Hermes 在对象未生成前先检查参数？
+
+> **状态**: draft
+> **来源**: discussion
+
+A: 这个理解接近但需要校正。OpenClaw 不是先新生成一个一次性工具执行对象，而是把这次 `toolCall` 归属到已有 `AgentTool` 工具定义对象，再围绕它跑标准流程。Hermes 也不是“对象未生成前才检查”，因为 Hermes 同样有 registry、schema 和 handler；只是执行阶段没有强烈地以 `AgentTool` 对象生命周期为中心，而是以 `function_name + args` 这个调用请求为中心。更准确的表述是：OpenClaw 先把模型的工具调用归属到某个已有 `AgentTool`，然后围绕这个工具对象跑检查、执行、事件、结果；Hermes 先把模型的工具调用拆包为 `function_name + args`，然后让这个请求穿过厚执行器管线，最后再按名字 dispatch 到具体 handler。
 
 ## 调研材料使用
 

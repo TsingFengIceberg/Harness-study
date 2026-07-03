@@ -393,9 +393,77 @@ pending steer injection
   -> tool result message
 ```
 
-这也是 Hermes 相比 OpenClaw 的一个重要观察点：OpenClaw 更强调 `AgentTool` 的标准工单生命周期；Hermes 更强调一个 provider tool-call 进入厚执行外壳后被修复、拦截、分派、归档。
+这也是 Hermes 相比 OpenClaw 的一个重要观察点：OpenClaw 更强调 `AgentTool` 承载的一次调用工单流程；Hermes 更强调一个 provider tool-call 进入厚执行外壳后被修复、拦截、分派、归档。
 
-> **待办 / 未完全讲清：OpenClaw 和 Hermes 在“工具调用本体”上的差异，当前仍未形成足够直观的解释。用户已明确表示经过多轮“AgentTool 生命周期 vs function_name + args 厚执行外壳”的比喻后仍未理解。后续需要选一个具体工具调用（如 `read_file` 或 `write_file`），逐行对照 OpenClaw 与 Hermes 的源码数据流，而不是继续抽象比喻。**
+### OpenClaw vs Hermes：不是“工具对象用完重建”，而是调用承载物不同
+
+本轮讨论中，用户一直卡在“OpenClaw 的 `AgentTool` 生命周期”和“Hermes 的 `function_name + args` 厚执行外壳”到底差在哪里。关键澄清是：
+
+> **OpenClaw 不是每次调用都新生成一个工具对象、用完再销毁；Hermes 也不是没有工具定义对象。差异在于执行阶段这次调用主要被什么东西承载。**
+
+可以分三层看：
+
+```text
+第一层：工具定义 / Tool Definition
+  长期存在，像菜谱 / 工位 / 函数定义。
+  OpenClaw 里是 AgentTool；Hermes 里是 registry entry / schema / handler。
+
+第二层：候选工具列表 / tools exposed to model
+  每轮请求前告诉模型这轮能看见哪些工具。
+  这可能随 session、toolsets、policy、plugin、MCP、provider 能力变化。
+
+第三层：工具调用实例 / toolCall
+  模型这一轮真的点了某个工具。
+  这张“点菜单 / 工单”有 tool_call_id、name 和 arguments。
+```
+
+OpenClaw 的执行阶段更像：
+
+```text
+模型输出 toolCall(name="write_file", args={...})
+  -> currentContext.tools.find(t => t.name === "write_file")
+  -> 找到已有 AgentTool(write_file)
+  -> 围绕这个 AgentTool 做 prepareArguments / validate / beforeToolCall / execute / afterToolCall
+  -> 发 tool_execution_start / end 与 ToolResultMessage
+```
+
+因此 OpenClaw 的“生命周期”更准确说是**一次 toolCall 绑定到已有 AgentTool 后的标准工单流程**，不是 `AgentTool` 对象被一次性消耗。
+
+Hermes 的执行阶段更像：
+
+```text
+模型输出 tool_call.function.name = "write_file"
+       tool_call.function.arguments = JSON string
+  -> executor 拆出 function_name / function_args
+  -> Tool Search unwrap / scope gate / middleware / plugin block / guardrail / checkpoint
+  -> agent._invoke_tool(function_name, function_args)
+  -> registry / agent runtime handler dispatch
+  -> result budget / persistence / SessionDB flush / steer injection
+```
+
+因此 Hermes 的重点不是“这次调用先绑定到一个 `AgentTool` 对象”，而是**`function_name + function_args` 这个请求包穿过厚执行器管线**。真正 handler dispatch 发生在中段；前后还有协议卫生、治理、归档和长期会话协作逻辑。
+
+用户后来形成的较准确理解可以写成：
+
+```text
+OpenClaw：
+  先把模型的工具调用归属到某个已有 AgentTool 工具定义对象，
+  然后围绕这个 AgentTool 跑一套标准工单流程。
+
+Hermes：
+  先把模型的工具调用拆包成 function_name + args，
+  然后让这个调用请求穿过厚执行器管线，
+  最后再按名字 dispatch 到具体 handler。
+```
+
+这个版本修正了两个容易误解的说法：
+
+- OpenClaw 不是“生成一个一次性工具执行对象，执行完就重新生成候选对象”；候选工具列表是每轮暴露给模型的菜单，工具定义对象通常长期存在。
+- Hermes 不是“对象未生成之前才检查”；Hermes 同样有 registry / schema / handler，只是执行阶段没有强烈地以 `AgentTool` 对象生命周期为中心，而是以 `function_name + args + agent execution context` 为中心。
+
+一句话记忆：
+
+> **OpenClaw：toolCall 找到 `AgentTool`，进入工具对象承载的标准工单流程。Hermes：toolCall 拆成 `function_name + args`，进入厚执行器流水线。**
 
 ## sequential / concurrent：白名单式并发，不是默认并发
 
