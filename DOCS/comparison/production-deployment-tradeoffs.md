@@ -14,6 +14,7 @@
   - [Hermes Agent Tool System](../projects/hermes-agent/tool-system.md)
   - [DeerFlow Tool System](../projects/deer-flow/tool-system.md)
   - [OpenHands Agent Loop](../projects/openhands/agent-loop.md)
+  - [OpenHands Tool System](../projects/openhands/tool-system.md)
 
 ## 本文范围
 
@@ -189,7 +190,7 @@ Web / Gateway 任务运行平台
 
 ## OpenHands：平台控制面 + 执行面
 
-OpenHands 更像团队级远程 SWE Agent 平台，核心是 App Server / Agent Canvas / Sandbox / Agent Server / SDK / tools 的控制面与执行面分离。
+OpenHands 更像团队级远程 SWE Agent 平台，核心是 [openhands/](../../openhands/) 控制面与 [software-agent-sdk/](../../software-agent-sdk/) 执行面分离：App Server / Agent Canvas / Sandbox / automation 在控制面，Agent Server / SDK / `openhands-tools` 在执行面。
 
 ### 生产运行优势
 
@@ -198,7 +199,7 @@ OpenHands 更像团队级远程 SWE Agent 平台，核心是 App Server / Agent 
 | 最适合多人 / 团队 / SaaS 化 | 多用户、多 workspace、远程 sandbox、团队协作、任务自动化、Web UI 和事件历史都是平台原生需求。 |
 | 安全隔离和资源管理更自然 | workspace、sandbox、secret 注入、任务资源回收、远程执行边界比本地 CLI 更适合云端部署。 |
 | 自动化和可观测性强 | 事件记录、状态面板、后台运行、任务重试、结果归档、多人查看都更自然。 |
-| 执行面可独立演进 | Agent Server / SDK / tools 可以与 App Server 控制面分离，适合扩展不同 backend。 |
+| 执行面可独立演进 | `software-agent-sdk` 中的 Agent Server / SDK / `openhands-tools` 可以与 `OpenHands/OpenHands` 控制面分离，适合扩展不同 backend。 |
 
 ### 生产运行劣势
 

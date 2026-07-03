@@ -10,6 +10,7 @@
   - [DeerFlow Tool System](../projects/deer-flow/tool-system.md)
   - [DeerFlow Agent Loop](../projects/deer-flow/agent-loop.md)
   - [OpenHands Agent Loop](../projects/openhands/agent-loop.md)
+  - [OpenHands Tool System](../projects/openhands/tool-system.md)
   - [OpenClaw Tool System](../projects/openclaw/tool-system.md)
   - [OpenClaw Agent Loop](../projects/openclaw/agent-loop.md)
   - [Hermes Agent Tool System](../projects/hermes-agent/tool-system.md)
@@ -20,9 +21,9 @@
 
 ## 本文范围
 
-本文是 Tool System 专题的第一轮横向总结，已经完成 [Claw-Code Tool System](../projects/claw-code/tool-system.md)、[OpenClaw Tool System](../projects/openclaw/tool-system.md)、[Hermes Agent Tool System](../projects/hermes-agent/tool-system.md) 与 [DeerFlow Tool System](../projects/deer-flow/tool-system.md) 的源码研读，并用它们建立后续比较 OpenHands 时可复用的问题框架。
+本文是 Tool System 专题的第一轮横向总结，已经完成 [Claw-Code Tool System](../projects/claw-code/tool-system.md)、[OpenClaw Tool System](../projects/openclaw/tool-system.md)、[Hermes Agent Tool System](../projects/hermes-agent/tool-system.md)、[DeerFlow Tool System](../projects/deer-flow/tool-system.md) 与 [OpenHands Tool System](../projects/openhands/tool-system.md) 的源码研读。
 
-因此本文中的 Claw-Code / OpenClaw / Hermes / DeerFlow 判断已结合源码路径；OpenHands 的工具系统判断暂时主要来自已完成的 Agent Loop 笔记和阶段性讨论，后续需要在 [OpenHands](../projects/openhands/README.md) 下继续源码核验。
+其中 OpenHands 需要特别区分两个官方仓库：[openhands/](../../openhands/) 是 Agent Canvas / App Server / Sandbox / automation 控制面，[software-agent-sdk/](../../software-agent-sdk/) 是 Agent Server / SDK Conversation / Agent / `openhands-tools` 执行面。本文的 OpenHands 工具系统判断已基于本地 `software-agent-sdk` submodule 做第一轮核验。
 
 ## Tool System 不是只有 tool call
 
@@ -176,24 +177,39 @@ canonical token：归一化工具名和 query
 
 ## OpenHands：分层式平台工具治理
 
-OpenHands 的 Agent Loop 笔记见 [OpenHands Agent Loop](../projects/openhands/agent-loop.md)。当前理解是：OpenHands 更偏平台化 SWE Agent，不把工具系统全部塞进一个本地 tools 大文件里，而是拆成控制面 / 执行面：
+OpenHands 的 Agent Loop 与 Tool System 笔记见 [OpenHands Agent Loop](../projects/openhands/agent-loop.md) 和 [OpenHands Tool System](../projects/openhands/tool-system.md)。当前理解是：OpenHands 更偏平台化 SWE Agent，不把工具系统全部塞进一个本地 tools 大文件里，而是拆成控制面 / 执行面：
 
 ```text
 App Server / Agent Canvas / conversation / sandbox / event / automation
   -> 控制面：创建会话、管理 workspace/sandbox、转发消息、记录事件、展示 UI
 
 Agent Server / software-agent-sdk / openhands-tools
-  -> 执行面：运行 Conversation.run / Agent.step、执行工具、产生 ObservationEvent
+  -> 执行面：运行 Conversation.run / Agent.step、把 MessageToolCall 转成 ActionEvent、调用 ToolDefinition / executor、产生 ObservationEvent
 ```
 
 它的工具抽象更接近：
 
 ```text
-ActionEvent
-  -> 工具 / runtime / workspace 执行
-    -> ObservationEvent
-      -> 下一轮 Agent.step
+MessageToolCall
+  -> ActionEvent
+     -> ToolDefinition / executor
+        -> Observation
+           -> ObservationEvent
+              -> 下一轮 Agent.step
 ```
+
+本地执行面源码里有几个关键锚点：
+
+| 层级 | OpenHands 做法 |
+|---|---|
+| 默认工具 | [default.py](../../software-agent-sdk/openhands-tools/openhands/tools/preset/default.py) 注册 / 返回 TerminalTool、FileEditorTool、TaskTrackerTool，可选 BrowserToolSet 和 TaskToolSet。 |
+| 工具定义 | [tool.py](../../software-agent-sdk/openhands-sdk/openhands/sdk/tool/tool.py) 中 `ToolDefinition` 统一 name、description、Action schema、Observation schema、executor、schema conversion、resource declaration。 |
+| 典型工具 | [terminal/definition.py](../../software-agent-sdk/openhands-tools/openhands/tools/terminal/definition.py)、[file_editor/definition.py](../../software-agent-sdk/openhands-tools/openhands/tools/file_editor/definition.py)、[task_tracker/definition.py](../../software-agent-sdk/openhands-tools/openhands/tools/task_tracker/definition.py)。 |
+| response dispatch | [response_dispatch.py](../../software-agent-sdk/openhands-sdk/openhands/sdk/agent/response_dispatch.py) 将 response 分成 `TOOL_CALLS` / `CONTENT` / `REASONING_ONLY` / `EMPTY`，并把 tool call 转成 action events。 |
+| 工具执行 | [agent.py](../../software-agent-sdk/openhands-sdk/openhands/sdk/agent/agent.py) 中 `_execute_action_event(...)` 调用 `tool(action, conversation)`，再包成 `ObservationEvent`。 |
+| 并发治理 | [parallel_executor.py](../../software-agent-sdk/openhands-sdk/openhands/sdk/agent/parallel_executor.py) 用 `ParallelToolExecutor`、resource locks 和 `declared_resources(...)` 管理并行工具调用。 |
+
+所以 OpenHands 的工具系统不是单个“大工具函数”，而是 `ToolDefinition + Action / Observation + ActionEvent / ObservationEvent + Agent Server / SDK execution loop` 的组合。
 
 和 Claw-Code 对比：
 
@@ -201,7 +217,7 @@ ActionEvent
 |---|---|---|
 | 形态 | 本地 CLI 工具中枢 | 平台控制面 / 执行面分离 |
 | 工具执行位置 | 本地 runtime / tools crate | Agent Server / SDK / tools package / sandbox |
-| 事件模型 | tool_use / tool_result 主线 | ActionEvent / ObservationEvent 平台事件流 |
+| 事件模型 | tool_use / tool_result 主线 | MessageToolCall -> ActionEvent -> ObservationEvent 平台事件流 |
 | 优势 | 主线短、调试直观 | 多 backend、远程运行、团队共享、事件追踪 |
 | 代价 | 中心模块变重 | 调试链路更长、跨 repo / service 理解成本高 |
 
@@ -651,8 +667,9 @@ Hermes 像长期私人助理：
 | Claw-Code | 工具箱旁边的轻量目录 | 基础工具默认可见，专用工具 deferred。 |
 | OpenClaw | 多端工作室的中央工具仓库服务 | 面向 OpenClaw / MCP / client 多来源 catalog，支持 search / describe / call / code-mode。 |
 | Hermes | 私人助理的桌面核心工具 + 插件仓库 | `_HERMES_CORE_TOOLS` 永不 deferred；MCP / plugin 非核心工具过大时用 search / describe / call 渐进暴露。 |
+| OpenHands | 远程开发平台的工具执行车间 | 默认工具预设直接暴露 Terminal / FileEditor / TaskTracker 等基础 SWE 工具；更大的边界在控制面 / 执行面分离。 |
 
-这个差异说明 Tool Search 不只是“有没有搜索工具”，而是在管理模型每轮看到的工具表规模：Claw-Code 控制本地工具箱噪音，OpenClaw 管理多来源大 catalog，Hermes 保护 memory / todo / session_search / skills 等个人核心工具始终在桌面上。
+这个差异说明 Tool Search 不只是“有没有搜索工具”，而是在管理模型每轮看到的工具表规模：Claw-Code 控制本地工具箱噪音，OpenClaw 管理多来源大 catalog，Hermes 保护 memory / todo / session_search / skills 等个人核心工具始终在桌面上；OpenHands 当前更值得先看默认工具预设和 Agent Server / SDK 执行边界，后续如果展开 MCP / browser / subagent 工具目录，再单独补充它的工具可见性细节。
 
 ### 串行 / 并发：性能细节背后的架构性格
 
@@ -663,6 +680,7 @@ Hermes 像长期私人助理：
 | Claw-Code | 已读主线中固定串行 | 老师傅一个人按顺序干活 | 本地 CLI，清楚、直接、可控。 |
 | OpenClaw | 默认并发；任一 sequential 工具让整批降级 | 后厨默认多窗口，有特殊菜就整批排队 | 多端产品 runtime，追求效率和事件调度。 |
 | Hermes | 白名单式并发；确认安全才并发 | 私人助理只把安全快办件并行分派 | 长期个人 Agent，保守处理状态、副作用和用户交互。 |
+| OpenHands | `ParallelToolExecutor` 按并发上限和资源锁执行 | 远程开发平台的工具车间按工位 / 文件锁排程 | 平台执行面，既要并发吞吐，也要避免同一资源冲突。 |
 
 最浓缩可以记成：
 
@@ -670,9 +688,10 @@ Hermes 像长期私人助理：
 Claw-Code：顺序是默认秩序。
 OpenClaw：并发是默认效率，sequential 是刹车。
 Hermes：安全是默认前提，并发是通过审查后的加速。
+OpenHands：并发是执行面吞吐，资源锁是平台安全阀。
 ```
 
-这点尤其能解释 OpenClaw 和 Hermes 的差异：OpenClaw 让工具对象自己声明 `executionMode`，执行器默认争取 batch 并发；Hermes 没有统一把并发标签放在工具对象上，而是由 `_should_parallelize_tool_batch(...)` 依据 safe 白名单、path overlap 和 MCP opt-in 判断。
+这点尤其能解释几个项目的差异：OpenClaw 让工具对象自己声明 `executionMode`，执行器默认争取 batch 并发；Hermes 没有统一把并发标签放在工具对象上，而是由 `_should_parallelize_tool_batch(...)` 依据 safe 白名单、path overlap 和 MCP opt-in 判断；OpenHands 则把并发放进 SDK 执行面，用 `ParallelToolExecutor`、`tool_concurrency_limit` 和 `declared_resources(...)` 在吞吐与资源冲突之间折中。
 
 ### 工具调用本体：从“未讲清”到“调用承载物不同”
 
@@ -694,6 +713,12 @@ Hermes：
   它进入厚执行器外壳，经过协议修复、Tool Search unwrap、scope gate、middleware、plugin block、guardrail、checkpoint，
   中段再 agent._invoke_tool(function_name, function_args) / registry dispatch，
   执行后继续 result budget、SessionDB flush 和 steer 注入。
+
+OpenHands：
+  MessageToolCall 被转成 ActionEvent。
+  ActionEvent 找到 SDK tools_map 中的 ToolDefinition，校验成 Action，
+  由 ToolDefinition.executor 执行后返回 Observation，
+  再包成 ObservationEvent，进入事件流与下一轮 Agent.step。
 ```
 
 此前容易误解成：
@@ -721,7 +746,7 @@ Hermes：
 
 ```text
 工具定义 Tool Definition：
-  OpenClaw 的 AgentTool；Hermes 的 registry entry / schema / handler。
+  OpenClaw 的 AgentTool；Hermes 的 registry entry / schema / handler；OpenHands 的 ToolDefinition。
 
 候选工具列表 tools exposed to model：
   每轮模型请求前给模型看的菜单，可能动态重算。
@@ -742,9 +767,15 @@ Hermes 的关键动作是：
 tool_call 实例 -> 拆出 function_name + args -> 经过厚执行器管线 -> dispatch handler
 ```
 
+OpenHands 的关键动作是：
+
+```text
+MessageToolCall 实例 -> ActionEvent -> ToolDefinition / executor -> ObservationEvent
+```
+
 最短记忆版：
 
-> **OpenClaw：toolCall 找到 `AgentTool`，进入工具对象承载的标准工单流程。Hermes：toolCall 拆成 `function_name + args`，进入厚执行器流水线。**
+> **OpenClaw：toolCall 找到 `AgentTool`，进入工具对象承载的标准工单流程。Hermes：toolCall 拆成 `function_name + args`，进入厚执行器流水线。OpenHands：toolCall 升级成平台事件 `ActionEvent`，由 SDK `ToolDefinition` 执行后产出 `ObservationEvent`。**
 
 ### 权限 / 治理：先承认共性，再看组织位置
 
@@ -766,6 +797,7 @@ tool_call 实例 -> 拆出 function_name + args -> 经过厚执行器管线 -> d
 | Claw-Code | 本地 runtime + tools enforcer | 集中式权限门比较清楚，尤其是工具类型与具体参数两道门。 |
 | OpenClaw | 产品 policy pipeline + before_tool_call runtime | 多上下文产品策略更突出。 |
 | Hermes | toolsets / plugin hooks / ACP approval / scope gate / checkpoint / guardrail 分散在执行链 | 治理更分散；guardrail 主要防循环，不应等同权限。 |
+| OpenHands | SDK Agent / ToolDefinition / hooks / security risk / resource locks / control-plane config | 平台治理更突出，工具执行在 SDK 执行面，控制面负责编排 conversation / sandbox / secrets / skills / plugins。 |
 
 Hermes 尤其需要拆开：`toolsets` 管“看得见”；`tool_call` scope gate 管“别越权绕路”；plugin / ACP approval 管“能不能执行”；checkpoint 管“能不能回滚”；guardrail 管“别原地打转”；result budget 管“别撑爆上下文”。
 
@@ -776,8 +808,9 @@ Hermes 尤其需要拆开：`toolsets` 管“看得见”；`tool_call` scope ga
 | Claw-Code | 工具 output 转成 `ToolResult` / session content，下一轮模型继续。 |
 | OpenClaw | `tool_execution_*` 记录执行生命周期，`message_*` 记录 tool result 消息生命周期；二者服务 UI/runtime 与 transcript/model context 的不同需求。 |
 | Hermes | 工具结果还要经过 multimodal 适配、大结果持久化、turn budget、SessionDB flush 和 pending steer 注入；结果是长期协作状态载体。 |
+| OpenHands | `MessageToolCall` 转 `ActionEvent`，`ToolDefinition.executor` 返回 `Observation`，再包成 `ObservationEvent`；同一轨迹既服务模型上下文，也服务 UI / event store / audit / remote runtime。 |
 
-比喻上：Claw-Code 是老师傅把结果写回工作单；OpenClaw 是后厨大屏和账单归档分开；Hermes 是私人助理把结果写日志、归档厚材料，并把用户中途补充贴成便签。
+比喻上：Claw-Code 是老师傅把结果写回工作单；OpenClaw 是后厨大屏和账单归档分开；Hermes 是私人助理把结果写日志、归档厚材料，并把用户中途补充贴成便签；OpenHands 是远程开发平台把动作和观察都记成可展示、可查询、可回放的平台事件。
 
 ## 横向分类法
 
@@ -798,7 +831,7 @@ Hermes 尤其需要拆开：`toolsets` 管“看得见”；`tool_call` scope ga
 代表：OpenHands。
 
 ```text
-控制面管理 conversation / sandbox / event / UI；执行面通过 Agent Server / SDK / tools package 跑工具，并产生 Action / Observation 事件。
+控制面管理 conversation / sandbox / event / UI；执行面通过 Agent Server / SDK / openhands-tools 跑工具，把 MessageToolCall 转成 ActionEvent，调用 ToolDefinition / executor，并产生 ObservationEvent。
 ```
 
 优势是远程运行、多 backend、团队协作、自动化和事件追踪；代价是链路长。
