@@ -26,12 +26,25 @@ Hermes Agent 在本仓库中定位为 **Memory-evolving personal agent harness**
 |---|---|---|
 | [agent-loop.md](agent-loop.md) | `run_conversation` 手写对话循环：API 调用、tool_calls、tool result 回写、interrupt / steer / iteration budget、最终响应 | draft |
 | [tool-system.md](tool-system.md) | Hermes Tool System：toolsets、registry、Tool Search、sequential/concurrent 执行、guardrail、memory / skills / todo 工具化 | draft |
+| [context-management.md](context-management.md) | Hermes Context Management：session-stable system prompt、临时 recall context、provider repair/sanitize、preflight / pre-API compression 与错误恢复 | draft |
+
+## 源码入口
+
+| 模块 | 源码 | 说明 |
+|---|---|---|
+| Agent Loop 主线 | [conversation_loop.py](../../../submodules/hermes-agent/agent/conversation_loop.py) | `run_conversation`，模型调用、tool loop、retry / fallback、API messages 构造与上下文压缩入口。 |
+| Turn Context | [turn_context.py](../../../submodules/hermes-agent/agent/turn_context.py) | `build_turn_context`，每轮开始前准备 messages、system prompt、memory prefetch、plugin context、preflight compression。 |
+| System Prompt | [system_prompt.py](../../../submodules/hermes-agent/agent/system_prompt.py) | `build_system_prompt_parts` / `build_system_prompt`，session-stable prompt snapshot 与 cache prefix。 |
+| Memory Manager | [memory_manager.py](../../../submodules/hermes-agent/agent/memory_manager.py) | memory provider 编排、prefetch / sync、`<memory-context>` fencing 与 streaming scrubber。 |
+| Context Compressor | [context_compressor.py](../../../submodules/hermes-agent/agent/context_compressor.py) | 默认 context engine，旧工具结果裁剪、头尾保护、中段摘要和 summary 迭代更新。 |
+| Compression Orchestration | [conversation_compression.py](../../../submodules/hermes-agent/agent/conversation_compression.py) | `compress_context`，压缩锁、SessionDB rewrite / rotation、system prompt invalidation。 |
+| Turn Finalizer | [turn_finalizer.py](../../../submodules/hermes-agent/agent/turn_finalizer.py) | session persist、response transform、external memory sync、background review。 |
 
 ## 后续待研读主题
 
 | 主题 | 说明 | 状态 |
 |---|---|---|
-| `memory-system.md` | 长期记忆、external memory prefetch、session history、memory tool | planned |
+| `memory-system.md` | 长期记忆、external memory provider 内部、memory tool、事实 / 偏好沉淀与污染防护 | planned |
 | `interrupt-steer.md` | interrupt / steer / gateway 多消息交互与线程中断 | planned |
 | `skills-evolution.md` | skill_manage、经验沉淀与程序化技能 | planned |
 | `session-persistence.md` | SessionDB、trajectory、crash recovery 与 resume | planned |

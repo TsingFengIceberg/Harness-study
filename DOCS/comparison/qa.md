@@ -291,6 +291,42 @@ A: 优点是适合多 backend、远程运行、长时间任务、团队共享、
 
 A: OpenClaw 更像“聊天式 Agent 产品的实时会话控制”，loop 本体在本仓库内，核心是 `AgentSession -> Agent -> runLoop`、事件状态和 `steer` / `followUp` 队列；OpenHands 更像“平台化 SWE Agent 的控制面 / 执行面分离”，核心是 App Server / Sandbox / Agent Server / SDK action-observation loop。DeerFlow 更像“长任务工作流平台的 run 控制”，核心是 Gateway run lifecycle、LangGraph runtime 和 middleware；OpenHands 更像“能托管很多 coding agents 的远程开发控制中心”，核心是 workspace/sandbox、Agent Server backend、多 conversation、event storage 和 automation。Claw-Code 则更像“本地 CLI 一轮干到底”，主线集中在本地 `run_turn`。
 
+## Context Management / 上下文管理
+
+### Q: Claw-Code、OpenClaw、Hermes 的上下文管理核心差异是什么？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: Claw-Code 的 context 像本地 CLI transcript：核心是把 `system_prompt + Session.messages` 稳定发回模型，并通过 compact / Trident / context-window retry 处理历史过长。OpenClaw 的 context 像产品态实时会话状态机：`AgentContext.messages` 同时服务 UI streaming、事件、工具回写、持久化和模型输入，并在请求前经过 `transformContext -> convertToLlm`。Hermes 的 context 像长期个人 Agent 的生存修复管线：stable system prompt、persistent messages、临时 recall context、provider repair/sanitize、preflight / pre-API compression、retry / fallback 共同保证多 provider 长会话能继续运行。项目笔记见 [Claw-Code Context Management](../projects/claw-code/context-management.md)、[OpenClaw Context Management](../projects/openclaw/context-management.md)、[Hermes Context Management](../projects/hermes-agent/context-management.md)。
+
+### Q: Hermes 的 recall context 应该怎么理解？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: recall context 是 Hermes 本轮临时找出来、贴到当前用户问题后面的“参考资料 / 小抄”。它通常来自 external memory provider 的 `prefetch_all(...)` 或 plugin `pre_llm_call` hook；模型本轮能看到，但它不是新用户输入、不是 system prompt，也不会写入持久 `messages`。源码上，prefetch 在 [turn_context.py](../../submodules/hermes-agent/agent/turn_context.py) 取回，API messages 构造时追加到当前 user message 的副本，且注释明确说明原始 `messages` 不会被修改。
+
+### Q: Hermes 为什么不把 recall context 放进 system prompt？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 因为 Hermes 把 system prompt 当作 session-stable cache prefix：同一 session 尽量复用同一份 prompt，避免破坏 prompt cache，也避免把“临时参考资料”提升成“长期系统规则”。因此 memory / plugin 的动态 recall context 追加到当前 user message 的 API copy；persistent messages 继续保存真实对话轨迹；system prompt 则保持稳定。源码对应 [conversation_loop.py](../../submodules/hermes-agent/agent/conversation_loop.py) 中 API-call-time injection 与 system prompt 注释。
+
+### Q: Hermes 的 system prompt 是每轮重建吗？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 不是。Hermes 在 turn prologue 中只有当 `_cached_system_prompt` 为空时才恢复或构建 system prompt；如果 SessionDB 中已有可用且 model/provider 匹配的 prompt，就复用 verbatim。DB 缺失、为空、为 `NULL` 或 runtime identity 不匹配时才重建，并写回 SessionDB，避免后续每轮 cache miss。这个设计的精髓是：system prompt 是 session-stable cache prefix，而不是每轮动态拼接的上下文容器。
+
+### Q: Hermes 的上下文压缩为什么说是多点防爆？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: Hermes 不只在一个地方 compact。它在 turn prologue 做 preflight compression；在每次 API call 前做 request pressure check，防止工具结果把下一次请求撑爆；provider 报 context overflow 后还会区分 input prompt 太长和 `max_tokens` output cap 太大，前者压缩历史 / 更新 context length，后者降低输出预算或提示改配置。相比 Claw-Code 的本地 session compact，Hermes 更强调多 provider 长会话的运行韧性。
 
 ## Tool System / 工具体系
 
