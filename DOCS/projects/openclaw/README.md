@@ -14,6 +14,7 @@
 |---|---|---|
 | [agent-loop.md](agent-loop.md) | draft | OpenClaw Agent Loop：AgentSession / Agent / runLoop 三层结构、double loop、steer/followUp 队列与事件状态机。 |
 | [tool-system.md](tool-system.md) | draft | OpenClaw Tool System：AgentTool、createOpenClawCodingTools、policy pipeline、before_tool_call runtime、sequential/parallel 执行与 Tool Search。 |
+| [context-management.md](context-management.md) | draft | OpenClaw Context Management：AgentContext.messages、transformContext / convertToLlm、streaming message、steer/followUp、compaction 与 session persistence。 |
 
 ## 源码入口
 
@@ -22,7 +23,9 @@
 | Session 外壳 | [agent-session.ts](../../../submodules/openclaw/src/agents/sessions/agent-session.ts) | 产品会话层：模型校验、prompt 入口、hook、compaction、retry、持久化、事件处理。 |
 | Agent 核心 | [agent.ts](../../../submodules/openclaw/packages/agent-core/src/agent.ts) | Agent 状态、事件订阅、`prompt()` / `continue()` / `steer()` / `followUp()`、队列管理。 |
 | Loop 本体 | [agent-loop.ts](../../../submodules/openclaw/packages/agent-core/src/agent-loop.ts) | `runAgentLoop()` / `runAgentLoopContinue()` / `runLoop()`，负责模型流式调用、工具执行与 steer/followUp 调度。 |
-| 类型定义 | [types.ts](../../../submodules/openclaw/packages/agent-core/src/types.ts) | `AgentEvent`、`AgentState`、`AgentTool`、`AgentMessage`、`AgentLoopConfig` 等类型。 |
+| 类型定义 | [types.ts](../../../submodules/openclaw/packages/agent-core/src/types.ts) | `AgentEvent`、`AgentState`、`AgentContext`、`AgentMessage`、`AgentTool`、`AgentLoopConfig`、`transformContext` / `convertToLlm` 等类型。 |
+| Harness 消息转换 | [messages.ts](../../../submodules/openclaw/packages/agent-core/src/harness/messages.ts) | `convertToLlm` 把 bashExecution / custom / branchSummary / compactionSummary 等产品态消息转换成 LLM-facing message。 |
+| Harness 上下文 hook | [agent-harness.ts](../../../submodules/openclaw/packages/agent-core/src/harness/agent-harness.ts) | `CoreAgentHarness` 安装 context hook、tool hook、prepareNextTurn 和 session write flush。 |
 | 工具装配 | [agent-tools.ts](../../../submodules/openclaw/src/agents/agent-tools.ts) | `createOpenClawCodingTools` 按 run/session/channel/model/sandbox/policy 动态组装工具面。 |
 | 工具治理 | [agent-tools.before-tool-call.ts](../../../submodules/openclaw/src/agents/agent-tools.before-tool-call.ts) | before_tool_call policy runtime：plugin hooks、approval、diagnostics、loop detection 等。 |
 | Tool Search | [tool-search.ts](../../../submodules/openclaw/src/agents/tool-search.ts) | search / describe / call / code-mode 工具目录服务。 |
