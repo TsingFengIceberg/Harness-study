@@ -28,6 +28,7 @@ Claw-Code 在本仓库中定位为 **Claude Code-like 本地 Coding CLI Harness*
 |---|---|---|
 | [agent-loop.md](agent-loop.md) | `ConversationRuntime::run_turn` 控制流：模型流式输出、ToolUse 提取、权限检查、工具执行、tool_result 回写与终止条件 | draft |
 | [tool-system.md](tool-system.md) | 集中式工具中枢：`ToolSpec` / `GlobalToolRegistry`、allowed tools、hooks、两道权限门、ToolSearch 延迟工具发现与工具能力总线 | draft |
+| [context-management.md](context-management.md) | 本地 CLI Agent 的上下文组装：`SystemPromptBuilder`、`Session.messages`、provider message conversion、usage 阈值、auto compaction 与 context-window retry | draft |
 
 ## 后续待研读主题
 
@@ -35,8 +36,8 @@ Claw-Code 在本仓库中定位为 **Claude Code-like 本地 Coding CLI Harness*
 |---|---|---|
 | `permission-security.md` | `PermissionPolicy`、`PermissionPrompter`、allow / deny / ask、bash/path/file safety | planned |
 | `sandbox-runtime.md` | Linux `unshare`、workspace 边界、本机 sandbox 与跨平台差异 | planned |
-| `session-state.md` | `Session`、message 持久化、branch/fork、`TurnSummary` 调用方 | planned |
-| `hooks-compaction.md` | pre/post tool hooks、auto compaction、prompt cache / usage 统计 | planned |
+| `session-state.md` | `Session` 持久化、branch/fork、session store、`TurnSummary` 调用方 | planned |
+| `hooks-compaction.md` | pre/post tool hooks、compact 与 Trident 压缩的更细节实现、prompt cache / usage 统计 | planned |
 
 ## 相关横向专题
 
