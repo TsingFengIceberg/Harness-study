@@ -13,16 +13,16 @@
 
 | 模块 | 源码 | 作用 |
 |---|---|---|
-| 工具抽象 | [types.ts](../../../openclaw/packages/agent-core/src/types.ts) | `AgentTool`、`AgentToolResult`、`ToolExecutionMode`、`beforeToolCall` / `afterToolCall` 等核心类型。 |
-| Loop 执行工具 | [agent-loop.ts](../../../openclaw/packages/agent-core/src/agent-loop.ts) | `executeToolCalls`、sequential / parallel 调度、`prepareToolCall`、`executePreparedToolCall`、`ToolResultMessage` 回写。 |
-| Agent 状态外壳 | [agent.ts](../../../openclaw/packages/agent-core/src/agent.ts) | `Agent` 持有 tools、messages、steer/followUp 队列，并把 hook 配置传给 loop。 |
-| Harness 装配层 | [agent-harness.ts](../../../openclaw/packages/agent-core/src/harness/agent-harness.ts) | `CoreAgentHarness` 管理 session、active tools、hook 事件、turn state 和 tool result 持久化。 |
-| 工具面总装配 | [agent-tools.ts](../../../openclaw/src/agents/agent-tools.ts) | `createOpenClawCodingTools` 按 run/session/channel/model/sandbox/policy 动态组装本轮工具面。 |
-| OpenClaw 内置工具 | [openclaw-tools.ts](../../../openclaw/src/agents/openclaw-tools.ts) | message、sessions、subagents、cron、gateway、web、media、nodes、goal、update_plan 等产品工具 factory。 |
-| before_tool_call runtime | [agent-tools.before-tool-call.ts](../../../openclaw/src/agents/agent-tools.before-tool-call.ts) | plugin hooks、trusted policy、approval、diagnostics、loop detection、skill telemetry、参数调整。 |
-| 工具策略管线 | [tool-policy-pipeline.ts](../../../openclaw/src/agents/tool-policy-pipeline.ts) | profile / provider / agent / group / sender / sandbox / subagent / inherited policies 分层过滤工具。 |
-| Tool Search | [tool-search.ts](../../../openclaw/src/agents/tool-search.ts) | `tool_search` / `tool_describe` / `tool_call` / `tool_search_code` 管理大规模 OpenClaw / MCP / client 工具目录。 |
-| MCP 工具物化 | [agent-bundle-mcp-materialize.ts](../../../openclaw/src/agents/agent-bundle-mcp-materialize.ts) | 将 MCP catalog 投影成 `AgentTool`，并根据 server 能力设置并发模式。 |
+| 工具抽象 | [types.ts](../../../submodules/openclaw/packages/agent-core/src/types.ts) | `AgentTool`、`AgentToolResult`、`ToolExecutionMode`、`beforeToolCall` / `afterToolCall` 等核心类型。 |
+| Loop 执行工具 | [agent-loop.ts](../../../submodules/openclaw/packages/agent-core/src/agent-loop.ts) | `executeToolCalls`、sequential / parallel 调度、`prepareToolCall`、`executePreparedToolCall`、`ToolResultMessage` 回写。 |
+| Agent 状态外壳 | [agent.ts](../../../submodules/openclaw/packages/agent-core/src/agent.ts) | `Agent` 持有 tools、messages、steer/followUp 队列，并把 hook 配置传给 loop。 |
+| Harness 装配层 | [agent-harness.ts](../../../submodules/openclaw/packages/agent-core/src/harness/agent-harness.ts) | `CoreAgentHarness` 管理 session、active tools、hook 事件、turn state 和 tool result 持久化。 |
+| 工具面总装配 | [agent-tools.ts](../../../submodules/openclaw/src/agents/agent-tools.ts) | `createOpenClawCodingTools` 按 run/session/channel/model/sandbox/policy 动态组装本轮工具面。 |
+| OpenClaw 内置工具 | [openclaw-tools.ts](../../../submodules/openclaw/src/agents/openclaw-tools.ts) | message、sessions、subagents、cron、gateway、web、media、nodes、goal、update_plan 等产品工具 factory。 |
+| before_tool_call runtime | [agent-tools.before-tool-call.ts](../../../submodules/openclaw/src/agents/agent-tools.before-tool-call.ts) | plugin hooks、trusted policy、approval、diagnostics、loop detection、skill telemetry、参数调整。 |
+| 工具策略管线 | [tool-policy-pipeline.ts](../../../submodules/openclaw/src/agents/tool-policy-pipeline.ts) | profile / provider / agent / group / sender / sandbox / subagent / inherited policies 分层过滤工具。 |
+| Tool Search | [tool-search.ts](../../../submodules/openclaw/src/agents/tool-search.ts) | `tool_search` / `tool_describe` / `tool_call` / `tool_search_code` 管理大规模 OpenClaw / MCP / client 工具目录。 |
+| MCP 工具物化 | [agent-bundle-mcp-materialize.ts](../../../submodules/openclaw/src/agents/agent-bundle-mcp-materialize.ts) | 将 MCP catalog 投影成 `AgentTool`，并根据 server 能力设置并发模式。 |
 
 ## 一句话总结
 
@@ -67,7 +67,7 @@ AgentTool 定义工具对象
 
 ## AgentTool：带 UI、进度和并发策略的工具对象
 
-`AgentTool` 定义在 [types.ts](../../../openclaw/packages/agent-core/src/types.ts)，继承自 llm-core 的 `Tool`。
+`AgentTool` 定义在 [types.ts](../../../submodules/openclaw/packages/agent-core/src/types.ts)，继承自 llm-core 的 `Tool`。
 
 它包含：
 
@@ -110,7 +110,7 @@ executionMode
 
 ## AgentToolResult：不只是字符串
 
-OpenClaw 的 `AgentToolResult` 定义在 [types.ts](../../../openclaw/packages/agent-core/src/types.ts)：
+OpenClaw 的 `AgentToolResult` 定义在 [types.ts](../../../submodules/openclaw/packages/agent-core/src/types.ts)：
 
 ```text
 content
@@ -139,7 +139,7 @@ terminate
 
 ## 工具执行：像后厨工单调度
 
-OpenClaw 的工具执行主线在 [agent-loop.ts](../../../openclaw/packages/agent-core/src/agent-loop.ts)。
+OpenClaw 的工具执行主线在 [agent-loop.ts](../../../submodules/openclaw/packages/agent-core/src/agent-loop.ts)。
 
 可以用餐厅后厨比喻：
 
@@ -160,7 +160,7 @@ OpenClaw 的工具执行主线在 [agent-loop.ts](../../../openclaw/packages/age
 
 ## sequential / parallel：排队窗口与多窗口并行
 
-`ToolExecutionMode` 定义在 [types.ts](../../../openclaw/packages/agent-core/src/types.ts)，有两种：
+`ToolExecutionMode` 定义在 [types.ts](../../../submodules/openclaw/packages/agent-core/src/types.ts)，有两种：
 
 ```text
 sequential
@@ -169,7 +169,7 @@ parallel
 
 ### sequential：一张做完，再做下一张
 
-对应 [executeToolCallsSequential](../../../openclaw/packages/agent-core/src/agent-loop.ts)。
+对应 [executeToolCallsSequential](../../../submodules/openclaw/packages/agent-core/src/agent-loop.ts)。
 
 流程是：
 
@@ -207,7 +207,7 @@ B result message
 
 ### parallel：先核单，再多窗口同时办
 
-对应 [executeToolCallsParallel](../../../openclaw/packages/agent-core/src/agent-loop.ts)。
+对应 [executeToolCallsParallel](../../../submodules/openclaw/packages/agent-core/src/agent-loop.ts)。
 
 流程是：
 
@@ -237,7 +237,7 @@ A/B/C 同时 execute
 
 ## 串行 / 并发的判定策略
 
-OpenClaw 的判定逻辑在 [executeToolCalls](../../../openclaw/packages/agent-core/src/agent-loop.ts)：
+OpenClaw 的判定逻辑在 [executeToolCalls](../../../submodules/openclaw/packages/agent-core/src/agent-loop.ts)：
 
 ```text
 如果 config.toolExecution === "sequential"：
@@ -271,7 +271,7 @@ OpenClaw 的判定逻辑在 [executeToolCalls](../../../openclaw/packages/agent-
 
 为什么不是只让那个工具串行、其他工具并行？因为如果某个工具声明不能和别人并发，通常说明它可能依赖共享状态、有外部副作用或需要顺序语义。整批降级虽然保守，但避免文件、消息、进程、审批、session 状态交错。
 
-MCP 工具也体现了这个策略。[agent-bundle-mcp-materialize.ts](../../../openclaw/src/agents/agent-bundle-mcp-materialize.ts) 会根据 MCP server 是否支持 parallel tool calls 设置工具 `executionMode`：
+MCP 工具也体现了这个策略。[agent-bundle-mcp-materialize.ts](../../../submodules/openclaw/src/agents/agent-bundle-mcp-materialize.ts) 会根据 MCP server 是否支持 parallel tool calls 设置工具 `executionMode`：
 
 ```text
 server.supportsParallelToolCalls === true
@@ -306,7 +306,7 @@ run 已 abort
 
 ## prepareToolCall：前台核单
 
-`prepareToolCall` 位于 [agent-loop.ts](../../../openclaw/packages/agent-core/src/agent-loop.ts)，它回答：
+`prepareToolCall` 位于 [agent-loop.ts](../../../submodules/openclaw/packages/agent-core/src/agent-loop.ts)，它回答：
 
 > **这张工具工单能不能进入执行阶段？**
 
@@ -414,7 +414,7 @@ message_* 给 transcript / session / model context 看消息生命周期
 
 ## createOpenClawCodingTools：按上下文动态组装工具车
 
-真正的工具面装配在 [agent-tools.ts](../../../openclaw/src/agents/agent-tools.ts) 的 `createOpenClawCodingTools`。
+真正的工具面装配在 [agent-tools.ts](../../../submodules/openclaw/src/agents/agent-tools.ts) 的 `createOpenClawCodingTools`。
 
 它会根据大量 run context 动态组装本轮工具：
 
@@ -460,7 +460,7 @@ Tool Search controls
 
 ## policy pipeline：工具进场前过多层门禁
 
-OpenClaw 工具装完后，还会经过多层 policy 过滤。入口在 [agent-tools.ts](../../../openclaw/src/agents/agent-tools.ts) 和 [tool-policy-pipeline.ts](../../../openclaw/src/agents/tool-policy-pipeline.ts)。
+OpenClaw 工具装完后，还会经过多层 policy 过滤。入口在 [agent-tools.ts](../../../submodules/openclaw/src/agents/agent-tools.ts) 和 [tool-policy-pipeline.ts](../../../submodules/openclaw/src/agents/tool-policy-pipeline.ts)。
 
 典型层级：
 
@@ -486,7 +486,7 @@ profile / provider / agent / group / sender / sandbox / subagent / inheritance
 
 ## before_tool_call runtime：工具把手上的安全锁
 
-OpenClaw 在工具执行前不仅有 agent-core 的 `beforeToolCall`，还有产品层 [agent-tools.before-tool-call.ts](../../../openclaw/src/agents/agent-tools.before-tool-call.ts)。
+OpenClaw 在工具执行前不仅有 agent-core 的 `beforeToolCall`，还有产品层 [agent-tools.before-tool-call.ts](../../../submodules/openclaw/src/agents/agent-tools.before-tool-call.ts)。
 
 文件头说明它会运行：
 
@@ -516,7 +516,7 @@ wrapToolWithBeforeToolCallHook
 rewrapToolWithBeforeToolCallHook
 ```
 
-见 [agent-tools.ts](../../../openclaw/src/agents/agent-tools.ts)。这和 Claw-Code 在 `run_turn` 中显式调用 `PreToolUse hook` 不同：
+见 [agent-tools.ts](../../../submodules/openclaw/src/agents/agent-tools.ts)。这和 Claw-Code 在 `run_turn` 中显式调用 `PreToolUse hook` 不同：
 
 | Claw-Code | OpenClaw |
 |---|---|
@@ -526,7 +526,7 @@ rewrapToolWithBeforeToolCallHook
 
 ## Tool Search：大工具目录服务
 
-OpenClaw 的 [tool-search.ts](../../../openclaw/src/agents/tool-search.ts) 比 Claw-Code ToolSearch 更重。
+OpenClaw 的 [tool-search.ts](../../../submodules/openclaw/src/agents/tool-search.ts) 比 Claw-Code ToolSearch 更重。
 
 它提供：
 

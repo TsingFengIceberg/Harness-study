@@ -77,13 +77,13 @@ Agent Harness
 
 | 对象 | 定位 | 核心问题 | 最值得学习的点 |
 |---|---|---|---|
-| [learn-claude-code](../../learn-claude-code/) | 教学型 / 原理型 Harness | Agent Harness 最小机制是什么？ | 从最小 loop 逐层叠加 tools、permission、todo、subagent、compact、cron、MCP |
-| [claude-code-complete-guide_v2](../../claude-code-complete-guide_v2/) | Claude Code 架构学习参考 | 成熟 Claude Code-like 系统有哪些模块？ | QueryEngine、工具治理、权限、安全、上下文、多 Agent、Hooks / Skills / Plugins 的问题清单 |
-| [claw-code](../../claw-code/) | Claude Code-like 本地 Coding CLI Harness | 本地代码 Agent 如何工程化？ | Rust runtime、工具面、权限、sandbox、session、MCP、CLI 交互 |
-| [openclaw](../../openclaw/) | 多端 Gateway / Control Plane | Agent 如何接入多入口、多设备？ | Gateway、node registry、durable queues、device pairing、remote approval、plugins |
-| [openhands](../../openhands/) | 平台化 SWE Agent Harness | Coding Agent 如何变成 Server / Canvas / Automation 平台？ | App Server、Agent Server、Workspace / Sandbox、event、automation、ACP / MCP backend |
-| [deer-flow](../../deer-flow/) | 长周期通用任务 Harness | 复杂任务如何图状态化、可恢复、可治理？ | LangGraph、middleware chain、sandbox、summarization、subagents、long-horizon workflow |
-| [hermes-agent](../../hermes-agent/) | 记忆进化型个人 Agent | Agent 如何长期陪伴用户并沉淀经验？ | 长期记忆、procedural memory、skills、自我改进、多通道私人助理 |
+| [learn-claude-code](../../submodules/learn-claude-code/) | 教学型 / 原理型 Harness | Agent Harness 最小机制是什么？ | 从最小 loop 逐层叠加 tools、permission、todo、subagent、compact、cron、MCP |
+| [claude-code-complete-guide_v2](../../submodules/claude-code-complete-guide_v2/) | Claude Code 架构学习参考 | 成熟 Claude Code-like 系统有哪些模块？ | QueryEngine、工具治理、权限、安全、上下文、多 Agent、Hooks / Skills / Plugins 的问题清单 |
+| [claw-code](../../submodules/claw-code/) | Claude Code-like 本地 Coding CLI Harness | 本地代码 Agent 如何工程化？ | Rust runtime、工具面、权限、sandbox、session、MCP、CLI 交互 |
+| [openclaw](../../submodules/openclaw/) | 多端 Gateway / Control Plane | Agent 如何接入多入口、多设备？ | Gateway、node registry、durable queues、device pairing、remote approval、plugins |
+| [openhands](../../submodules/openhands/) | 平台化 SWE Agent Harness | Coding Agent 如何变成 Server / Canvas / Automation 平台？ | App Server、Agent Server、Workspace / Sandbox、event、automation、ACP / MCP backend |
+| [deer-flow](../../submodules/deer-flow/) | 长周期通用任务 Harness | 复杂任务如何图状态化、可恢复、可治理？ | LangGraph、middleware chain、sandbox、summarization、subagents、long-horizon workflow |
+| [hermes-agent](../../submodules/hermes-agent/) | 记忆进化型个人 Agent | Agent 如何长期陪伴用户并沉淀经验？ | 长期记忆、procedural memory、skills、自我改进、多通道私人助理 |
 
 ## Claude Code / Claude Code-like 是什么基准？
 

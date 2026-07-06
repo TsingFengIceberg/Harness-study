@@ -13,13 +13,13 @@
 
 | 模块 | 源码 | 作用 |
 |---|---|---|
-| 工具定义与注册 | [lib.rs](../../../claw-code/rust/crates/tools/src/lib.rs) | `ToolSpec`、`GlobalToolRegistry`、内置工具表、allowed tools 过滤、ToolSearch、执行分发。 |
-| Agent Loop 调用工具 | [conversation.rs](../../../claw-code/rust/crates/runtime/src/conversation.rs) | `ConversationRuntime::run_turn` 串起 `ToolUse` 提取、hooks、permission、execute、`ToolResult` 回写。 |
-| 权限策略 | [permissions.rs](../../../claw-code/rust/crates/runtime/src/permissions.rs) | `PermissionMode`、`PermissionPolicy`、`PermissionPrompter`、allow / deny / ask 规则。 |
-| 执行层权限门 | [permission_enforcer.rs](../../../claw-code/rust/crates/runtime/src/permission_enforcer.rs) | `PermissionEnforcer` 做非交互式二次权限检查。 |
-| 会话消息结构 | [session.rs](../../../claw-code/rust/crates/runtime/src/session.rs) | `ContentBlock::ToolUse` / `ToolResult` 的内部表示。 |
-| Hook 系统 | [hooks.rs](../../../claw-code/rust/crates/runtime/src/hooks.rs) | `PreToolUse`、`PostToolUse`、`PostToolUseFailure` 外部命令 hook。 |
-| MCP 工具桥 | [mcp_tool_bridge.rs](../../../claw-code/rust/crates/runtime/src/mcp_tool_bridge.rs) | MCP server tool 调用桥接。 |
+| 工具定义与注册 | [lib.rs](../../../submodules/claw-code/rust/crates/tools/src/lib.rs) | `ToolSpec`、`GlobalToolRegistry`、内置工具表、allowed tools 过滤、ToolSearch、执行分发。 |
+| Agent Loop 调用工具 | [conversation.rs](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs) | `ConversationRuntime::run_turn` 串起 `ToolUse` 提取、hooks、permission、execute、`ToolResult` 回写。 |
+| 权限策略 | [permissions.rs](../../../submodules/claw-code/rust/crates/runtime/src/permissions.rs) | `PermissionMode`、`PermissionPolicy`、`PermissionPrompter`、allow / deny / ask 规则。 |
+| 执行层权限门 | [permission_enforcer.rs](../../../submodules/claw-code/rust/crates/runtime/src/permission_enforcer.rs) | `PermissionEnforcer` 做非交互式二次权限检查。 |
+| 会话消息结构 | [session.rs](../../../submodules/claw-code/rust/crates/runtime/src/session.rs) | `ContentBlock::ToolUse` / `ToolResult` 的内部表示。 |
+| Hook 系统 | [hooks.rs](../../../submodules/claw-code/rust/crates/runtime/src/hooks.rs) | `PreToolUse`、`PostToolUse`、`PostToolUseFailure` 外部命令 hook。 |
+| MCP 工具桥 | [mcp_tool_bridge.rs](../../../submodules/claw-code/rust/crates/runtime/src/mcp_tool_bridge.rs) | MCP server tool 调用桥接。 |
 
 ## 一句话总结
 
@@ -88,15 +88,15 @@ ToolSpec 定义工具
 
 对应源码主线：
 
-- `ToolSpec` 定义在 [lib.rs](../../../claw-code/rust/crates/tools/src/lib.rs)
-- `GlobalToolRegistry` 定义在 [lib.rs](../../../claw-code/rust/crates/tools/src/lib.rs)
-- `run_turn` 工具处理主流程在 [conversation.rs](../../../claw-code/rust/crates/runtime/src/conversation.rs)
-- 工具执行分发在 [execute_tool_with_enforcer](../../../claw-code/rust/crates/tools/src/lib.rs)
-- 内部消息块定义在 [session.rs](../../../claw-code/rust/crates/runtime/src/session.rs)
+- `ToolSpec` 定义在 [lib.rs](../../../submodules/claw-code/rust/crates/tools/src/lib.rs)
+- `GlobalToolRegistry` 定义在 [lib.rs](../../../submodules/claw-code/rust/crates/tools/src/lib.rs)
+- `run_turn` 工具处理主流程在 [conversation.rs](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs)
+- 工具执行分发在 [execute_tool_with_enforcer](../../../submodules/claw-code/rust/crates/tools/src/lib.rs)
+- 内部消息块定义在 [session.rs](../../../submodules/claw-code/rust/crates/runtime/src/session.rs)
 
 ## ToolSpec：工具的最小描述单元
 
-`ToolSpec` 是 Claw-Code 内置工具的基础描述结构，位于 [lib.rs](../../../claw-code/rust/crates/tools/src/lib.rs)：
+`ToolSpec` 是 Claw-Code 内置工具的基础描述结构，位于 [lib.rs](../../../submodules/claw-code/rust/crates/tools/src/lib.rs)：
 
 ```text
 name
@@ -122,7 +122,7 @@ required_permission
 
 ## GlobalToolRegistry：builtin / plugin / runtime tools 的统一入口
 
-`GlobalToolRegistry` 位于 [lib.rs](../../../claw-code/rust/crates/tools/src/lib.rs)，负责汇总三类工具：
+`GlobalToolRegistry` 位于 [lib.rs](../../../submodules/claw-code/rust/crates/tools/src/lib.rs)，负责汇总三类工具：
 
 ```text
 builtin tools
@@ -156,7 +156,7 @@ runtime tools
 
 `normalize_allowed_tools(...)` 和 `allowed_tool_aliases(...)` 处理的是 **用户配置层**，不是模型理解用户自然语言 query 的过程。
 
-例如 [allowed_tool_aliases](../../../claw-code/rust/crates/tools/src/lib.rs) 支持：
+例如 [allowed_tool_aliases](../../../submodules/claw-code/rust/crates/tools/src/lib.rs) 支持：
 
 ```text
 read  -> read_file
@@ -232,7 +232,7 @@ plugin tools
 
 ## run_turn：工具执行链路的主干
 
-Claw-Code 的工具调用不是工具模块自己独立完成的，而是在 [conversation.rs](../../../claw-code/rust/crates/runtime/src/conversation.rs) 的 `ConversationRuntime::run_turn` 里被 Agent Loop 串起来。
+Claw-Code 的工具调用不是工具模块自己独立完成的，而是在 [conversation.rs](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs) 的 `ConversationRuntime::run_turn` 里被 Agent Loop 串起来。
 
 主流程是：
 
@@ -261,7 +261,7 @@ Hook 可以理解为：
 
 > **在工具执行前后，让外部命令插入一段检查、改写、拒绝、补充上下文或审计逻辑。**
 
-Claw-Code 的 hook 定义在 [hooks.rs](../../../claw-code/rust/crates/runtime/src/hooks.rs)，核心事件包括：
+Claw-Code 的 hook 定义在 [hooks.rs](../../../submodules/claw-code/rust/crates/runtime/src/hooks.rs)，核心事件包括：
 
 ```text
 PreToolUse
@@ -293,7 +293,7 @@ PostToolUseFailure
 
 ## 第一扇门：PermissionPolicy / PermissionPrompter
 
-工具调用进入执行前，`run_turn` 会先调用权限策略。相关结构在 [permissions.rs](../../../claw-code/rust/crates/runtime/src/permissions.rs)：
+工具调用进入执行前，`run_turn` 会先调用权限策略。相关结构在 [permissions.rs](../../../submodules/claw-code/rust/crates/runtime/src/permissions.rs)：
 
 | 组件 | 作用 |
 |---|---|
@@ -349,7 +349,7 @@ write_file "DOCS/note.md"
 write_file "~/.ssh/config"
 ```
 
-所以 Claw-Code 在工具执行分发层还有第二扇门。它位于 [execute_tool_with_enforcer](../../../claw-code/rust/crates/tools/src/lib.rs)。
+所以 Claw-Code 在工具执行分发层还有第二扇门。它位于 [execute_tool_with_enforcer](../../../submodules/claw-code/rust/crates/tools/src/lib.rs)。
 
 典型流程是：
 
@@ -377,7 +377,7 @@ write_file "~/.ssh/config"
 
 ## `maybe_enforce_permission_check_with_mode`：动态权限检查的小闸门
 
-`maybe_enforce_permission_check_with_mode(...)` 位于 [lib.rs](../../../claw-code/rust/crates/tools/src/lib.rs)。它不是分类器，而是统一执行动态检查的小 helper。
+`maybe_enforce_permission_check_with_mode(...)` 位于 [lib.rs](../../../submodules/claw-code/rust/crates/tools/src/lib.rs)。它不是分类器，而是统一执行动态检查的小 helper。
 
 它的输入是：
 
@@ -427,7 +427,7 @@ required_mode
 
 ## ToolResult 为什么要转成 provider 的 tool result？
 
-Claw-Code 内部消息结构定义在 [session.rs](../../../claw-code/rust/crates/runtime/src/session.rs)，里面有：
+Claw-Code 内部消息结构定义在 [session.rs](../../../submodules/claw-code/rust/crates/runtime/src/session.rs)，里面有：
 
 ```text
 ContentBlock::ToolUse
@@ -436,7 +436,7 @@ ContentBlock::ToolResult
 
 这是 Claw-Code 自己的 session 表示。
 
-但模型 API 不直接理解 Claw-Code 的 Rust enum。下一轮调用 provider 时，需要把内部消息转换成 provider 协议里的消息块。这个转换发生在 [lib.rs](../../../claw-code/rust/crates/tools/src/lib.rs) 的 `convert_messages(...)` 附近。
+但模型 API 不直接理解 Claw-Code 的 Rust enum。下一轮调用 provider 时，需要把内部消息转换成 provider 协议里的消息块。这个转换发生在 [lib.rs](../../../submodules/claw-code/rust/crates/tools/src/lib.rs) 的 `convert_messages(...)` 附近。
 
 所以：
 
@@ -492,7 +492,7 @@ deferred tools
   专用工具，默认不全部展开，需要时通过 ToolSearch 查目录
 ```
 
-[deferred_tool_specs](../../../claw-code/rust/crates/tools/src/lib.rs) 中可以看到，下面 6 个基础工具不属于 deferred：
+[deferred_tool_specs](../../../submodules/claw-code/rust/crates/tools/src/lib.rs) 中可以看到，下面 6 个基础工具不属于 deferred：
 
 ```text
 bash
@@ -520,7 +520,7 @@ query: "cron"
 
 ## ToolSearch 怎么搜索？
 
-搜索逻辑在 [search_tool_specs](../../../claw-code/rust/crates/tools/src/lib.rs)。它是代码里的关键词匹配和打分，不是模型推理。
+搜索逻辑在 [search_tool_specs](../../../submodules/claw-code/rust/crates/tools/src/lib.rs)。它是代码里的关键词匹配和打分，不是模型推理。
 
 核心特征：
 

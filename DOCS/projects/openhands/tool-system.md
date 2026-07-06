@@ -8,22 +8,22 @@
 - OpenHands Agent Loop：[agent-loop.md](agent-loop.md)
 - 横向 Tool System 总结：[tool-system.md](../../comparison/tool-system.md)
 - 控制面源码：
-  - OpenHands App Server：[openhands/openhands/app_server/](../../../openhands/openhands/app_server/)
-  - App conversation router：[app_conversation_router.py](../../../openhands/openhands/app_server/app_conversation/app_conversation_router.py)
-  - App conversation models：[app_conversation_models.py](../../../openhands/openhands/app_server/app_conversation/app_conversation_models.py)
+  - OpenHands App Server：[openhands/openhands/app_server/](../../../submodules/openhands/openhands/app_server/)
+  - App conversation router：[app_conversation_router.py](../../../submodules/openhands/openhands/app_server/app_conversation/app_conversation_router.py)
+  - App conversation models：[app_conversation_models.py](../../../submodules/openhands/openhands/app_server/app_conversation/app_conversation_models.py)
 - 执行面源码：
-  - SDK README：[README.md](../../../software-agent-sdk/README.md)
-  - Agent Server README：[openhands-agent-server/openhands/agent_server/README.md](../../../software-agent-sdk/openhands-agent-server/openhands/agent_server/README.md)
-  - Conversation factory：[conversation.py](../../../software-agent-sdk/openhands-sdk/openhands/sdk/conversation/conversation.py)
-  - Local conversation loop：[local_conversation.py](../../../software-agent-sdk/openhands-sdk/openhands/sdk/conversation/impl/local_conversation.py)
-  - Agent step / action execution：[agent.py](../../../software-agent-sdk/openhands-sdk/openhands/sdk/agent/agent.py)
-  - Response dispatch：[response_dispatch.py](../../../software-agent-sdk/openhands-sdk/openhands/sdk/agent/response_dispatch.py)
-  - Tool base class：[tool.py](../../../software-agent-sdk/openhands-sdk/openhands/sdk/tool/tool.py)
-  - Default preset：[default.py](../../../software-agent-sdk/openhands-tools/openhands/tools/preset/default.py)
+  - SDK README：[README.md](../../../submodules/software-agent-sdk/README.md)
+  - Agent Server README：[openhands-agent-server/openhands/agent_server/README.md](../../../submodules/software-agent-sdk/openhands-agent-server/openhands/agent_server/README.md)
+  - Conversation factory：[conversation.py](../../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/conversation/conversation.py)
+  - Local conversation loop：[local_conversation.py](../../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/conversation/impl/local_conversation.py)
+  - Agent step / action execution：[agent.py](../../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/agent/agent.py)
+  - Response dispatch：[response_dispatch.py](../../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/agent/response_dispatch.py)
+  - Tool base class：[tool.py](../../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/tool/tool.py)
+  - Default preset：[default.py](../../../submodules/software-agent-sdk/openhands-tools/openhands/tools/preset/default.py)
 
 ## 1. 核心结论
 
-OpenHands 的 Tool System 不能只在 [openhands/](../../../openhands/) 这个控制面仓库里看。现在更准确的边界是：
+OpenHands 的 Tool System 不能只在 [openhands/](../../../submodules/openhands/) 这个控制面仓库里看。现在更准确的边界是：
 
 ```text
 openhands/（OpenHands/OpenHands）
@@ -41,7 +41,7 @@ software-agent-sdk/（OpenHands/software-agent-sdk）
 
 ## 2. 默认工具面：Terminal / FileEditor / TaskTracker / Browser / TaskTool
 
-默认工具入口在 [default.py](../../../software-agent-sdk/openhands-tools/openhands/tools/preset/default.py)。
+默认工具入口在 [default.py](../../../submodules/software-agent-sdk/openhands-tools/openhands/tools/preset/default.py)。
 
 `register_default_tools(...)` 注册：
 
@@ -66,15 +66,15 @@ Tool(name=TaskTrackerTool.name)
 
 | 工具 | 作用 | 代表源码 |
 |---|---|---|
-| TerminalTool | 在持久 terminal session 中执行 shell command | [terminal/definition.py](../../../software-agent-sdk/openhands-tools/openhands/tools/terminal/definition.py) |
-| FileEditorTool | 查看、创建、替换、插入、撤销文件编辑 | [file_editor/definition.py](../../../software-agent-sdk/openhands-tools/openhands/tools/file_editor/definition.py) |
-| TaskTrackerTool | 维护 agent 的任务列表 / plan | [task_tracker/definition.py](../../../software-agent-sdk/openhands-tools/openhands/tools/task_tracker/definition.py) |
-| BrowserToolSet | 浏览器相关能力，可按配置启用 | [default.py](../../../software-agent-sdk/openhands-tools/openhands/tools/preset/default.py) |
-| TaskToolSet | 子 agent / task delegation，可按配置启用 | [default.py](../../../software-agent-sdk/openhands-tools/openhands/tools/preset/default.py) |
+| TerminalTool | 在持久 terminal session 中执行 shell command | [terminal/definition.py](../../../submodules/software-agent-sdk/openhands-tools/openhands/tools/terminal/definition.py) |
+| FileEditorTool | 查看、创建、替换、插入、撤销文件编辑 | [file_editor/definition.py](../../../submodules/software-agent-sdk/openhands-tools/openhands/tools/file_editor/definition.py) |
+| TaskTrackerTool | 维护 agent 的任务列表 / plan | [task_tracker/definition.py](../../../submodules/software-agent-sdk/openhands-tools/openhands/tools/task_tracker/definition.py) |
+| BrowserToolSet | 浏览器相关能力，可按配置启用 | [default.py](../../../submodules/software-agent-sdk/openhands-tools/openhands/tools/preset/default.py) |
+| TaskToolSet | 子 agent / task delegation，可按配置启用 | [default.py](../../../submodules/software-agent-sdk/openhands-tools/openhands/tools/preset/default.py) |
 
 ## 3. ToolDefinition：工具不是裸函数，而是 Action / Observation 类型化对象
 
-执行面基础抽象在 [tool.py](../../../software-agent-sdk/openhands-sdk/openhands/sdk/tool/tool.py)。`ToolDefinition` 负责：
+执行面基础抽象在 [tool.py](../../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/tool/tool.py)。`ToolDefinition` 负责：
 
 ```text
 工具名 / description
@@ -107,7 +107,7 @@ LLM tool_call
 
 ## 4. Agent.step：tool_call 如何变成 ActionEvent / ObservationEvent
 
-[Agent.step(...)](../../../software-agent-sdk/openhands-sdk/openhands/sdk/agent/agent.py) 的主线是：
+[Agent.step(...)](../../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/agent/agent.py) 的主线是：
 
 ```text
 prepare_llm_messages
@@ -118,9 +118,9 @@ prepare_llm_messages
      -> REASONING_ONLY / EMPTY: corrective nudge
 ```
 
-[response_dispatch.py](../../../software-agent-sdk/openhands-sdk/openhands/sdk/agent/response_dispatch.py) 中 `_handle_tool_calls(...)` 会把每个 `MessageToolCall` 转成 `ActionEvent`，必要时进入 user confirmation，然后执行 action。
+[response_dispatch.py](../../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/agent/response_dispatch.py) 中 `_handle_tool_calls(...)` 会把每个 `MessageToolCall` 转成 `ActionEvent`，必要时进入 user confirmation，然后执行 action。
 
-更底层的 `_execute_action_event(...)` 在 [agent.py](../../../software-agent-sdk/openhands-sdk/openhands/sdk/agent/agent.py) 中完成：
+更底层的 `_execute_action_event(...)` 在 [agent.py](../../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/agent/agent.py) 中完成：
 
 ```text
 ActionEvent
@@ -142,7 +142,7 @@ ActionEvent
 
 ## 5. 并发执行：ParallelToolExecutor + declared_resources
 
-OpenHands SDK 不是简单串行执行所有工具。[parallel_executor.py](../../../software-agent-sdk/openhands-sdk/openhands/sdk/agent/parallel_executor.py) 提供 `ParallelToolExecutor`：
+OpenHands SDK 不是简单串行执行所有工具。[parallel_executor.py](../../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/agent/parallel_executor.py) 提供 `ParallelToolExecutor`：
 
 ```text
 一批 ActionEvent
@@ -159,18 +159,18 @@ OpenHands SDK 不是简单串行执行所有工具。[parallel_executor.py](../.
 - 操作同一文件 / terminal session / browser 等共享资源时需要串行，操作不同资源时可以并行；
 - async path 会把阻塞工具调用放进 executor，避免卡住 event loop。
 
-例如 [FileEditorTool](../../../software-agent-sdk/openhands-tools/openhands/tools/file_editor/definition.py) 会把目标文件路径声明成 `file:<absolute-path>` 资源，避免并发写同一文件造成部分读取或冲突。
+例如 [FileEditorTool](../../../submodules/software-agent-sdk/openhands-tools/openhands/tools/file_editor/definition.py) 会把目标文件路径声明成 `file:<absolute-path>` 资源，避免并发写同一文件造成部分读取或冲突。
 
 这让 OpenHands 的工具系统相比最朴素的 CLI loop 更接近平台执行器：它不只关心“能不能调用工具”，还关心并发、资源锁、取消和中断。
 
 ## 6. Conversation.run：工具循环由执行面持有
 
-[Conversation](../../../software-agent-sdk/openhands-sdk/openhands/sdk/conversation/conversation.py) 是工厂类：
+[Conversation](../../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/conversation/conversation.py) 是工厂类：
 
 - local workspace -> `LocalConversation`
 - remote workspace -> `RemoteConversation`
 
-本地实际 loop 在 [local_conversation.py](../../../software-agent-sdk/openhands-sdk/openhands/sdk/conversation/impl/local_conversation.py) 的 `run()` / `arun()`：
+本地实际 loop 在 [local_conversation.py](../../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/conversation/impl/local_conversation.py) 的 `run()` / `arun()`：
 
 ```text
 Conversation.run
@@ -189,8 +189,8 @@ Conversation.run
 
 | 层 | 负责什么 | 不负责什么 |
 |---|---|---|
-| 控制面 `openhands/` | UI / App Server、conversation metadata、event 查询、sandbox lifecycle、secrets / skills / plugins / setup scripts 配置、向 Agent Server 转发请求 | 不直接跑 `Agent.step()`，不直接执行 Terminal / FileEditor 等工具 |
-| 执行面 `software-agent-sdk/` | Agent Server API、SDK `Conversation.run()`、`Agent.step()`、ToolDefinition / executor、ActionEvent / ObservationEvent、工具并发与资源锁 | 不负责完整产品 UI 和平台级 conversation 展示 |
+| 控制面 `submodules/openhands/` | UI / App Server、conversation metadata、event 查询、sandbox lifecycle、secrets / skills / plugins / setup scripts 配置、向 Agent Server 转发请求 | 不直接跑 `Agent.step()`，不直接执行 Terminal / FileEditor 等工具 |
+| 执行面 `submodules/software-agent-sdk/` | Agent Server API、SDK `Conversation.run()`、`Agent.step()`、ToolDefinition / executor、ActionEvent / ObservationEvent、工具并发与资源锁 | 不负责完整产品 UI 和平台级 conversation 展示 |
 
 可以记成：
 
@@ -241,7 +241,7 @@ OpenHands 像远程开发平台里的工具执行车间。
 > **状态**: verified
 > **来源**: source-code / official-docs / discussion
 
-A: 因为 `OpenHands/OpenHands` 当前主要是 App Server / Agent Canvas 控制面；OpenHands Agent、Agent Server、SDK `Conversation` / `Agent` 和 `openhands-tools` 在 `OpenHands/software-agent-sdk`。本仓库已将后者作为 [software-agent-sdk/](../../../software-agent-sdk/) submodule 接入，因此后续涉及 `Conversation.run()`、`Agent.step()`、`ToolDefinition`、Terminal / FileEditor / TaskTracker 等工具执行细节，应引用该 submodule 下的源码。
+A: 因为 `OpenHands/OpenHands` 当前主要是 App Server / Agent Canvas 控制面；OpenHands Agent、Agent Server、SDK `Conversation` / `Agent` 和 `openhands-tools` 在 `OpenHands/software-agent-sdk`。本仓库已将后者作为 [software-agent-sdk/](../../../submodules/software-agent-sdk/) submodule 接入，因此后续涉及 `Conversation.run()`、`Agent.step()`、`ToolDefinition`、Terminal / FileEditor / TaskTracker 等工具执行细节，应引用该 submodule 下的源码。
 
 ### Q: OpenHands 的 ActionEvent / ObservationEvent 和 tool_use / tool_result 是什么关系？
 

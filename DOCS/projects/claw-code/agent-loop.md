@@ -6,19 +6,19 @@
 
 ## 相关源码
 
-- 核心对话循环：[conversation.rs](../../../claw-code/rust/crates/runtime/src/conversation.rs)
-- `ApiClient` 抽象：[conversation.rs:56-59](../../../claw-code/rust/crates/runtime/src/conversation.rs#L56-L59)
-- `ToolExecutor` 抽象：[conversation.rs:61-64](../../../claw-code/rust/crates/runtime/src/conversation.rs#L61-L64)
-- `ConversationRuntime` 结构：[conversation.rs:129-143](../../../claw-code/rust/crates/runtime/src/conversation.rs#L129-L143)
-- `run_turn` 主循环：[conversation.rs:325-531](../../../claw-code/rust/crates/runtime/src/conversation.rs#L325-L531)
-- 自动压缩检查：[conversation.rs:571-594](../../../claw-code/rust/crates/runtime/src/conversation.rs#L571-L594)
-- 最大迭代次数测试候选：[conversation.rs:1808](../../../claw-code/rust/crates/runtime/src/conversation.rs#L1808) 附近（后续需复核具体测试内容）
+- 核心对话循环：[conversation.rs](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs)
+- `ApiClient` 抽象：[conversation.rs:56-59](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs#L56-L59)
+- `ToolExecutor` 抽象：[conversation.rs:61-64](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs#L61-L64)
+- `ConversationRuntime` 结构：[conversation.rs:129-143](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs#L129-L143)
+- `run_turn` 主循环：[conversation.rs:325-531](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs#L325-L531)
+- 自动压缩检查：[conversation.rs:571-594](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs#L571-L594)
+- 最大迭代次数测试候选：[conversation.rs:1808](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs#L1808) 附近（后续需复核具体测试内容）
 
 ## 最小 Agent Loop 参照
 
 Claw-Code 的实现可以先和 learn-claude-code 的最小 loop 对照。
 
-最小 loop 见 [learn-claude-code/s01_agent_loop/code.py:84-113](../../../learn-claude-code/s01_agent_loop/code.py#L84-L113)：
+最小 loop 见 [learn-claude-code/s01_agent_loop/code.py:84-113](../../../submodules/learn-claude-code/s01_agent_loop/code.py#L84-L113)：
 
 ```text
 while True:
@@ -56,9 +56,9 @@ LLM response
 - hook runner
 - compaction 配置
 
-对应结构定义见 [conversation.rs:129-143](../../../claw-code/rust/crates/runtime/src/conversation.rs#L129-L143)。
+对应结构定义见 [conversation.rs:129-143](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs#L129-L143)。
 
-因此，回答“[conversation.rs](../../../claw-code/rust/crates/runtime/src/conversation.rs) 是不是 Claw-Code 的核心对话实现文件”：是核心之一，尤其是单轮对话 / 工具循环主干；但不是整个 Claw-Code 的全部。CLI 入口、工具注册、权限策略、sandbox、session 持久化、MCP/plugin 等仍分布在其他模块，后续需要分专题继续读。
+因此，回答“[conversation.rs](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs) 是不是 Claw-Code 的核心对话实现文件”：是核心之一，尤其是单轮对话 / 工具循环主干；但不是整个 Claw-Code 的全部。CLI 入口、工具注册、权限策略、sandbox、session 持久化、MCP/plugin 等仍分布在其他模块，后续需要分专题继续读。
 
 ## run_turn 主干控制流
 
@@ -82,11 +82,11 @@ LLM response
 10. 汇总 TurnSummary
 ```
 
-其中最关键的终止条件在 [conversation.rs:414-416](../../../claw-code/rust/crates/runtime/src/conversation.rs#L414-L416) 附近：如果本轮 assistant 消息里没有 pending tool use，就 break loop。也就是说，模型不再请求工具时，Harness 认为这个 turn 的 agent loop 已经结束。
+其中最关键的终止条件在 [conversation.rs:414-416](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs#L414-L416) 附近：如果本轮 assistant 消息里没有 pending tool use，就 break loop。也就是说，模型不再请求工具时，Harness 认为这个 turn 的 agent loop 已经结束。
 
 ## 最大迭代次数是什么意思
 
-`max_iterations` 是 Agent Loop 的熔断阈值。相关检查在 [conversation.rs:354-362](../../../claw-code/rust/crates/runtime/src/conversation.rs#L354-L362)：每一次“模型调用 + 可能的工具执行 + tool_result 回写”都算一次 iteration。
+`max_iterations` 是 Agent Loop 的熔断阈值。相关检查在 [conversation.rs:354-362](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs#L354-L362)：每一次“模型调用 + 可能的工具执行 + tool_result 回写”都算一次 iteration。
 
 它要防止这种情况：
 
@@ -111,9 +111,9 @@ LLM -> tool_use C
 
 ## ToolUse 提取与 tool_result 回写
 
-Claw-Code 在模型返回 assistant message 后，会扫描 assistant content blocks 提取 `ToolUse`。相关逻辑见 [conversation.rs:387-396](../../../claw-code/rust/crates/runtime/src/conversation.rs#L387-L396)。
+Claw-Code 在模型返回 assistant message 后，会扫描 assistant content blocks 提取 `ToolUse`。相关逻辑见 [conversation.rs:387-396](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs#L387-L396)。
 
-提取到 tool use 后，后续会进入工具执行段，主干范围在 [conversation.rs:418-517](../../../claw-code/rust/crates/runtime/src/conversation.rs#L418-L517)：
+提取到 tool use 后，后续会进入工具执行段，主干范围在 [conversation.rs:418-517](../../../submodules/claw-code/rust/crates/runtime/src/conversation.rs#L418-L517)：
 
 1. 执行前 hook
 2. 权限检查
@@ -172,4 +172,4 @@ A: 不必。`run_turn` 会把模型流、工具、权限、session、hooks、com
 - 项目入口：[README.md](README.md)
 - 横向 QA：[../../comparison/qa.md](../../comparison/qa.md)
 - 项目定位对比：[../../comparison/project-positioning.md](../../comparison/project-positioning.md)
-- learn-claude-code 最小 loop：[../../../learn-claude-code/s01_agent_loop/code.py](../../../learn-claude-code/s01_agent_loop/code.py)
+- learn-claude-code 最小 loop：[../../../submodules/learn-claude-code/s01_agent_loop/code.py](../../../submodules/learn-claude-code/s01_agent_loop/code.py)

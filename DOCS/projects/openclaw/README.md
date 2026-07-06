@@ -4,9 +4,9 @@
 
 ## 源码
 
-- **Submodule**: [openclaw/](../../../openclaw/) — 指向 `openclaw/openclaw`
+- **Submodule**: [openclaw/](../../../submodules/openclaw/) — 指向 `openclaw/openclaw`
 - **官方仓库**: [github.com/openclaw/openclaw](https://github.com/openclaw/openclaw)
-- **当前快照**: `cb44f40474bd88d3ba2e1c3c3f60767c9f6194e5`
+- **当前快照**: `c9219c7f80f4ccacc7bfcbce976e1d5abd718769`
 
 ## 笔记索引
 
@@ -19,13 +19,13 @@
 
 | 模块 | 源码 | 说明 |
 |---|---|---|
-| Session 外壳 | [agent-session.ts](../../../openclaw/src/agents/sessions/agent-session.ts) | 产品会话层：模型校验、prompt 入口、hook、compaction、retry、持久化、事件处理。 |
-| Agent 核心 | [agent.ts](../../../openclaw/packages/agent-core/src/agent.ts) | Agent 状态、事件订阅、`prompt()` / `continue()` / `steer()` / `followUp()`、队列管理。 |
-| Loop 本体 | [agent-loop.ts](../../../openclaw/packages/agent-core/src/agent-loop.ts) | `runAgentLoop()` / `runAgentLoopContinue()` / `runLoop()`，负责模型流式调用、工具执行与 steer/followUp 调度。 |
-| 类型定义 | [types.ts](../../../openclaw/packages/agent-core/src/types.ts) | `AgentEvent`、`AgentState`、`AgentTool`、`AgentMessage`、`AgentLoopConfig` 等类型。 |
-| 工具装配 | [agent-tools.ts](../../../openclaw/src/agents/agent-tools.ts) | `createOpenClawCodingTools` 按 run/session/channel/model/sandbox/policy 动态组装工具面。 |
-| 工具治理 | [agent-tools.before-tool-call.ts](../../../openclaw/src/agents/agent-tools.before-tool-call.ts) | before_tool_call policy runtime：plugin hooks、approval、diagnostics、loop detection 等。 |
-| Tool Search | [tool-search.ts](../../../openclaw/src/agents/tool-search.ts) | search / describe / call / code-mode 工具目录服务。 |
+| Session 外壳 | [agent-session.ts](../../../submodules/openclaw/src/agents/sessions/agent-session.ts) | 产品会话层：模型校验、prompt 入口、hook、compaction、retry、持久化、事件处理。 |
+| Agent 核心 | [agent.ts](../../../submodules/openclaw/packages/agent-core/src/agent.ts) | Agent 状态、事件订阅、`prompt()` / `continue()` / `steer()` / `followUp()`、队列管理。 |
+| Loop 本体 | [agent-loop.ts](../../../submodules/openclaw/packages/agent-core/src/agent-loop.ts) | `runAgentLoop()` / `runAgentLoopContinue()` / `runLoop()`，负责模型流式调用、工具执行与 steer/followUp 调度。 |
+| 类型定义 | [types.ts](../../../submodules/openclaw/packages/agent-core/src/types.ts) | `AgentEvent`、`AgentState`、`AgentTool`、`AgentMessage`、`AgentLoopConfig` 等类型。 |
+| 工具装配 | [agent-tools.ts](../../../submodules/openclaw/src/agents/agent-tools.ts) | `createOpenClawCodingTools` 按 run/session/channel/model/sandbox/policy 动态组装工具面。 |
+| 工具治理 | [agent-tools.before-tool-call.ts](../../../submodules/openclaw/src/agents/agent-tools.before-tool-call.ts) | before_tool_call policy runtime：plugin hooks、approval、diagnostics、loop detection 等。 |
+| Tool Search | [tool-search.ts](../../../submodules/openclaw/src/agents/tool-search.ts) | search / describe / call / code-mode 工具目录服务。 |
 
 ## 阶段性定位
 

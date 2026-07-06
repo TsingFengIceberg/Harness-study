@@ -14,16 +14,16 @@
 
 | 模块 | 源码 | 作用 |
 |---|---|---|
-| lead agent 装配 | [agent.py](../../../deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py) | `_make_lead_agent(...)` 解析 runtime config、装配 model / tools / middleware / state schema，并调用 `create_agent(...)`。 |
-| middleware 组装 | [agent.py](../../../deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L260-L393) | 组装 lead agent 的 DynamicContext / SkillActivation / Summarization / DeferredToolFilter / LoopDetection / Clarification 等中间件。 |
-| 工具集合装配 | [tools.py](../../../deer-flow/backend/packages/harness/deerflow/tools/tools.py) | `get_available_tools(...)` 汇总 config tools、builtins、MCP、ACP、subagent、vision 等 `BaseTool`。 |
-| 工具 runtime 类型 | [types.py](../../../deer-flow/backend/packages/harness/deerflow/tools/types.py) | 定义 `Runtime = ToolRuntime[dict[str, Any], ThreadState]`，让工具拿到 context / state。 |
-| sandbox 工具 | [sandbox/tools.py](../../../deer-flow/backend/packages/harness/deerflow/sandbox/tools.py) | `bash` / `ls` / `glob` / `grep` / `read_file` / `write_file` / `str_replace` 等 LangChain `@tool`。 |
-| 共享 runtime middleware | [tool_error_handling_middleware.py](../../../deer-flow/backend/packages/harness/deerflow/agents/middlewares/tool_error_handling_middleware.py) | `ToolErrorHandlingMiddleware` 以及共享 runtime middleware builder。 |
-| deferred MCP Tool Search | [tools/builtins/tool_search.py](../../../deer-flow/backend/packages/harness/deerflow/tools/builtins/tool_search.py) | MCP deferred tools 的 catalog、`tool_search` schema promotion、fail-closed 装配。 |
-| deferred tool 过滤 | [deferred_tool_filter_middleware.py](../../../deer-flow/backend/packages/harness/deerflow/agents/middlewares/deferred_tool_filter_middleware.py) | 模型绑定前隐藏未 promoted 的 deferred tool schema，并阻断直接调用。 |
-| clarification 控制流 | [clarification_middleware.py](../../../deer-flow/backend/packages/harness/deerflow/agents/middlewares/clarification_middleware.py) | 拦截 `ask_clarification`，返回 `Command(goto=END)` 把控制权交回用户。 |
-| loop detection | [loop_detection_middleware.py](../../../deer-flow/backend/packages/harness/deerflow/agents/middlewares/loop_detection_middleware.py) | 检测重复工具调用集合和高频同类工具调用，必要时 warning / hard stop。 |
+| lead agent 装配 | [agent.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py) | `_make_lead_agent(...)` 解析 runtime config、装配 model / tools / middleware / state schema，并调用 `create_agent(...)`。 |
+| middleware 组装 | [agent.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L260-L393) | 组装 lead agent 的 DynamicContext / SkillActivation / Summarization / DeferredToolFilter / LoopDetection / Clarification 等中间件。 |
+| 工具集合装配 | [tools.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/tools.py) | `get_available_tools(...)` 汇总 config tools、builtins、MCP、ACP、subagent、vision 等 `BaseTool`。 |
+| 工具 runtime 类型 | [types.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/types.py) | 定义 `Runtime = ToolRuntime[dict[str, Any], ThreadState]`，让工具拿到 context / state。 |
+| sandbox 工具 | [sandbox/tools.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/sandbox/tools.py) | `bash` / `ls` / `glob` / `grep` / `read_file` / `write_file` / `str_replace` 等 LangChain `@tool`。 |
+| 共享 runtime middleware | [tool_error_handling_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/tool_error_handling_middleware.py) | `ToolErrorHandlingMiddleware` 以及共享 runtime middleware builder。 |
+| deferred MCP Tool Search | [tools/builtins/tool_search.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/builtins/tool_search.py) | MCP deferred tools 的 catalog、`tool_search` schema promotion、fail-closed 装配。 |
+| deferred tool 过滤 | [deferred_tool_filter_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/deferred_tool_filter_middleware.py) | 模型绑定前隐藏未 promoted 的 deferred tool schema，并阻断直接调用。 |
+| clarification 控制流 | [clarification_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/clarification_middleware.py) | 拦截 `ask_clarification`，返回 `Command(goto=END)` 把控制权交回用户。 |
+| loop detection | [loop_detection_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/loop_detection_middleware.py) | 检测重复工具调用集合和高频同类工具调用，必要时 warning / hard stop。 |
 
 ## 一句话总结
 
@@ -92,9 +92,9 @@ config.yaml / builtin / sandbox / MCP / ACP / subagent / vision tools
 
 DeerFlow 的工具定义本体是 LangChain 生态里的 `BaseTool` / `@tool`。
 
-`get_available_tools(...)` 在 [tools.py:44](../../../deer-flow/backend/packages/harness/deerflow/tools/tools.py#L44) 返回 `list[BaseTool]`。这意味着 DeerFlow 最终交给 agent runtime 的不是自定义 `AgentTool`，而是一组 LangChain 标准工具。
+`get_available_tools(...)` 在 [tools.py:44](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/tools.py#L44) 返回 `list[BaseTool]`。这意味着 DeerFlow 最终交给 agent runtime 的不是自定义 `AgentTool`，而是一组 LangChain 标准工具。
 
-sandbox 工具在 [sandbox/tools.py](../../../deer-flow/backend/packages/harness/deerflow/sandbox/tools.py) 中用 `@tool` 定义，例如：
+sandbox 工具在 [sandbox/tools.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/sandbox/tools.py) 中用 `@tool` 定义，例如：
 
 ```text
 @tool("bash")
@@ -106,7 +106,7 @@ sandbox 工具在 [sandbox/tools.py](../../../deer-flow/backend/packages/harness
 @tool("str_replace")
 ```
 
-工具 runtime 类型在 [types.py](../../../deer-flow/backend/packages/harness/deerflow/tools/types.py) 中定义：
+工具 runtime 类型在 [types.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/types.py) 中定义：
 
 ```text
 Runtime = ToolRuntime[dict[str, Any], ThreadState]
@@ -124,18 +124,18 @@ thread_id / run_id / sandbox / user data 等运行上下文
 
 ## 工具来源：配置、内置、MCP、ACP、subagent、vision
 
-工具总装配入口是 [get_available_tools(...)](../../../deer-flow/backend/packages/harness/deerflow/tools/tools.py#L44-L176)。它汇总多类工具：
+工具总装配入口是 [get_available_tools(...)](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/tools.py#L44-L176)。它汇总多类工具：
 
 | 来源 | 源码位置 | 说明 |
 |---|---|---|
-| config tools | [tools.py:66-88](../../../deer-flow/backend/packages/harness/deerflow/tools/tools.py#L66-L88) | 从 `config.tools` 里取 `use` 路径，通过 `resolve_variable(cfg.use, BaseTool)` 加载。 |
-| builtin tools | [tools.py:15-18](../../../deer-flow/backend/packages/harness/deerflow/tools/tools.py#L15-L18) | 默认包括 `present_files`、`ask_clarification`。 |
-| skill evolution | [tools.py:90-97](../../../deer-flow/backend/packages/harness/deerflow/tools/tools.py#L90-L97) | 配置启用时加入 `skill_manage_tool`。 |
-| subagent tool | [tools.py:98-101](../../../deer-flow/backend/packages/harness/deerflow/tools/tools.py#L98-L101) | runtime `subagent_enabled` 时加入 `task`。 |
-| vision tool | [tools.py:103-111](../../../deer-flow/backend/packages/harness/deerflow/tools/tools.py#L103-L111) | 只有当前模型 `supports_vision` 时加入 `view_image`。 |
-| MCP tools | [tools.py:113-140](../../../deer-flow/backend/packages/harness/deerflow/tools/tools.py#L113-L140) | 从 extensions config 读取 enabled MCP servers，再取 cached MCP tools，并打 `deerflow_mcp` metadata tag。 |
-| ACP agent tool | [tools.py:142-157](../../../deer-flow/backend/packages/harness/deerflow/tools/tools.py#L142-L157) | 配置了 ACP agents 时构造 `invoke_acp_agent`。 |
-| 去重 | [tools.py:161-176](../../../deer-flow/backend/packages/harness/deerflow/tools/tools.py#L161-L176) | 按工具名去重；config-loaded tools 优先，其后 builtins、MCP、ACP。 |
+| config tools | [tools.py:66-88](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/tools.py#L66-L88) | 从 `config.tools` 里取 `use` 路径，通过 `resolve_variable(cfg.use, BaseTool)` 加载。 |
+| builtin tools | [tools.py:15-18](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/tools.py#L15-L18) | 默认包括 `present_files`、`ask_clarification`。 |
+| skill evolution | [tools.py:90-97](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/tools.py#L90-L97) | 配置启用时加入 `skill_manage_tool`。 |
+| subagent tool | [tools.py:98-101](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/tools.py#L98-L101) | runtime `subagent_enabled` 时加入 `task`。 |
+| vision tool | [tools.py:103-111](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/tools.py#L103-L111) | 只有当前模型 `supports_vision` 时加入 `view_image`。 |
+| MCP tools | [tools.py:113-140](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/tools.py#L113-L140) | 从 extensions config 读取 enabled MCP servers，再取 cached MCP tools，并打 `deerflow_mcp` metadata tag。 |
+| ACP agent tool | [tools.py:142-157](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/tools.py#L142-L157) | 配置了 ACP agents 时构造 `invoke_acp_agent`。 |
+| 去重 | [tools.py:161-176](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/tools.py#L161-L176) | 按工具名去重；config-loaded tools 优先，其后 builtins、MCP、ACP。 |
 
 一句话：
 
@@ -143,7 +143,7 @@ thread_id / run_id / sandbox / user data 等运行上下文
 
 ## agent factory：工具交给 LangGraph runtime
 
-lead agent 的装配在 [agent.py:425-556](../../../deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L425-L556)。默认路径的核心是 [agent.py:533-556](../../../deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L533-L556)：
+lead agent 的装配在 [agent.py:425-556](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L425-L556)。默认路径的核心是 [agent.py:533-556](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L533-L556)：
 
 ```text
 raw_tools = get_available_tools(...)
@@ -184,7 +184,7 @@ model tool call
       -> ToolMessage 或 Command
 ```
 
-[ToolErrorHandlingMiddleware](../../../deer-flow/backend/packages/harness/deerflow/agents/middlewares/tool_error_handling_middleware.py#L59-L126) 的接口最能说明这一点：
+[ToolErrorHandlingMiddleware](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/tool_error_handling_middleware.py#L59-L126) 的接口最能说明这一点：
 
 ```text
 wrap_tool_call(request: ToolCallRequest, handler: Callable[[ToolCallRequest], ToolMessage | Command])
@@ -209,7 +209,7 @@ DeerFlow：
 
 DeerFlow 的工具治理不集中在一个大 executor，而是拆成很多 middleware。
 
-共享 runtime middleware 由 [tool_error_handling_middleware.py:129-197](../../../deer-flow/backend/packages/harness/deerflow/agents/middlewares/tool_error_handling_middleware.py#L129-L197) 组装：
+共享 runtime middleware 由 [tool_error_handling_middleware.py:129-197](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/tool_error_handling_middleware.py#L129-L197) 组装：
 
 ```text
 InputSanitizationMiddleware
@@ -224,7 +224,7 @@ SandboxAuditMiddleware
 ToolErrorHandlingMiddleware
 ```
 
-lead-only middleware 由 [agent.py:260-393](../../../deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L260-L393) 组装：
+lead-only middleware 由 [agent.py:260-393](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L260-L393) 组装：
 
 ```text
 DynamicContextMiddleware
@@ -268,7 +268,7 @@ ClarificationMiddleware
 
 DeerFlow 的 sandbox 工具很能体现“标准接口 + 运行上下文 + sandbox 治理”。
 
-以 [read_file_tool](../../../deer-flow/backend/packages/harness/deerflow/sandbox/tools.py#L1672-L1743) 为例：
+以 [read_file_tool](../../../submodules/deer-flow/backend/packages/harness/deerflow/sandbox/tools.py#L1672-L1743) 为例：
 
 ```text
 @tool("read_file")
@@ -281,7 +281,7 @@ DeerFlow 的 sandbox 工具很能体现“标准接口 + 运行上下文 + sandb
   -> 捕获 SandboxError / FileNotFoundError / PermissionError / UnicodeDecodeError
 ```
 
-以 [write_file_tool](../../../deer-flow/backend/packages/harness/deerflow/sandbox/tools.py#L1763-L1853) 为例：
+以 [write_file_tool](../../../submodules/deer-flow/backend/packages/harness/deerflow/sandbox/tools.py#L1763-L1853) 为例：
 
 ```text
 @tool("write_file")
@@ -309,7 +309,7 @@ DeerFlow 因此不是简单“把 read_file 函数暴露给模型”，而是把
 
 DeerFlow 也有 Tool Search，但当前读到的主线比 OpenClaw / Hermes 更窄，主要服务 MCP deferred tools。
 
-[tools/builtins/tool_search.py](../../../deer-flow/backend/packages/harness/deerflow/tools/builtins/tool_search.py#L1-L15) 说明：
+[tools/builtins/tool_search.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/builtins/tool_search.py#L1-L15) 说明：
 
 ```text
 Deferred tools appear by name in <available-deferred-tools>
@@ -320,10 +320,10 @@ but cannot be called until the model fetches their full schema via tool_search.
 
 | 机制 | 源码 | 作用 |
 |---|---|---|
-| `DeferredToolCatalog` | [tool_search.py:56-72](../../../deer-flow/backend/packages/harness/deerflow/tools/builtins/tool_search.py#L56-L72) | 保存 deferred MCP tools，支持按名称 / 描述搜索。 |
-| `tool_search(...)` | [tool_search.py:130-160](../../../deer-flow/backend/packages/harness/deerflow/tools/builtins/tool_search.py#L130-L160) | 返回匹配工具的完整 schema，并用 `Command(update=...)` 写入 `promoted` state。 |
-| `assemble_deferred_tools(...)` | [tool_search.py:184-201](../../../deer-flow/backend/packages/harness/deerflow/tools/builtins/tool_search.py#L184-L201) | 在 agent build 后追加 `tool_search`，并确保 fail-closed。 |
-| `DeferredToolFilterMiddleware` | [deferred_tool_filter_middleware.py:29-112](../../../deer-flow/backend/packages/harness/deerflow/agents/middlewares/deferred_tool_filter_middleware.py#L29-L112) | 模型绑定前隐藏未 promoted schema；直接调用未 promoted tool 时返回 error `ToolMessage`。 |
+| `DeferredToolCatalog` | [tool_search.py:56-72](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/builtins/tool_search.py#L56-L72) | 保存 deferred MCP tools，支持按名称 / 描述搜索。 |
+| `tool_search(...)` | [tool_search.py:130-160](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/builtins/tool_search.py#L130-L160) | 返回匹配工具的完整 schema，并用 `Command(update=...)` 写入 `promoted` state。 |
+| `assemble_deferred_tools(...)` | [tool_search.py:184-201](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/builtins/tool_search.py#L184-L201) | 在 agent build 后追加 `tool_search`，并确保 fail-closed。 |
+| `DeferredToolFilterMiddleware` | [deferred_tool_filter_middleware.py:29-112](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/deferred_tool_filter_middleware.py#L29-L112) | 模型绑定前隐藏未 promoted schema；直接调用未 promoted tool 时返回 error `ToolMessage`。 |
 
 和 Hermes / OpenClaw 对比：
 
@@ -342,7 +342,7 @@ DeerFlow：
 
 DeerFlow 的 `ask_clarification` 很能体现工作流特征。
 
-[ClarificationMiddleware](../../../deer-flow/backend/packages/harness/deerflow/agents/middlewares/clarification_middleware.py#L25-L36) 拦截 `ask_clarification`。在 [clarification_middleware.py:117-156](../../../deer-flow/backend/packages/harness/deerflow/agents/middlewares/clarification_middleware.py#L117-L156) 中，它不是让普通工具继续执行，而是：
+[ClarificationMiddleware](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/clarification_middleware.py#L25-L36) 拦截 `ask_clarification`。在 [clarification_middleware.py:117-156](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/clarification_middleware.py#L117-L156) 中，它不是让普通工具继续执行，而是：
 
 ```text
 ToolCallRequest

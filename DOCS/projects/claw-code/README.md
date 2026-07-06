@@ -4,7 +4,7 @@
 
 ## 源码
 
-- **Submodule**: [claw-code/](../../../claw-code/) — 指向 `ultraworkers/claw-code`
+- **Submodule**: [claw-code/](../../../submodules/claw-code/) — 指向 `ultraworkers/claw-code`
 - **官方仓库**: [github.com/ultraworkers/claw-code](https://github.com/ultraworkers/claw-code)
 - **当前快照**: `4ea31c1bc91c4e9bcbd67d51c550c01e127e6d0d`
 

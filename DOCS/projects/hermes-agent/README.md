@@ -4,9 +4,9 @@
 
 ## 源码
 
-- **Submodule**: [hermes-agent/](../../../hermes-agent/) — 指向 `NousResearch/hermes-agent`
+- **Submodule**: [hermes-agent/](../../../submodules/hermes-agent/) — 指向 `NousResearch/hermes-agent`
 - **官方仓库**: [github.com/NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent)
-- **当前快照**: `9be39de0f2afc8adc58f8f37970f26a6d7e734a0`
+- **当前快照**: `18e840469ffe9f8235331c787e34ebbe908564b8`
 
 ## 研究定位
 

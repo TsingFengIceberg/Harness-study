@@ -1,24 +1,24 @@
 [submodule "deer-flow"]
-	path = deer-flow
+	path = submodules/deer-flow
 	url = https://github.com/bytedance/deer-flow.git
 [submodule "hermes-agent"]
-	path = hermes-agent
+	path = submodules/hermes-agent
 	url = https://github.com/NousResearch/hermes-agent.git
 [submodule "claw-code"]
-	path = claw-code
+	path = submodules/claw-code
 	url = https://github.com/ultraworkers/claw-code.git
 [submodule "learn-claude-code"]
-	path = learn-claude-code
+	path = submodules/learn-claude-code
 	url = https://github.com/shareAI-lab/learn-claude-code.git
 [submodule "openclaw"]
-	path = openclaw
+	path = submodules/openclaw
 	url = https://github.com/openclaw/openclaw.git
 [submodule "openhands"]
-	path = openhands
+	path = submodules/openhands
 	url = git@github.com:OpenHands/OpenHands.git
 [submodule "claude-code-complete-guide_v2"]
-	path = claude-code-complete-guide_v2
+	path = submodules/claude-code-complete-guide_v2
 	url = https://github.com/bcefghj/claude-code-complete-guide_v2.git
 [submodule "software-agent-sdk"]
-	path = software-agent-sdk
+	path = submodules/software-agent-sdk
 	url = https://github.com/OpenHands/software-agent-sdk.git

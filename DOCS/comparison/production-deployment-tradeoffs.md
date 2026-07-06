@@ -190,7 +190,7 @@ Web / Gateway 任务运行平台
 
 ## OpenHands：平台控制面 + 执行面
 
-OpenHands 更像团队级远程 SWE Agent 平台，核心是 [openhands/](../../openhands/) 控制面与 [software-agent-sdk/](../../software-agent-sdk/) 执行面分离：App Server / Agent Canvas / Sandbox / automation 在控制面，Agent Server / SDK / `openhands-tools` 在执行面。
+OpenHands 更像团队级远程 SWE Agent 平台，核心是 [openhands/](../../submodules/openhands/) 控制面与 [software-agent-sdk/](../../submodules/software-agent-sdk/) 执行面分离：App Server / Agent Canvas / Sandbox / automation 在控制面，Agent Server / SDK / `openhands-tools` 在执行面。
 
 ### 生产运行优势
 

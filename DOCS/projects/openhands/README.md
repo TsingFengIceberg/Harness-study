@@ -4,20 +4,20 @@
 
 ## 源码
 
-- **Submodule（控制面）**: [openhands/](../../../openhands/) — 指向 `OpenHands/OpenHands`，覆盖 Agent Canvas / App Server / Sandbox / automation
-- **Submodule（执行面）**: [software-agent-sdk/](../../../software-agent-sdk/) — 指向 `OpenHands/software-agent-sdk`，覆盖 Agent Server / SDK Conversation / Agent / `openhands-tools`
+- **Submodule（控制面）**: [openhands/](../../../submodules/openhands/) — 指向 `OpenHands/OpenHands`，覆盖 Agent Canvas / App Server / Sandbox / automation
+- **Submodule（执行面）**: [software-agent-sdk/](../../../submodules/software-agent-sdk/) — 指向 `OpenHands/software-agent-sdk`，覆盖 Agent Server / SDK Conversation / Agent / `openhands-tools`
 - **官方仓库（控制面）**: [github.com/OpenHands/OpenHands](https://github.com/OpenHands/OpenHands)
 - **官方仓库（执行面）**: [github.com/OpenHands/software-agent-sdk](https://github.com/OpenHands/software-agent-sdk)
 - **当前快照**:
-  - `openhands`: `760d6e9b03bd1659c79814d0e8999012b15448b7`
-  - `software-agent-sdk`: `f328b7b4387671509f259a33685c9c7512e08ed2`
+  - `openhands`: `af7efea64fb097e75dabc439288356d6156fb247`
+  - `software-agent-sdk`: `701644b2043d1d42a485680e0b8ed471ecfbe98b`
 
 ## 研究定位
 
 OpenHands 不作为单纯的 Claude Code 本地 CLI clone 来看，而作为 **平台化 SWE Agent Harness** 的代表。研读时需要把两个官方仓库合在一起理解：
 
-- [openhands/](../../../openhands/) 是平台控制面：负责 Agent Canvas / App Server、会话与事件管理、sandbox 管理、自动化入口和多 backend 接入。
-- [software-agent-sdk/](../../../software-agent-sdk/) 是执行面：负责 Agent Server、SDK `Conversation` / `Agent` 循环、Action / Observation 事件模型，以及 Terminal / FileEditor / TaskTracker / Browser / TaskTool 等工具包。
+- [openhands/](../../../submodules/openhands/) 是平台控制面：负责 Agent Canvas / App Server、会话与事件管理、sandbox 管理、自动化入口和多 backend 接入。
+- [software-agent-sdk/](../../../submodules/software-agent-sdk/) 是执行面：负责 Agent Server、SDK `Conversation` / `Agent` 循环、Action / Observation 事件模型，以及 Terminal / FileEditor / TaskTracker / Browser / TaskTool 等工具包。
 
 它的研究重点包括：
 

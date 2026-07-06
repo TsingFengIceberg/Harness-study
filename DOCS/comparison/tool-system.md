@@ -23,7 +23,7 @@
 
 本文是 Tool System 专题的第一轮横向总结，已经完成 [Claw-Code Tool System](../projects/claw-code/tool-system.md)、[OpenClaw Tool System](../projects/openclaw/tool-system.md)、[Hermes Agent Tool System](../projects/hermes-agent/tool-system.md)、[DeerFlow Tool System](../projects/deer-flow/tool-system.md) 与 [OpenHands Tool System](../projects/openhands/tool-system.md) 的源码研读。
 
-其中 OpenHands 需要特别区分两个官方仓库：[openhands/](../../openhands/) 是 Agent Canvas / App Server / Sandbox / automation 控制面，[software-agent-sdk/](../../software-agent-sdk/) 是 Agent Server / SDK Conversation / Agent / `openhands-tools` 执行面。本文的 OpenHands 工具系统判断已基于本地 `software-agent-sdk` submodule 做第一轮核验。
+其中 OpenHands 需要特别区分两个官方仓库：[openhands/](../../submodules/openhands/) 是 Agent Canvas / App Server / Sandbox / automation 控制面，[software-agent-sdk/](../../submodules/software-agent-sdk/) 是 Agent Server / SDK Conversation / Agent / `openhands-tools` 执行面。本文的 OpenHands 工具系统判断已基于本地 `software-agent-sdk` submodule 做第一轮核验。
 
 ## Tool System 不是只有 tool call
 
@@ -62,7 +62,7 @@ Claw-Code 的工具系统主线见 [Claw-Code Tool System](../projects/claw-code
 
 > **集中式、本地 CLI 风格的工具中枢。**
 
-核心源码集中在 [lib.rs](../../claw-code/rust/crates/tools/src/lib.rs) 与 [conversation.rs](../../claw-code/rust/crates/runtime/src/conversation.rs)：
+核心源码集中在 [lib.rs](../../submodules/claw-code/rust/crates/tools/src/lib.rs) 与 [conversation.rs](../../submodules/claw-code/rust/crates/runtime/src/conversation.rs)：
 
 | 层级 | Claw-Code 做法 |
 |---|---|
@@ -103,7 +103,7 @@ execute_tool_with_enforcer() 越来越大
 
 Claw-Code 不是只按工具名判断权限。
 
-第一扇门在 [conversation.rs](../../claw-code/rust/crates/runtime/src/conversation.rs)：
+第一扇门在 [conversation.rs](../../submodules/claw-code/rust/crates/runtime/src/conversation.rs)：
 
 ```text
 PreToolUse hook
@@ -115,7 +115,7 @@ PreToolUse hook
 
 > **这个工具类型当前能不能用？**
 
-第二扇门在 [execute_tool_with_enforcer](../../claw-code/rust/crates/tools/src/lib.rs)：
+第二扇门在 [execute_tool_with_enforcer](../../submodules/claw-code/rust/crates/tools/src/lib.rs)：
 
 ```text
 根据具体参数分类 required_mode
@@ -158,7 +158,7 @@ deferred tools
   其他专用工具，需要时通过 ToolSearch 查询
 ```
 
-搜索逻辑在 [search_tool_specs](../../claw-code/rust/crates/tools/src/lib.rs)，本质是代码里的关键词匹配和打分：
+搜索逻辑在 [search_tool_specs](../../submodules/claw-code/rust/crates/tools/src/lib.rs)，本质是代码里的关键词匹配和打分：
 
 ```text
 工具名精确匹配：高分
@@ -202,12 +202,12 @@ MessageToolCall
 
 | 层级 | OpenHands 做法 |
 |---|---|
-| 默认工具 | [default.py](../../software-agent-sdk/openhands-tools/openhands/tools/preset/default.py) 注册 / 返回 TerminalTool、FileEditorTool、TaskTrackerTool，可选 BrowserToolSet 和 TaskToolSet。 |
-| 工具定义 | [tool.py](../../software-agent-sdk/openhands-sdk/openhands/sdk/tool/tool.py) 中 `ToolDefinition` 统一 name、description、Action schema、Observation schema、executor、schema conversion、resource declaration。 |
-| 典型工具 | [terminal/definition.py](../../software-agent-sdk/openhands-tools/openhands/tools/terminal/definition.py)、[file_editor/definition.py](../../software-agent-sdk/openhands-tools/openhands/tools/file_editor/definition.py)、[task_tracker/definition.py](../../software-agent-sdk/openhands-tools/openhands/tools/task_tracker/definition.py)。 |
-| response dispatch | [response_dispatch.py](../../software-agent-sdk/openhands-sdk/openhands/sdk/agent/response_dispatch.py) 将 response 分成 `TOOL_CALLS` / `CONTENT` / `REASONING_ONLY` / `EMPTY`，并把 tool call 转成 action events。 |
-| 工具执行 | [agent.py](../../software-agent-sdk/openhands-sdk/openhands/sdk/agent/agent.py) 中 `_execute_action_event(...)` 调用 `tool(action, conversation)`，再包成 `ObservationEvent`。 |
-| 并发治理 | [parallel_executor.py](../../software-agent-sdk/openhands-sdk/openhands/sdk/agent/parallel_executor.py) 用 `ParallelToolExecutor`、resource locks 和 `declared_resources(...)` 管理并行工具调用。 |
+| 默认工具 | [default.py](../../submodules/software-agent-sdk/openhands-tools/openhands/tools/preset/default.py) 注册 / 返回 TerminalTool、FileEditorTool、TaskTrackerTool，可选 BrowserToolSet 和 TaskToolSet。 |
+| 工具定义 | [tool.py](../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/tool/tool.py) 中 `ToolDefinition` 统一 name、description、Action schema、Observation schema、executor、schema conversion、resource declaration。 |
+| 典型工具 | [terminal/definition.py](../../submodules/software-agent-sdk/openhands-tools/openhands/tools/terminal/definition.py)、[file_editor/definition.py](../../submodules/software-agent-sdk/openhands-tools/openhands/tools/file_editor/definition.py)、[task_tracker/definition.py](../../submodules/software-agent-sdk/openhands-tools/openhands/tools/task_tracker/definition.py)。 |
+| response dispatch | [response_dispatch.py](../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/agent/response_dispatch.py) 将 response 分成 `TOOL_CALLS` / `CONTENT` / `REASONING_ONLY` / `EMPTY`，并把 tool call 转成 action events。 |
+| 工具执行 | [agent.py](../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/agent/agent.py) 中 `_execute_action_event(...)` 调用 `tool(action, conversation)`，再包成 `ObservationEvent`。 |
+| 并发治理 | [parallel_executor.py](../../submodules/software-agent-sdk/openhands-sdk/openhands/sdk/agent/parallel_executor.py) 用 `ParallelToolExecutor`、resource locks 和 `declared_resources(...)` 管理并行工具调用。 |
 
 所以 OpenHands 的工具系统不是单个“大工具函数”，而是 `ToolDefinition + Action / Observation + ActionEvent / ObservationEvent + Agent Server / SDK execution loop` 的组合。
 
@@ -345,7 +345,7 @@ OpenClaw 的工具系统主线见 [OpenClaw Tool System](../projects/openclaw/to
 
 > **工具装配工厂 + 策略管线 + hook wrapper + 事件化执行流。**
 
-核心源码分布在 [agent-loop.ts](../../openclaw/packages/agent-core/src/agent-loop.ts)、[types.ts](../../openclaw/packages/agent-core/src/types.ts)、[agent-tools.ts](../../openclaw/src/agents/agent-tools.ts)、[agent-tools.before-tool-call.ts](../../openclaw/src/agents/agent-tools.before-tool-call.ts) 和 [tool-search.ts](../../openclaw/src/agents/tool-search.ts)。
+核心源码分布在 [agent-loop.ts](../../submodules/openclaw/packages/agent-core/src/agent-loop.ts)、[types.ts](../../submodules/openclaw/packages/agent-core/src/types.ts)、[agent-tools.ts](../../submodules/openclaw/src/agents/agent-tools.ts)、[agent-tools.before-tool-call.ts](../../submodules/openclaw/src/agents/agent-tools.before-tool-call.ts) 和 [tool-search.ts](../../submodules/openclaw/src/agents/tool-search.ts)。
 
 | 层级 | OpenClaw 做法 |
 |---|---|
@@ -444,7 +444,7 @@ Hermes 的工具系统主线见 [Hermes Agent Tool System](../projects/hermes-ag
 
 > **toolsets 工具菜单 + registry 工具总账 + Tool Search 渐进式发现 + tool_executor 执行工作台。**
 
-核心源码分布在 [tools/registry.py](../../hermes-agent/tools/registry.py)、[toolsets.py](../../hermes-agent/toolsets.py)、[model_tools.py](../../hermes-agent/model_tools.py)、[tool_executor.py](../../hermes-agent/agent/tool_executor.py)、[tool_dispatch_helpers.py](../../hermes-agent/agent/tool_dispatch_helpers.py)、[tools/tool_search.py](../../hermes-agent/tools/tool_search.py) 和 [tool_guardrails.py](../../hermes-agent/agent/tool_guardrails.py)。
+核心源码分布在 [tools/registry.py](../../submodules/hermes-agent/tools/registry.py)、[toolsets.py](../../submodules/hermes-agent/toolsets.py)、[model_tools.py](../../submodules/hermes-agent/model_tools.py)、[tool_executor.py](../../submodules/hermes-agent/agent/tool_executor.py)、[tool_dispatch_helpers.py](../../submodules/hermes-agent/agent/tool_dispatch_helpers.py)、[tools/tool_search.py](../../submodules/hermes-agent/tools/tool_search.py) 和 [tool_guardrails.py](../../submodules/hermes-agent/agent/tool_guardrails.py)。
 
 | 层级 | Hermes 做法 |
 |---|---|
@@ -459,7 +459,7 @@ Hermes 的工具系统主线见 [Hermes Agent Tool System](../projects/hermes-ag
 
 ### 精髓一：toolsets 是工具菜单，不是单个 allowed-tools 列表
 
-Hermes 的 [toolsets.py](../../hermes-agent/toolsets.py) 把工具组织成 `web`、`terminal`、`file`、`skills`、`memory`、`session_search`、`clarify`、`delegation`、`browser`、`kanban` 等菜单。
+Hermes 的 [toolsets.py](../../submodules/hermes-agent/toolsets.py) 把工具组织成 `web`、`terminal`、`file`、`skills`、`memory`、`session_search`、`clarify`、`delegation`、`browser`、`kanban` 等菜单。
 
 `_HERMES_CORE_TOOLS` 包含的不只是 coding tools，还有长期个人 Agent 常用能力：
 
@@ -471,7 +471,7 @@ clarify / delegate_task / cronjob / homeassistant / kanban / computer_use
 
 这说明 Hermes 的工具系统天然服务“长期私人助理”：工具不是只帮它改代码，而是帮它记事、查历史、沉淀技能、追踪任务、询问用户、派发子 agent。
 
-但这个“菜单”不是死菜单。Hermes 还可以通过 MCP、plugin、context engine、memory provider 等来源把新工具登记进 [ToolRegistry](../../hermes-agent/tools/registry.py)，并挂到动态 toolset 或 provider-specific 工具入口上。更准确的说法是：
+但这个“菜单”不是死菜单。Hermes 还可以通过 MCP、plugin、context engine、memory provider 等来源把新工具登记进 [ToolRegistry](../../submodules/hermes-agent/tools/registry.py)，并挂到动态 toolset 或 provider-specific 工具入口上。更准确的说法是：
 
 > **Hermes 有可扩展菜单系统：菜单可以加菜，但不能绕过点菜系统。**
 
@@ -505,7 +505,7 @@ Hermes：私人助理按任务菜单从工具总账里拿工具摆上桌。
 
 ### 精髓二：Tool Search 是渐进式工具发现
 
-Hermes 的 [tools/tool_search.py](../../hermes-agent/tools/tool_search.py) 和 Claw-Code / OpenClaw 都不同。
+Hermes 的 [tools/tool_search.py](../../submodules/hermes-agent/tools/tool_search.py) 和 Claw-Code / OpenClaw 都不同。
 
 它的核心规则是：
 
@@ -521,7 +521,7 @@ MCP / plugin 非核心工具可被 deferred
 
 ### 精髓三：白名单式并发，而不是默认并行
 
-Hermes 的并发判定在 [_should_parallelize_tool_batch(...)](../../hermes-agent/agent/tool_dispatch_helpers.py)。逻辑是：
+Hermes 的并发判定在 [_should_parallelize_tool_batch(...)](../../submodules/hermes-agent/agent/tool_dispatch_helpers.py)。逻辑是：
 
 ```text
 单工具不并发
@@ -536,7 +536,7 @@ read_file / write_file / patch 必须有 path 且路径不重叠
 
 ### 精髓四：tool_executor 同时处理执行、记账、防循环和 steer
 
-Hermes 的 [tool_executor.py](../../hermes-agent/agent/tool_executor.py) 不只是调用 handler。它还会：
+Hermes 的 [tool_executor.py](../../submodules/hermes-agent/agent/tool_executor.py) 不只是调用 handler。它还会：
 
 ```text
 unwrap tool_call 到真实 underlying tool

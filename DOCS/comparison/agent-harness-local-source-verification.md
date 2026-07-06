@@ -56,11 +56,11 @@
 **架构特征**：单进程/本机 CLI runtime 很强，内含 task/team/cron registry，但这些 registry 当前被验证为 in-memory/process-local。它代表“把 coding agent CLI 做成高完整度工程产品”的方向。
 
 关键路径：
-- `../../claw-code/rust/crates/runtime/src/conversation.rs`
-- `../../claw-code/rust/crates/runtime/src/permissions.rs`
-- `../../claw-code/rust/crates/runtime/src/permission_enforcer.rs`
-- `../../claw-code/rust/crates/runtime/src/sandbox.rs`
-- `../../claw-code/rust/crates/tools/src/lib.rs`
+- `../../submodules/claw-code/rust/crates/runtime/src/conversation.rs`
+- `../../submodules/claw-code/rust/crates/runtime/src/permissions.rs`
+- `../../submodules/claw-code/rust/crates/runtime/src/permission_enforcer.rs`
+- `../../submodules/claw-code/rust/crates/runtime/src/sandbox.rs`
+- `../../submodules/claw-code/rust/crates/tools/src/lib.rs`
 
 ---
 
@@ -79,12 +79,12 @@
 **平台化方向**：面向个人控制的多设备/多通道 assistant 平台。gateway 是核心控制面，macOS/iOS/Android/Windows companion apps 是可选 surface；nodes 提供 voice/canvas/camera/screen/device commands 等能力。
 
 关键路径：
-- `../../openclaw/src/gateway/server.impl.ts`
-- `../../openclaw/src/gateway/node-registry.ts`
-- `../../openclaw/src/agents/sessions/agent-session.ts`
-- `../../openclaw/src/channels/message/ingress-queue.ts`
-- `../../openclaw/src/infra/exec-approvals.ts`
-- `../../openclaw/src/infra/outbound/delivery-queue-storage.ts`
+- `../../submodules/openclaw/src/gateway/server.impl.ts`
+- `../../submodules/openclaw/src/gateway/node-registry.ts`
+- `../../submodules/openclaw/src/agents/sessions/agent-session.ts`
+- `../../submodules/openclaw/src/channels/message/ingress-queue.ts`
+- `../../submodules/openclaw/src/infra/exec-approvals.ts`
+- `../../submodules/openclaw/src/infra/outbound/delivery-queue-storage.ts`
 
 ---
 
@@ -112,12 +112,12 @@
 **研究价值**：它是横向比较的“最小解释器”。当 Claw-Code/OpenClaw/OpenHands 出现复杂子系统时，可以回到 learn-claude-code 问：这个复杂机制到底是在 loop 外加了哪一层？工具注册、上下文压缩、任务状态、队列、审批、沙箱，还是平台控制面？
 
 关键路径：
-- `../../learn-claude-code/s01_agent_loop/code.py`
-- `../../learn-claude-code/s02_tool_use/code.py`
-- `../../learn-claude-code/s08_context_compact/code.py`
-- `../../learn-claude-code/s12_task_system/code.py`
-- `../../learn-claude-code/s15_agent_teams/code.py`
-- `../../learn-claude-code/s19_mcp_plugin/code.py`
+- `../../submodules/learn-claude-code/s01_agent_loop/code.py`
+- `../../submodules/learn-claude-code/s02_tool_use/code.py`
+- `../../submodules/learn-claude-code/s08_context_compact/code.py`
+- `../../submodules/learn-claude-code/s12_task_system/code.py`
+- `../../submodules/learn-claude-code/s15_agent_teams/code.py`
+- `../../submodules/learn-claude-code/s19_mcp_plugin/code.py`
 
 ---
 
@@ -150,14 +150,14 @@
 - OpenHands 的平台趋势是“多 agent backend + ACP/MCP interoperability + sandboxed agent-server containers + automation/webhook”，而不是“单机 CLI 工具面 parity”。
 
 关键路径：
-- `../../openhands/openhands/app_server/app.py`
-- `../../openhands/openhands/app_server/sandbox/sandbox_service.py`
-- `../../openhands/openhands/app_server/sandbox/docker_sandbox_service.py`
-- `../../openhands/openhands/app_server/app_conversation/app_conversation_models.py`
-- `../../openhands/openhands/app_server/event/event_service.py`
-- `../../openhands/openhands/app_server/event_callback/webhook_router.py`
-- `../../openhands/openhands/app_server/mcp/mcp_router.py`
-- `../../openhands/frontend/src/routes/agent-settings.tsx`
+- `../../submodules/openhands/openhands/app_server/app.py`
+- `../../submodules/openhands/openhands/app_server/sandbox/sandbox_service.py`
+- `../../submodules/openhands/openhands/app_server/sandbox/docker_sandbox_service.py`
+- `../../submodules/openhands/openhands/app_server/app_conversation/app_conversation_models.py`
+- `../../submodules/openhands/openhands/app_server/event/event_service.py`
+- `../../submodules/openhands/openhands/app_server/event_callback/webhook_router.py`
+- `../../submodules/openhands/openhands/app_server/mcp/mcp_router.py`
+- `../../submodules/openhands/frontend/src/routes/agent-settings.tsx`
 
 ---
 
