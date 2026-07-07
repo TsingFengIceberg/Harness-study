@@ -35,6 +35,8 @@ DOCS/
 ├── comparison/        ← 横向对比：同一维度横切多个项目
 │   ├── agent-loop.md  ← Agent Loop 横向总结
 │   ├── tool-system.md ← Tool System 横向总结
+│   ├── context-management.md ← Context Management 横向总结
+│   ├── permission-security.md ← Permission / Security / Guardrail 横向总结
 │   └── qa.md          ← 横向学习 QA：跨项目问题、讨论结论、待核验点
 └── synthesis/         ← 拔高归纳：共性设计模式与架构分类
     └── faq.md         ← 最终沉淀 FAQ：已验证、可复用的核心问答
@@ -50,6 +52,8 @@ DOCS/
 | DeerFlow / Hermes / OpenClaw / OpenHands Agent Loop | [`DOCS/projects/deer-flow/agent-loop.md`](DOCS/projects/deer-flow/agent-loop.md)、[`DOCS/projects/hermes-agent/agent-loop.md`](DOCS/projects/hermes-agent/agent-loop.md)、[`DOCS/projects/openclaw/agent-loop.md`](DOCS/projects/openclaw/agent-loop.md)、[`DOCS/projects/openhands/agent-loop.md`](DOCS/projects/openhands/agent-loop.md) |
 | Agent Loop 横向总结 | [`DOCS/comparison/agent-loop.md`](DOCS/comparison/agent-loop.md) |
 | Tool System 横向总结 | [`DOCS/comparison/tool-system.md`](DOCS/comparison/tool-system.md) |
+| Context Management 横向总结 | [`DOCS/comparison/context-management.md`](DOCS/comparison/context-management.md) |
+| Permission / Security 横向总结 | [`DOCS/comparison/permission-security.md`](DOCS/comparison/permission-security.md) |
 | 生产部署取舍对比 | [`DOCS/comparison/production-deployment-tradeoffs.md`](DOCS/comparison/production-deployment-tradeoffs.md) |
 | 整体功能特色与项目定位分析 | [`DOCS/comparison/project-positioning.md`](DOCS/comparison/project-positioning.md) |
 | 多个项目在某个维度上怎么不同 | [`DOCS/comparison/`](DOCS/comparison/) |
@@ -97,6 +101,21 @@ Tool System 专题已完成 Claw-Code、DeerFlow、OpenClaw、Hermes Agent 与 O
 | 工具目录精髓 | Claw-Code ToolSearch 是轻量目录检索器；OpenClaw Tool Search 是 search / describe / call / code-mode 的大工具目录服务；Hermes Tool Search 用 search / describe / call 把 MCP / plugin 非核心工具延迟暴露，同时保证核心工具永不 deferred。 |
 
 第一轮横向理解是：**Tool System 的差异不只在“有哪些工具”，更在于工具定义、可见性、权限 / policy、串并行执行、结果回写、事件观测和横切治理被放在什么架构位置。**
+
+
+## Permission / Security 第一轮总结
+
+Permission / Security / Guardrail 专题已完成 Claw-Code、DeerFlow、OpenClaw、OpenHands 与 Hermes Agent 的第一轮源码研读。详见 [`DOCS/comparison/permission-security.md`](DOCS/comparison/permission-security.md)：
+
+| 项目 | 权限 / 安全精髓 | 比喻 |
+|---|---|---|
+| Claw-Code | ToolSpec 默认权限、PreToolUse hook、PermissionPolicy / Prompter、PermissionEnforcer / 动态分类、Post hook 和 error tool_result | 本地 CLI 工具调用双闸门 |
+| DeerFlow | Gateway authz、GuardrailMiddleware + provider、workflow safety middleware、RunManager 与 Sandbox 三层防线 | 工作流工厂安全生产线 |
+| OpenClaw | tool policy pipeline 先控工具可见性，before_tool_call approval / hook / diagnostics 再控单次执行 | 工具门禁 + 审批工单系统 |
+| OpenHands | ActionEvent、SecurityAnalyzer、ConfirmationPolicy、WAITING_FOR_CONFIRMATION、UserRejectObservation 与 workspace / sandbox | 远程开发园区安检 + 工位隔离 |
+| Hermes Agent | toolsets / scope gate、dangerous command / ACP approval、plugin hooks、tool guardrails 与 memory / skills hygiene | 长期个人助理自我保护系统 |
+
+第一轮横向理解是：**权限安全不只是“要不要问用户确认”，还包括工具可见性、动作风险评估、执行环境隔离、run 生命周期、失败 / loop 熔断、拒绝反馈和长期状态污染防护。**
 
 ## 使用方式
 

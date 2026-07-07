@@ -15,6 +15,7 @@
 | [agent-loop.md](agent-loop.md) | draft | OpenClaw Agent Loop：AgentSession / Agent / runLoop 三层结构、double loop、steer/followUp 队列与事件状态机。 |
 | [tool-system.md](tool-system.md) | draft | OpenClaw Tool System：AgentTool、createOpenClawCodingTools、policy pipeline、before_tool_call runtime、sequential/parallel 执行与 Tool Search。 |
 | [context-management.md](context-management.md) | draft | OpenClaw Context Management：AgentContext.messages、transformContext / convertToLlm、streaming message、steer/followUp、compaction 与 session persistence。 |
+| [permission-security.md](permission-security.md) | draft | OpenClaw Permission / Security：tool policy pipeline、before_tool_call runtime、plugin approval、embedded / gateway 审批路由与 subagent 控制面限制。 |
 
 ## 源码入口
 
@@ -28,6 +29,8 @@
 | Harness 上下文 hook | [agent-harness.ts](../../../submodules/openclaw/packages/agent-core/src/harness/agent-harness.ts) | `CoreAgentHarness` 安装 context hook、tool hook、prepareNextTurn 和 session write flush。 |
 | 工具装配 | [agent-tools.ts](../../../submodules/openclaw/src/agents/agent-tools.ts) | `createOpenClawCodingTools` 按 run/session/channel/model/sandbox/policy 动态组装工具面。 |
 | 工具治理 | [agent-tools.before-tool-call.ts](../../../submodules/openclaw/src/agents/agent-tools.before-tool-call.ts) | before_tool_call policy runtime：plugin hooks、approval、diagnostics、loop detection 等。 |
+| Tool Policy | [tool-policy-pipeline.ts](../../../submodules/openclaw/src/agents/tool-policy-pipeline.ts) | profile / provider / agent / group / sender / sandbox / subagent / inherited 多层工具可见性策略。 |
+| Plugin Approval | [plugin-approvals.ts](../../../submodules/openclaw/src/infra/plugin-approvals.ts) | plugin tool 审批请求、allow-once / allow-always / deny 决策、timeout 与审批生命周期。 |
 | Tool Search | [tool-search.ts](../../../submodules/openclaw/src/agents/tool-search.ts) | search / describe / call / code-mode 工具目录服务。 |
 
 ## 阶段性定位
@@ -43,4 +46,6 @@ OpenClaw 的 Agent Loop 可以概括为：
 - 横向 QA：[OpenClaw Agent Loop 是否只是普通 `while tool_use`？](../../comparison/qa.md#q-openclaw-agent-loop-是否只是普通-while-tool_use)
 - 横向 QA：[OpenClaw 与 DeerFlow / Claw-Code 的精髓差异是什么？](../../comparison/qa.md#q-openclaw-与-deerflow--claw-code-的精髓差异是什么)
 - 横向 QA：[OpenClaw 的 steer / followUp 队列有什么价值？](../../comparison/qa.md#q-openclaw-的-steer--followup-队列有什么价值)
+- 横向 QA：[OpenClaw 的权限治理和 Claw-Code 的两道权限门有什么本质不同？](../../comparison/qa.md#q-openclaw-的权限治理和-claw-code-的两道权限门有什么本质不同)
 - Tool System 横向专题：[Tool System 横向总结](../../comparison/tool-system.md)
+- Permission / Security 横向专题：[Permission / Security / Guardrail 横向笔记](../../comparison/permission-security.md)

@@ -40,6 +40,7 @@
 | [agent-loop.md](agent-loop.md) | Gateway Run + LangGraph agent runtime 控制流：run 创建、`agent.astream(...)`、middleware、工具调用、状态与终止条件 | draft |
 | [tool-system.md](tool-system.md) | LangGraph 标准生产线 + middleware 化工具治理：`BaseTool` / `ToolCallRequest` / `ToolMessage` / `Command`、sandbox 工具、deferred MCP Tool Search 与生产部署取舍 | draft |
 | [context-management.md](context-management.md) | DeerFlow Context Management：ThreadState、DynamicContext、Summarization、DurableContext、middleware projection 与 LangGraph checkpoint | draft |
+| [permission-security.md](permission-security.md) | DeerFlow Permission / Security：Gateway authz、GuardrailMiddleware、workflow safety middleware、RunManager、Sandbox 与三层防线 | draft |
 
 ## 源码入口
 
@@ -51,6 +52,9 @@
 | 耐久上下文投影 | [durable_context_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/durable_context_middleware.py) | 捕获 delegation / skill context，并把 summary_text / delegations / skill_context 投影给模型。 |
 | 上下文压缩 | [summarization_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/summarization_middleware.py) | 压缩旧 messages，保留尾部消息，写入 `summary_text` state channel。 |
 | 记忆更新 | [memory_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/memory_middleware.py) | agent 完成后过滤 user / final assistant 消息，异步更新长期 memory。 |
+| 权限 / Guardrail | [middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/guardrails/middleware.py) | 工具调用前调用 `GuardrailProvider` 做 allow / deny 策略检查，拒绝时返回 error `ToolMessage`。 |
+| Gateway 授权 | [authz.py](../../../submodules/deer-flow/backend/app/gateway/authz.py) | Gateway API 的 `require_permission` / owner_check，管理 threads / runs 资源权限。 |
+| Run lifecycle | [manager.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/runtime/runs/manager.py) | 同一 thread 的 run 并发、cancel、interrupt / rollback、状态持久化和 orphan reconciliation。 |
 | System 合并 | [system_message_coalescing_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/system_message_coalescing_middleware.py) | provider 请求前合并 static system prompt 与 middleware 产生的 SystemMessage。 |
 
 后续 DeerFlow 深入研读的新笔记将继续放在本目录下，例如：

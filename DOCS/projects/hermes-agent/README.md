@@ -27,6 +27,7 @@ Hermes Agent 在本仓库中定位为 **Memory-evolving personal agent harness**
 | [agent-loop.md](agent-loop.md) | `run_conversation` 手写对话循环：API 调用、tool_calls、tool result 回写、interrupt / steer / iteration budget、最终响应 | draft |
 | [tool-system.md](tool-system.md) | Hermes Tool System：toolsets、registry、Tool Search、sequential/concurrent 执行、guardrail、memory / skills / todo 工具化 | draft |
 | [context-management.md](context-management.md) | Hermes Context Management：session-stable system prompt、临时 recall context、provider repair/sanitize、preflight / pre-API compression 与错误恢复 | draft |
+| [permission-security.md](permission-security.md) | Hermes Permission / Security：toolsets 范围、Tool Search bridge scope gate、危险命令审批、ACP edit approval、plugin hooks、tool guardrails 与 memory / skills 污染风险 | draft |
 
 ## 源码入口
 
@@ -39,6 +40,9 @@ Hermes Agent 在本仓库中定位为 **Memory-evolving personal agent harness**
 | Context Compressor | [context_compressor.py](../../../submodules/hermes-agent/agent/context_compressor.py) | 默认 context engine，旧工具结果裁剪、头尾保护、中段摘要和 summary 迭代更新。 |
 | Compression Orchestration | [conversation_compression.py](../../../submodules/hermes-agent/agent/conversation_compression.py) | `compress_context`，压缩锁、SessionDB rewrite / rotation、system prompt invalidation。 |
 | Turn Finalizer | [turn_finalizer.py](../../../submodules/hermes-agent/agent/turn_finalizer.py) | session persist、response transform、external memory sync、background review。 |
+| Tool Guardrails | [tool_guardrails.py](../../../submodules/hermes-agent/agent/tool_guardrails.py) | 工具失败、同工具连续失败、幂等无进展检测，warning 默认启用，hard stop 可选。 |
+| Command Approval | [approval.py](../../../submodules/hermes-agent/tools/approval.py) | dangerous / hardline command patterns、session-local approval、YOLO 冻结和 sudo stdin guard。 |
+| ACP Edit Approval | [edit_approval.py](../../../submodules/hermes-agent/acp_adapter/edit_approval.py) | diff-based edit proposal、敏感路径检查和 ACP client approval bridge。 |
 
 ## 后续待研读主题
 

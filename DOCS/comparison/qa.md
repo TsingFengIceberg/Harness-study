@@ -365,6 +365,112 @@ A: 不是。它们都属于横切治理机制，但定位不同。Claw-Code hook
 
 A: 会。`ConversationRuntime::run_turn` 在 `PermissionOutcome::Deny` 时不会执行工具，而是把拒绝原因包装成 `ConversationMessage::tool_result(..., is_error=true)` 写回 session。下一轮模型会看到这个 error tool_result，从而改用只读操作、请求用户授权或给出手动步骤。这个设计说明权限系统不只是保护环境，也会把安全反馈纳入 agent loop 和上下文管理。
 
+### Q: OpenClaw 的权限治理和 Claw-Code 的两道权限门有什么本质不同？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: Claw-Code 的重点是本地工具调用能不能在用户机器 / workspace 里执行，因此有 `PermissionPolicy / PermissionPrompter` 和 `PermissionEnforcer` 两道门。OpenClaw 的重点是当前 agent 在当前 profile、provider、group、sender、sandbox、subagent 和 inherited 限制下能看到什么工具，以及某次 plugin tool 调用是否需要通过 approval / hook / diagnostics 放行。可以概括为：Claw-Code 是本地工具双闸门，OpenClaw 是平台化工具门禁 + 审批工单系统。详见 [OpenClaw Permission / Security](../projects/openclaw/permission-security.md) 和 [Permission / Security / Guardrail 横向笔记](permission-security.md)。
+
+### Q: OpenClaw 的 approval broker 是怎么把审批请求送到用户的？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 有两条路径。TUI / embedded 模式下，`EmbeddedPluginApprovalBroker` 在本进程内登记 pending approval，并通过 `plugin.approval.requested/resolved/removed` 事件让 UI 展示和回填决策；多端 / Gateway 模式下，`requestPluginToolApproval(...)` 调用 `plugin.approval.request`，必要时再调用 `plugin.approval.waitDecision`，由 Gateway 根据 session、channel、reviewer device 等上下文路由审批请求。前者像本地审批柜台，后者像平台审批服务台。
+
+### Q: OpenClaw 的 tool policy pipeline 具体管什么？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 它管工具可见性，也就是当前运行上下文下模型能看到哪些 tools。策略基础形态是 `{ allow?: string[]; deny?: string[] }`，但会经过 tool name normalization、alias 处理、tool group / plugin group 展开，再按 profile、provider、global、agent、group、sender、sandbox、subagent、inherited 等层叠加。特别是 subagent 层有内建 denylist，限制 gateway、session、cron、spawn 等控制面工具，防止子 agent 默认拿到过高权限。
+
+### Q: OpenClaw 为什么说是“工具门禁 + 审批工单系统”？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 因为它把权限治理拆成两段：tool policy pipeline 先决定当前 agent 在当前来源、sandbox、subagent 层级下能看到哪些工具；before_tool_call runtime 再对单次调用做 loop detection、trusted policy、plugin approval、plugin hooks 和 diagnostics。前者像门禁，决定有没有这把工具；后者像工单审查，决定这次使用是否需要审批、放行或拦截。
+
+### Q: OpenHands 的权限治理中心是什么？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: OpenHands 的权限治理中心是 `ActionEvent`，不是工具菜单。模型 tool call 会先被解析、规范化、校验并转换成 `ActionEvent`；`SecurityAnalyzer` 对 ActionEvent 评估 `SecurityRisk`；`ConfirmationPolicy` 根据风险决定是否把 conversation 置为 `WAITING_FOR_CONFIRMATION`；执行或拒绝结果再通过 `ObservationEvent` / `UserRejectObservation` 回写给模型。workspace / sandbox 则提供动作执行硬边界。详见 [OpenHands Permission / Security](../projects/openhands/permission-security.md) 和 [Permission / Security / Guardrail 横向笔记](permission-security.md)。
+
+### Q: OpenHands 会无条件相信模型自评的 security_risk 吗？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 不会。OpenHands 会在工具 schema 中暴露 `security_risk` 参数，让模型可以预测风险；但只有显式配置了 `security_analyzer` 时才采纳这个字段。没有 analyzer 时，模型提供的 `security_risk` 会被忽略并返回 `UNKNOWN`。这避免模型通过自报 `LOW` 绕过确认策略。
+
+### Q: OpenHands 的用户拒绝会反馈给模型吗？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 会。`reject_pending_actions(...)` 会为每个 pending action 写入 `UserRejectObservation`，它转成 LLM message 时是 tool role，内容为 `Action rejected: <reason>`，并保留对应 `tool_name` 和 `tool_call_id`。所以拒绝不是静默丢弃，而是进入 EventLog，并作为 observation 反馈给下一轮模型。
+
+### Q: OpenHands 为什么说是“远程开发园区安检 + 工位隔离”？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 因为 OpenHands 把具体模型动作登记成 `ActionEvent`，由 `SecurityAnalyzer` / `ConfirmationPolicy` 做动作前风险安检；如果需要确认，conversation 进入 `WAITING_FOR_CONFIRMATION`；用户拒绝会变成 `UserRejectObservation` 写回事件账本；真正执行动作时又在 workspace / sandbox 中运行。安检负责“这次动作要不要停下来让人看”，工位隔离负责“即使执行，也只能在分配环境里执行”。
+
+
+### Q: DeerFlow 的安全治理是不是只有 middleware？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 不是。middleware 是 DeerFlow 的核心风格，但完整防线至少有三层：Gateway API authz 管用户和资源权限；GuardrailMiddleware + GuardrailProvider 管工具调用前策略检查；workflow safety middleware chain + RunManager + Sandbox 管 run lifecycle、工具错误、loop、进展、写入版本、HITL 和执行环境。把 DeerFlow 简化成“只有中间件防线”会漏掉 Gateway 和 run / sandbox 两层。详见 [DeerFlow Permission / Security](../projects/deer-flow/permission-security.md) 和 [Permission / Security / Guardrail 横向笔记](permission-security.md)。
+
+### Q: DeerFlow 的 GuardrailMiddleware 和 ToolErrorHandlingMiddleware 差别是什么？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: GuardrailMiddleware 发生在工具执行前，问“这次工具调用按策略能不能执行”；deny 时不执行工具，直接返回 error ToolMessage。ToolErrorHandlingMiddleware 发生在工具执行过程中，问“工具已经执行但抛异常时如何恢复”；它把异常转换成模型可见的错误反馈。前者是开工前门禁，后者是开工后故障处理。
+
+### Q: DeerFlow 为什么说是“工作流工厂安全生产线”？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 因为它的安全不是一个单点确认框，而是沿着 Gateway -> run -> agent middleware -> tool -> sandbox -> memory 的生产线分布。Gateway 门禁管谁能操作资源；GuardrailMiddleware 管工具调用前策略检查；ToolErrorHandling、LoopDetection、ToolProgress、ReadBeforeWrite、Clarification 等 middleware 管 run 内部健康；RunManager 管同一 thread 的并发、取消和回滚；SandboxMiddleware 管执行环境边界。这种形态更像工厂里的门禁、安检、质检、熔断、停线和工位隔离共同组成的安全生产线。
+
+### Q: Hermes 的 ToolCallGuardrailController 是权限系统吗？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 严格说不是。它不决定某个工具是否授权，而是观察工具调用后的失败 / 无进展模式，发现 exact failure、same-tool failure 或 idempotent no-progress 时给模型 warning，必要时 hard stop。它更像长期个人助理的“自检提醒器”，防止模型在同一个坑里反复尝试。详见 [Hermes Agent Permission / Security](../projects/hermes-agent/permission-security.md)。
+
+### Q: Hermes 为什么需要 Tool Search bridge scope gate？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 因为 Hermes 会用 `tool_search` / `tool_describe` / `tool_call` 做 deferred tools。如果 `tool_call` bridge 直接访问全局 registry，受限工具集的 session 或 subagent 就能绕过当前 `valid_tool_names` 调到不该暴露的工具。scope gate 确保 bridge 调用目标仍必须在当前 session 的 scoped catalog 中。
+
+### Q: Hermes 的危险命令审批和 hardline block 有什么区别？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: dangerous pattern 是“需要确认的危险动作”，用户或 session approval 可以批准；hardline pattern 是“绝对不能执行的动作”，即使 yolo / approval 也阻断，例如 `rm -rf /`、`mkfs`、`dd` 写 `/dev/`、fork bomb、shutdown / reboot 等。这个分层避免把不可接受风险交给一次确认框处理。
+
+### Q: Hermes 为什么说是“长期个人助理自我保护系统”？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 因为 Hermes 的安全不只关心一次工具调用是否危险，还关心长期协作状态是否健康：当前 session 能看到哪些工具、deferred tool bridge 是否绕权、危险命令是否审批、编辑是否经过 diff proposal、plugin 是否能阻断、工具失败是否反复、memory / skills 是否可能被污染。它像个人助理的自我保护系统，而不是单个门禁或单个平台安检点。
+
 ## Tool System / 工具体系
 
 ### Q: 为什么后续专题叫 Tool System，而不是只叫 tool-calling？
