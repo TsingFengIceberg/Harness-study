@@ -29,12 +29,13 @@ Claw-Code 在本仓库中定位为 **Claude Code-like 本地 Coding CLI Harness*
 | [agent-loop.md](agent-loop.md) | `ConversationRuntime::run_turn` 控制流：模型流式输出、ToolUse 提取、权限检查、工具执行、tool_result 回写与终止条件 | draft |
 | [tool-system.md](tool-system.md) | 集中式工具中枢：`ToolSpec` / `GlobalToolRegistry`、allowed tools、hooks、两道权限门、ToolSearch 延迟工具发现与工具能力总线 | draft |
 | [context-management.md](context-management.md) | 本地 CLI Agent 的上下文组装：`SystemPromptBuilder`、`Session.messages`、provider message conversion、usage 阈值、auto compaction 与 context-window retry | draft |
+| [permission-security.md](permission-security.md) | Permission / Security：`PermissionPolicy` / `PermissionPrompter` 第一层授权、`PermissionEnforcer` 动态复查、Pre/Post ToolUse hooks 与 hook vs middleware 比较 | draft |
 
 ## 后续待研读主题
 
 | 主题 | 说明 | 状态 |
 |---|---|---|
-| `permission-security.md` | `PermissionPolicy`、`PermissionPrompter`、allow / deny / ask、bash/path/file safety | planned |
+| `permission-security.md` | `PermissionPolicy`、`PermissionPrompter`、allow / deny / ask、bash/path/file safety | draft |
 | `sandbox-runtime.md` | Linux `unshare`、workspace 边界、本机 sandbox 与跨平台差异 | planned |
 | `session-state.md` | `Session` 持久化、branch/fork、session store、`TurnSummary` 调用方 | planned |
 | `hooks-compaction.md` | pre/post tool hooks、compact 与 Trident 压缩的更细节实现、prompt cache / usage 统计 | planned |
@@ -45,4 +46,4 @@ Claw-Code 在本仓库中定位为 **Claude Code-like 本地 Coding CLI Harness*
 - 横向 QA：[Harness Study 横向 QA](../../comparison/qa.md)
 - Agent Loop 横向专题：[Agent Loop 横向总结](../../comparison/agent-loop.md)
 - 工具系统横向专题：[Tool System 横向总结](../../comparison/tool-system.md)
-- 权限安全横向专题：`../../comparison/permission-security.md`（待撰写）
+- 权限安全横向专题：[Permission / Security / Guardrail 横向笔记](../../comparison/permission-security.md)

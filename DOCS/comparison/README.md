@@ -23,6 +23,7 @@
 | [agent-loop.md](agent-loop.md) | Claw-Code / DeerFlow / Hermes Agent / OpenClaw / OpenHands | Agent Loop 第一轮横向总结：共同骨架、五类 loop 形态、工作组织 / 开车 / 公司组织比喻、关键维度对比与分类法。 |
 | [tool-system.md](tool-system.md) | Claw-Code / DeerFlow / OpenHands / OpenClaw / Hermes Agent | Tool System 第一轮横向总结：覆盖 Claw-Code 集中式工具中枢、DeerFlow LangGraph 标准生产线、OpenHands 控制面 / software-agent-sdk 执行面分离、OpenClaw 事件化工具调度与 Hermes toolsets / Tool Search / guardrail / memory-skills 工具工作台，提炼两道权限门、ToolSearch / Tool Search、sequential / parallel 调度、ActionEvent / ObservationEvent 等跨项目比较框架。 |
 | [context-management.md](context-management.md) | Claw-Code / OpenClaw / Hermes Agent / DeerFlow / OpenHands | Context Management 第一轮横向总结：围绕“模型下一轮看什么”，用本地施工日志、会话调度室、个人助理脑、状态流水线工厂、平台事件账本等比喻比较五类上下文管理模型。 |
+| [permission-security.md](permission-security.md) | Claw-Code / DeerFlow | Permission / Security 第一阶段横向笔记：从 Claw-Code 本地工具调用双闸门出发，对比 DeerFlow middleware 防线，标记 hooks 是外挂监工、middleware 是内建工位这一核心差异。 |
 | [production-deployment-tradeoffs.md](production-deployment-tradeoffs.md) | Claw-Code / OpenClaw / Hermes Agent / DeerFlow / OpenHands | 生产部署取舍：从实际运行、部署、长期运维、多用户、多端交互、长任务可靠性、安全隔离和成本角度比较五类 Agent Harness 设计。 |
 | [project-positioning.md](project-positioning.md) | DeerFlow / Hermes Agent / Claw-Code / OpenClaw / learn-claude-code / OpenHands / Claude Code guide | 第一轮整体功能特色分析：说明这些项目是否同类、各自在 Agent Harness 演化树上的位置、Claude Code-like 基准、OpenHands 与 Claw-Code 差异、Hermes / DeerFlow / OpenClaw 的特色分工。 |
 
@@ -34,7 +35,7 @@
 | `hitl-patterns.md` | DeerFlow / Hermes Agent | 人机协同模式：中断、审批、澄清 |
 | `memory-context.md` | DeerFlow / Hermes Agent | 记忆系统专题：长期记忆、recall、memory provider、污染防护与 skill evolution（上下文管理总论见 [context-management.md](context-management.md)） |
 | `middleware-pipeline.md` | DeerFlow / OpenClaw | 中间件 / 拦截器管道设计 |
-| `permission-security.md` | DeerFlow / Claw-Code | 权限控制 & 安全模型 |
+| `permission-security.md` | Claw-Code / DeerFlow / OpenClaw / OpenHands / Hermes Agent | 权限控制 & 安全模型（已启动，当前覆盖 Claw-Code / DeerFlow，后续继续扩展） |
 
 ## 各项目研读入口
 

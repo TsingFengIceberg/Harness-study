@@ -342,6 +342,29 @@ A: 不是。Hermes 在 turn prologue 中只有当 `_cached_system_prompt` 为空
 
 A: Hermes 不只在一个地方 compact。它在 turn prologue 做 preflight compression；在每次 API call 前做 request pressure check，防止工具结果把下一次请求撑爆；provider 报 context overflow 后还会区分 input prompt 太长和 `max_tokens` output cap 太大，前者压缩历史 / 更新 context length，后者降低输出预算或提示改配置。相比 Claw-Code 的本地 session compact，Hermes 更强调多 provider 长会话的运行韧性。
 
+## Permission / Security / Guardrail / 权限安全与防护
+
+### Q: Claw-Code 为什么需要两道权限门？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 第一层 `PermissionPolicy / PermissionPrompter` 按工具名、默认权限、active mode、allow / deny / ask rules、hook override 和用户确认做策略判断；第二层 `PermissionEnforcer / dynamic classification` 在工具执行层按具体参数重新定级，防止同一个工具的高风险参数绕过粗粒度判断。例如 `read_file("README.md")` 和 `read_file("/etc/passwd")` 都是 `read_file`，但后者应该升级为 `DangerFullAccess`；`bash("cat README.md")` 和 `bash("rm -rf /")` 也不应同等处理。详见 [Claw-Code Permission / Security](../projects/claw-code/permission-security.md)。
+
+### Q: Claw-Code hooks 和 DeerFlow middleware 是一回事吗？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 不是。它们都属于横切治理机制，但定位不同。Claw-Code hooks 更像本地 CLI 工具调用前后的外挂监工，主要围绕 `PreToolUse` / `PostToolUse` / `PostToolUseFailure` 拦截、审批、改写和审计工具调用；DeerFlow middleware 更像 LangGraph agent runtime 的内建工位，直接参与 `ThreadState`、上下文投影、模型调用、压缩、memory、HITL 和错误治理。可以概括为：**hook 是外挂监工，middleware 是内建工位**。详见 [Permission / Security / Guardrail 横向笔记](permission-security.md)。
+
+### Q: Claw-Code 权限拒绝后模型会知道吗？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 会。`ConversationRuntime::run_turn` 在 `PermissionOutcome::Deny` 时不会执行工具，而是把拒绝原因包装成 `ConversationMessage::tool_result(..., is_error=true)` 写回 session。下一轮模型会看到这个 error tool_result，从而改用只读操作、请求用户授权或给出手动步骤。这个设计说明权限系统不只是保护环境，也会把安全反馈纳入 agent loop 和上下文管理。
+
 ## Tool System / 工具体系
 
 ### Q: 为什么后续专题叫 Tool System，而不是只叫 tool-calling？
