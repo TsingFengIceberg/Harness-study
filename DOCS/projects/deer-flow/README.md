@@ -5,7 +5,7 @@
 ## 源码
 
 - **Submodule**: [deer-flow/](../../../submodules/deer-flow/) — 指向 `bytedance/deer-flow`
-- **当前快照**: `eb5eb9c5743997ac60cbd8d902e49a44f94120ff`
+- **当前快照**: `0808738c5876b04b4aa8e9aca7379a0a62b4232d`
 - **官方仓库**: [github.com/bytedance/deer-flow](https://github.com/bytedance/deer-flow)
 
 ## 笔记目录
@@ -39,6 +39,19 @@
 |---|---|---|
 | [agent-loop.md](agent-loop.md) | Gateway Run + LangGraph agent runtime 控制流：run 创建、`agent.astream(...)`、middleware、工具调用、状态与终止条件 | draft |
 | [tool-system.md](tool-system.md) | LangGraph 标准生产线 + middleware 化工具治理：`BaseTool` / `ToolCallRequest` / `ToolMessage` / `Command`、sandbox 工具、deferred MCP Tool Search 与生产部署取舍 | draft |
+| [context-management.md](context-management.md) | DeerFlow Context Management：ThreadState、DynamicContext、Summarization、DurableContext、middleware projection 与 LangGraph checkpoint | draft |
+
+## 源码入口
+
+| 模块 | 源码 | 说明 |
+|---|---|---|
+| Agent 装配 | [agent.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py) | `make_lead_agent` / `build_middlewares`，装配 model、tools、system prompt、middleware、`ThreadState`。 |
+| 状态 schema | [thread_state.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/thread_state.py) | `ThreadState`，扩展 `AgentState`，包含 messages、summary_text、delegations、skill_context、uploaded_files、viewed_images 等上下文字段。 |
+| 动态上下文 | [dynamic_context_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/dynamic_context_middleware.py) | 当前日期和 memory snapshot 注入，frozen-snapshot pattern，保持 base system prompt 静态。 |
+| 耐久上下文投影 | [durable_context_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/durable_context_middleware.py) | 捕获 delegation / skill context，并把 summary_text / delegations / skill_context 投影给模型。 |
+| 上下文压缩 | [summarization_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/summarization_middleware.py) | 压缩旧 messages，保留尾部消息，写入 `summary_text` state channel。 |
+| 记忆更新 | [memory_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/memory_middleware.py) | agent 完成后过滤 user / final assistant 消息，异步更新长期 memory。 |
+| System 合并 | [system_message_coalescing_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/system_message_coalescing_middleware.py) | provider 请求前合并 static system prompt 与 middleware 产生的 SystemMessage。 |
 
 后续 DeerFlow 深入研读的新笔记将继续放在本目录下，例如：
 

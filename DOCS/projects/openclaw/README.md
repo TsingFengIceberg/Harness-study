@@ -6,7 +6,7 @@
 
 - **Submodule**: [openclaw/](../../../submodules/openclaw/) — 指向 `openclaw/openclaw`
 - **官方仓库**: [github.com/openclaw/openclaw](https://github.com/openclaw/openclaw)
-- **当前快照**: `c9219c7f80f4ccacc7bfcbce976e1d5abd718769`
+- **当前快照**: `780ca1d25315b34d3118e1db2d8dcafcc16415f3`
 
 ## 笔记索引
 
