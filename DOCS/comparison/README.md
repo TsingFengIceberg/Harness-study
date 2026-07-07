@@ -31,7 +31,7 @@
 
 | 专题 | 涉及项目 | 说明 |
 |---|---|---|
-| `sandbox-systems.md` | DeerFlow / OpenHands / OpenClaw / Claw-Code | 沙箱 / workspace / 本地执行环境隔离边界对比。 |
+| `sandbox-systems.md` | DeerFlow / OpenHands / OpenClaw / Claw-Code | 沙箱 / workspace / 本地执行环境隔离边界对比（第一轮项目笔记见 [DeerFlow sandbox-workspace](../projects/deer-flow/sandbox-workspace.md) 与 [OpenHands sandbox-workspace](../projects/openhands/sandbox-workspace.md)）。 |
 | `hitl-patterns.md` | DeerFlow / Hermes Agent / OpenHands / OpenClaw | 人机协同模式：中断、审批、澄清、等待确认。 |
 | `memory-context.md` | DeerFlow / Hermes Agent | 记忆系统专题：长期记忆、recall、memory provider、污染防护与 skill evolution（上下文管理总论见 [context-management.md](context-management.md)） |
 | `middleware-pipeline.md` | DeerFlow / OpenClaw | 中间件 / 拦截器管道设计 |

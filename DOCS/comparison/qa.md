@@ -471,6 +471,72 @@ A: dangerous pattern 是“需要确认的危险动作”，用户或 session ap
 
 A: 因为 Hermes 的安全不只关心一次工具调用是否危险，还关心长期协作状态是否健康：当前 session 能看到哪些工具、deferred tool bridge 是否绕权、危险命令是否审批、编辑是否经过 diff proposal、plugin 是否能阻断、工具失败是否反复、memory / skills 是否可能被污染。它像个人助理的自我保护系统，而不是单个门禁或单个平台安检点。
 
+
+## Sandbox / Workspace / Execution Environment / 沙箱与执行环境
+
+### Q: OpenHands 的 sandbox 到底是什么？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 它是给 Agent 准备的远程隔离工作间。App Server 负责创建 / 管理 sandbox 并把请求送到 sandbox 内的 Agent Server；Agent Server 在 sandbox 内启动 SDK conversation；Terminal / FileEditor 等工具在 `ConversationState.workspace.working_dir` 对应的 sandbox 文件系统和进程环境里执行。详见 [OpenHands Sandbox / Workspace](../projects/openhands/sandbox-workspace.md)。
+
+### Q: OpenHands sandbox 的功能有哪些？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 主要包括：隔离执行环境、提供 workspace、运行 Agent Server、承载 Terminal / FileEditor 等工具执行、保存 conversation / event / bash 记录、管理 STARTING / RUNNING / PAUSED / ERROR / MISSING 生命周期、通过 `conversation_id -> sandbox_id` 隔离或分组任务、用 session API key 保护访问、支持远程文件访问 / workspace 归档，以及暴露 VSCode / VNC / browser / Agent Server API 等远程开发能力。
+
+### Q: OpenHands 的 App Server 会直接执行 Terminal / FileEditor 吗？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 不会。App Server 是控制面，它检查 sandbox 状态、找到 sandbox exposed Agent Server URL，并用 `X-Session-API-Key` 把 start / message / file 请求发给 sandbox 内 Agent Server。真正的 Terminal / FileEditor 执行发生在 Agent Server 所在环境，也就是 sandbox 内。
+
+### Q: 为什么 OpenHands start request 里是 LocalWorkspace，而 App Server 又用 RemoteWorkspace？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 因为视角不同。App Server 在 sandbox 外部，所以通过 `AsyncRemoteWorkspace(host=agent_server_url, api_key=..., working_dir=...)` 访问 sandbox。Agent Server 运行在 sandbox 内部，所以 `/workspace/project` 对它来说就是本地路径，`StartConversationRequest.workspace` 使用 `LocalWorkspace(working_dir=...)`。
+
+### Q: OpenHands FileEditor 是否强制只能编辑 workspace_root 内文件？
+
+> **状态**: to-verify
+> **来源**: source-code / discussion
+
+A: 第一轮已读代码确认 FileEditorTool 用 `workspace_root=conv_state.workspace.working_dir` 初始化，并在工具说明中引导模型从 current working directory 开始；但 `file_editor/editor.py` 的 `validate_path(...)` 主要检查 path 是否为 absolute、create / view / edit 条件，暂未看到强制 path 必须位于 workspace_root 内的 containment 检查。因此当前结论应写成：FileEditor 的工作引导来自 workspace，硬隔离主要依赖 sandbox / container / volume 边界；后续可继续核验是否还有上层 hook、policy 或部署配置限制绝对路径访问。
+
+### Q: DeerFlow 的 sandbox 到底是什么？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: DeerFlow 的 sandbox 是 LangGraph 工具调用的执行工作台。它通过 `Sandbox` 抽象和 `SandboxProvider` 后端，为 bash / file / grep / glob / download 等工具提供统一执行环境；工具调用前通过 `ensure_sandbox_initialized(runtime)` 获取或复用当前 thread 的 sandbox。它不是 OpenHands 那种“sandbox 内跑 Agent Server 的远程开发房间”，而是 agent runtime 中工具层按需使用的 execution environment abstraction。详见 [DeerFlow Sandbox / Workspace](../projects/deer-flow/sandbox-workspace.md)。
+
+### Q: DeerFlow 为什么要 lazy init sandbox？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 因为不是每个 run 都一定会执行工具。DeerFlow 默认装配 `SandboxMiddleware(lazy_init=True)`，Agent 进入 LangGraph runtime 后不会立刻创建 sandbox；只有第一次 sandbox tool call 时才 acquire sandbox，并把 `sandbox_id` 写回 `ThreadState`。这样可以避免纯对话、澄清、提前终止或被 guardrail 截断的 run 白白创建容器 / 工作目录，也适合 Gateway 同时管理很多 thread / run 的平台场景。
+
+### Q: DeerFlow 的 LocalSandbox 是强安全沙箱吗？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 不是。LocalSandbox 更准确地说是本地 path-mapping sandbox：它把 `/mnt/user-data/workspace`、uploads、outputs、ACP workspace、skills 等虚拟路径映射到宿主目录，并通过路径解析和 `relative_to(local_root)` 防止 `../` 等方式逃逸 mapping root。它不等于 Docker / VM 级强隔离；因此 DeerFlow 默认禁用 LocalSandbox 的 host bash，只有显式配置 `allow_host_bash=true` 才允许宿主 bash 执行。
+
+### Q: DeerFlow 和 OpenHands 的 sandbox 精髓差异是什么？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: OpenHands 的 sandbox 是平台化 SWE Agent 的远程隔离工位：App Server 创建 sandbox，sandbox 内运行 Agent Server，Terminal / FileEditor 在 workspace 里执行。DeerFlow 的 sandbox 是 LangGraph 工具调用的按需执行工作台：Gateway / worker 启动 agent runtime，`SandboxMiddleware(lazy_init=True)` 挂在 middleware chain 中，第一次需要 sandbox 的工具调用才 acquire sandbox。可以概括为：OpenHands 是“先分房间再开工”，DeerFlow 是“工作流跑到要动手时才领工具台”。
+
 ## Tool System / 工具体系
 
 ### Q: 为什么后续专题叫 Tool System，而不是只叫 tool-calling？

@@ -7,6 +7,7 @@
 - DeerFlow Agent Loop：[agent-loop.md](agent-loop.md)
 - DeerFlow Tool System：[tool-system.md](tool-system.md)
 - DeerFlow Context Management：[context-management.md](context-management.md)
+- DeerFlow Sandbox / Workspace：[sandbox-workspace.md](sandbox-workspace.md)
 - 横向 Permission / Security：[../../comparison/permission-security.md](../../comparison/permission-security.md)
 - 横向 QA：[../../comparison/qa.md](../../comparison/qa.md#permission--security--guardrail--权限安全与防护)
 

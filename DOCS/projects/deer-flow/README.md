@@ -41,18 +41,24 @@
 | [tool-system.md](tool-system.md) | LangGraph 标准生产线 + middleware 化工具治理：`BaseTool` / `ToolCallRequest` / `ToolMessage` / `Command`、sandbox 工具、deferred MCP Tool Search 与生产部署取舍 | draft |
 | [context-management.md](context-management.md) | DeerFlow Context Management：ThreadState、DynamicContext、Summarization、DurableContext、middleware projection 与 LangGraph checkpoint | draft |
 | [permission-security.md](permission-security.md) | DeerFlow Permission / Security：Gateway authz、GuardrailMiddleware、workflow safety middleware、RunManager、Sandbox 与三层防线 | draft |
+| [sandbox-workspace.md](sandbox-workspace.md) | DeerFlow Sandbox / Workspace：`SandboxMiddleware(lazy_init=True)`、`ensure_sandbox_initialized(...)`、LocalSandbox path mapping、host bash 默认禁用与 AIO provider | draft |
 
 ## 源码入口
 
 | 模块 | 源码 | 说明 |
 |---|---|---|
 | Agent 装配 | [agent.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py) | `make_lead_agent` / `build_middlewares`，装配 model、tools、system prompt、middleware、`ThreadState`。 |
-| 状态 schema | [thread_state.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/thread_state.py) | `ThreadState`，扩展 `AgentState`，包含 messages、summary_text、delegations、skill_context、uploaded_files、viewed_images 等上下文字段。 |
+| 状态 schema | [thread_state.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/thread_state.py) | `ThreadState`，扩展 `AgentState`，包含 messages、summary_text、delegations、skill_context、uploaded_files、viewed_images、sandbox 等上下文字段。 |
 | 动态上下文 | [dynamic_context_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/dynamic_context_middleware.py) | 当前日期和 memory snapshot 注入，frozen-snapshot pattern，保持 base system prompt 静态。 |
 | 耐久上下文投影 | [durable_context_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/durable_context_middleware.py) | 捕获 delegation / skill context，并把 summary_text / delegations / skill_context 投影给模型。 |
 | 上下文压缩 | [summarization_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/summarization_middleware.py) | 压缩旧 messages，保留尾部消息，写入 `summary_text` state channel。 |
 | 记忆更新 | [memory_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/memory_middleware.py) | agent 完成后过滤 user / final assistant 消息，异步更新长期 memory。 |
 | 权限 / Guardrail | [middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/guardrails/middleware.py) | 工具调用前调用 `GuardrailProvider` 做 allow / deny 策略检查，拒绝时返回 error `ToolMessage`。 |
+| Sandbox lifecycle | [middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/sandbox/middleware.py) | `SandboxMiddleware(lazy_init=True)`，按需获取 / 复用 sandbox，并把 `sandbox_id` 写回 state。 |
+| Sandbox tools | [tools.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/sandbox/tools.py) | `ensure_sandbox_initialized(...)` 和 bash / file / grep / glob 等 sandbox tool 的真正入口。 |
+| Local sandbox | [local_sandbox.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/sandbox/local/local_sandbox.py) | LocalSandbox path mapping、路径逃逸检查、文件读写与本地命令执行封装。 |
+| Local provider | [local_sandbox_provider.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/sandbox/local/local_sandbox_provider.py) | 按 `(user_id, thread_id)` 缓存 LocalSandbox，并建立 `/mnt/user-data/...` 等虚拟路径映射。 |
+| AIO sandbox provider | [aio_sandbox_provider.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/community/aio_sandbox/aio_sandbox_provider.py) | Docker / K8s backend、warm pool、replicas、idle timeout 与 orphan reconciliation。 |
 | Gateway 授权 | [authz.py](../../../submodules/deer-flow/backend/app/gateway/authz.py) | Gateway API 的 `require_permission` / owner_check，管理 threads / runs 资源权限。 |
 | Run lifecycle | [manager.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/runtime/runs/manager.py) | 同一 thread 的 run 并发、cancel、interrupt / rollback、状态持久化和 orphan reconciliation。 |
 | System 合并 | [system_message_coalescing_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/system_message_coalescing_middleware.py) | provider 请求前合并 static system prompt 与 middleware 产生的 SystemMessage。 |
@@ -61,7 +67,6 @@
 
 - `architecture.md` — 整体架构梳理
 - `middleware.md` — 中间件体系深入
-- `sandbox.md` — 沙箱方案详解
 - `state-machine.md` — 状态机 & HITL 机制
 
 ## 相关文档

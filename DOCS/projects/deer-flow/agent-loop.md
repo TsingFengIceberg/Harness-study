@@ -14,6 +14,7 @@
 - lead agent factory：[agent.py:424-428](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L424-L428)
 - lead agent 装配：[agent.py:431-562](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L431-L562)
 - middleware 组装：[agent.py:270-399](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L270-L399)
+- Sandbox / Workspace 笔记：[sandbox-workspace.md](sandbox-workspace.md)
 - 共享 runtime middleware：[tool_error_handling_middleware.py:128-207](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/tool_error_handling_middleware.py#L128-L207)
 - 工具集合装配：[tools.py:44-175](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/tools.py#L44-L175)
 - ThreadState schema：[thread_state.py:149-157](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/thread_state.py#L149-L157)
@@ -311,7 +312,7 @@ A: DeerFlow 主要通过多层机制处理：`RunManager` 管理同一 thread �
 |---|---|
 | LangGraph checkpoint 如何持久化 ThreadState？ | `state-checkpoint.md` |
 | middleware 洋葱模型的执行顺序与失败策略是什么？ | `middleware.md` |
-| sandbox lifecycle 如何和 ThreadDataMiddleware / SandboxMiddleware 配合？ | `sandbox.md` |
+| sandbox lifecycle 如何和 ThreadDataMiddleware / SandboxMiddleware 配合？ | [sandbox-workspace.md](sandbox-workspace.md) |
 | subagent `task` tool 如何启动子图 / 子 agent？ | `subagents.md` |
 | memory / summarization 如何影响上下文？ | `memory-context.md` |
 | clarification / interrupt / rollback 如何形成 HITL？ | `hitl-runtime.md` |
@@ -320,6 +321,6 @@ A: DeerFlow 主要通过多层机制处理：`RunManager` 管理同一 thread �
 ## 相关文档
 
 - 项目入口：[README.md](README.md)
-- Claw-Code Agent Loop 对照：[../submodules/claw-code/agent-loop.md](../submodules/claw-code/agent-loop.md)
+- Claw-Code Agent Loop 对照：[../claw-code/agent-loop.md](../claw-code/agent-loop.md)
 - 横向 QA：[../../comparison/qa.md](../../comparison/qa.md)
 - 项目定位对比：[../../comparison/project-positioning.md](../../comparison/project-positioning.md)

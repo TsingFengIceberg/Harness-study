@@ -27,7 +27,7 @@
 ```
 DOCS/
 ├── projects/          ← 纵向深挖：每个项目的研读笔记
-│   ├── deer-flow/     ← DeerFlow 笔记（含早期归档 docs-old/）
+│   ├── deer-flow/     ← DeerFlow 笔记（含 sandbox-workspace.md 与早期归档 docs-old/）
 │   ├── claw-code/     ← Claw-Code 笔记（本地 Coding CLI runtime / Agent Loop）
 │   ├── hermes-agent/  ← Hermes Agent 笔记（长期个人 Agent / run_conversation）
 │   ├── openclaw/      ← OpenClaw 笔记（事件驱动 Session / Message loop）
@@ -54,6 +54,8 @@ DOCS/
 | Tool System 横向总结 | [`DOCS/comparison/tool-system.md`](DOCS/comparison/tool-system.md) |
 | Context Management 横向总结 | [`DOCS/comparison/context-management.md`](DOCS/comparison/context-management.md) |
 | Permission / Security 横向总结 | [`DOCS/comparison/permission-security.md`](DOCS/comparison/permission-security.md) |
+| DeerFlow Sandbox / Workspace | [`DOCS/projects/deer-flow/sandbox-workspace.md`](DOCS/projects/deer-flow/sandbox-workspace.md) |
+| OpenHands Sandbox / Workspace | [`DOCS/projects/openhands/sandbox-workspace.md`](DOCS/projects/openhands/sandbox-workspace.md) |
 | 生产部署取舍对比 | [`DOCS/comparison/production-deployment-tradeoffs.md`](DOCS/comparison/production-deployment-tradeoffs.md) |
 | 整体功能特色与项目定位分析 | [`DOCS/comparison/project-positioning.md`](DOCS/comparison/project-positioning.md) |
 | 多个项目在某个维度上怎么不同 | [`DOCS/comparison/`](DOCS/comparison/) |
