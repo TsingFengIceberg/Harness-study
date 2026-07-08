@@ -37,6 +37,7 @@ DOCS/
 │   ├── tool-system.md ← Tool System 横向总结
 │   ├── context-management.md ← Context Management 横向总结
 │   ├── permission-security.md ← Permission / Security / Guardrail 横向总结
+│   ├── sandbox-systems.md ← Sandbox / Workspace 横向总结
 │   └── qa.md          ← 横向学习 QA：跨项目问题、讨论结论、待核验点
 └── synthesis/         ← 拔高归纳：共性设计模式与架构分类
     └── faq.md         ← 最终沉淀 FAQ：已验证、可复用的核心问答
@@ -59,6 +60,7 @@ DOCS/
 | Permission / Security 横向总结 | [`DOCS/comparison/permission-security.md`](DOCS/comparison/permission-security.md) |
 | DeerFlow Sandbox / Workspace | [`DOCS/projects/deer-flow/sandbox-workspace.md`](DOCS/projects/deer-flow/sandbox-workspace.md) |
 | OpenHands Sandbox / Workspace | [`DOCS/projects/openhands/sandbox-workspace.md`](DOCS/projects/openhands/sandbox-workspace.md) |
+| Sandbox / Workspace 横向总结 | [`DOCS/comparison/sandbox-systems.md`](DOCS/comparison/sandbox-systems.md) |
 | 生产部署取舍对比 | [`DOCS/comparison/production-deployment-tradeoffs.md`](DOCS/comparison/production-deployment-tradeoffs.md) |
 | 整体功能特色与项目定位分析 | [`DOCS/comparison/project-positioning.md`](DOCS/comparison/project-positioning.md) |
 | 多个项目在某个维度上怎么不同 | [`DOCS/comparison/`](DOCS/comparison/) |
@@ -121,6 +123,20 @@ Permission / Security / Guardrail 专题已完成 Claw-Code、DeerFlow、OpenCla
 | Hermes Agent | toolsets / scope gate、dangerous command / ACP approval、plugin hooks、tool guardrails 与 memory / skills hygiene | 长期个人助理自我保护系统 |
 
 第一轮横向理解是：**权限安全不只是“要不要问用户确认”，还包括工具可见性、动作风险评估、执行环境隔离、run 生命周期、失败 / loop 熔断、拒绝反馈和长期状态污染防护。**
+
+## Sandbox / Workspace 第一轮总结
+
+Sandbox / Workspace 专题已完成 DeerFlow、OpenHands、Claw-Code、OpenClaw 与 Hermes Agent 的第一轮源码研读。详见 [`DOCS/comparison/sandbox-systems.md`](DOCS/comparison/sandbox-systems.md)：
+
+| 项目 | sandbox / workspace 精髓 | 比喻 |
+|---|---|---|
+| OpenHands | 平台化远程开发环境，ActionEvent 进入 sandbox，ObservationEvent 回流 | 远程开发园区 / 云端工位 |
+| DeerFlow | workflow run 的受控执行环境，middleware / RunManager / sandbox 一起治理 | 工作流工厂的安全生产线 |
+| Claw-Code | 本地 CLI workspace 边界 + 权限审批 + 可选 sandbox wrapper | 本地施工围栏 |
+| OpenClaw | session-level SandboxContext，工具菜单和执行方式随 sandbox 改写 | 多端协作工作室的独立隔间 |
+| Hermes Agent | 可配置 Terminal Environment，默认 local，可切 Docker / SSH / Modal / Daytona | 长期个人助理的工具工作台 |
+
+第一轮横向理解是：**sandbox 不只是“有没有 Docker”，而是模型动作在哪里执行、workspace 边界在哪里、bash / terminal 如何受控、权限审批放在哪一层，以及长任务 / 多任务 / 子 agent 如何避免互相踩。**
 
 ## 使用方式
 
