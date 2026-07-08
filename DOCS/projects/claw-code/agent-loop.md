@@ -50,6 +50,7 @@ LLM response
 - API client
 - tool executor
 - permission policy / permission prompter
+- sandbox / workspace execution boundary
 - system prompt
 - max_iterations
 - usage tracker

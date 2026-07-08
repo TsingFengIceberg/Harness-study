@@ -8,6 +8,7 @@
 - Claw-Code Agent Loop：[agent-loop.md](agent-loop.md)
 - Claw-Code Tool System：[tool-system.md](tool-system.md)
 - Claw-Code Context Management：[context-management.md](context-management.md)
+- Claw-Code Sandbox / Workspace：[sandbox-workspace.md](sandbox-workspace.md)
 - 横向权限安全总结：[permission-security.md](../../comparison/permission-security.md)
 - 横向 QA：[Harness Study 横向 QA](../../comparison/qa.md#permission--security--guardrail--权限安全与防护)
 

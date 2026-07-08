@@ -30,13 +30,13 @@ Claw-Code 在本仓库中定位为 **Claude Code-like 本地 Coding CLI Harness*
 | [tool-system.md](tool-system.md) | 集中式工具中枢：`ToolSpec` / `GlobalToolRegistry`、allowed tools、hooks、两道权限门、ToolSearch 延迟工具发现与工具能力总线 | draft |
 | [context-management.md](context-management.md) | 本地 CLI Agent 的上下文组装：`SystemPromptBuilder`、`Session.messages`、provider message conversion、usage 阈值、auto compaction 与 context-window retry | draft |
 | [permission-security.md](permission-security.md) | Permission / Security：`PermissionPolicy` / `PermissionPrompter` 第一层授权、`PermissionEnforcer` 动态复查、Pre/Post ToolUse hooks 与 hook vs middleware 比较 | draft |
+| [sandbox-workspace.md](sandbox-workspace.md) | Sandbox / Workspace：本地 workspace 围栏、`WorkspaceWrite`、文件路径边界、bash validation 与 Linux `unshare` namespace wrapper | draft |
 
 ## 后续待研读主题
 
 | 主题 | 说明 | 状态 |
 |---|---|---|
 | `permission-security.md` | `PermissionPolicy`、`PermissionPrompter`、allow / deny / ask、bash/path/file safety | draft |
-| `sandbox-runtime.md` | Linux `unshare`、workspace 边界、本机 sandbox 与跨平台差异 | planned |
 | `session-state.md` | `Session` 持久化、branch/fork、session store、`TurnSummary` 调用方 | planned |
 | `hooks-compaction.md` | pre/post tool hooks、compact 与 Trident 压缩的更细节实现、prompt cache / usage 统计 | planned |
 

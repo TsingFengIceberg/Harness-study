@@ -6,6 +6,7 @@
 
 - 项目入口：[README.md](README.md)
 - Agent Loop：[agent-loop.md](agent-loop.md)
+- Sandbox / Workspace：[sandbox-workspace.md](sandbox-workspace.md)
 - 横向对比：[Tool System 横向总结](../../comparison/tool-system.md)
 - 横向 QA：[qa.md](../../comparison/qa.md#tool-system--工具体系)
 

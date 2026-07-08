@@ -11,6 +11,7 @@
   - Loop 本体：[agent-loop.ts](../../../submodules/openclaw/packages/agent-core/src/agent-loop.ts)
   - 类型定义：[types.ts](../../../submodules/openclaw/packages/agent-core/src/types.ts)
 - 横向 QA：[Harness Study 横向 QA](../../comparison/qa.md#agent-loop--控制流)
+- Sandbox / Workspace：[sandbox-workspace.md](sandbox-workspace.md)
 
 ## 1. 核心结论
 

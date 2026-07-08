@@ -28,6 +28,7 @@ Hermes Agent 在本仓库中定位为 **Memory-evolving personal agent harness**
 | [tool-system.md](tool-system.md) | Hermes Tool System：toolsets、registry、Tool Search、sequential/concurrent 执行、guardrail、memory / skills / todo 工具化 | draft |
 | [context-management.md](context-management.md) | Hermes Context Management：session-stable system prompt、临时 recall context、provider repair/sanitize、preflight / pre-API compression 与错误恢复 | draft |
 | [permission-security.md](permission-security.md) | Hermes Permission / Security：toolsets 范围、Tool Search bridge scope gate、危险命令审批、ACP edit approval、plugin hooks、tool guardrails 与 memory / skills 污染风险 | draft |
+| [sandbox-workspace.md](sandbox-workspace.md) | Hermes Sandbox / Workspace：可配置 Terminal Environment、local / Docker / Modal / Daytona / SSH 后端、file tools 执行环境与 `execute_code` 小沙箱 | draft |
 
 ## 源码入口
 
@@ -42,6 +43,9 @@ Hermes Agent 在本仓库中定位为 **Memory-evolving personal agent harness**
 | Turn Finalizer | [turn_finalizer.py](../../../submodules/hermes-agent/agent/turn_finalizer.py) | session persist、response transform、external memory sync、background review。 |
 | Tool Guardrails | [tool_guardrails.py](../../../submodules/hermes-agent/agent/tool_guardrails.py) | 工具失败、同工具连续失败、幂等无进展检测，warning 默认启用，hard stop 可选。 |
 | Command Approval | [approval.py](../../../submodules/hermes-agent/tools/approval.py) | dangerous / hardline command patterns、session-local approval、YOLO 冻结和 sudo stdin guard。 |
+| Terminal Environment | [terminal_tool.py](../../../submodules/hermes-agent/tools/terminal_tool.py)、[tools/environments/](../../../submodules/hermes-agent/tools/environments/) | local / Docker / Singularity / Modal / Daytona / SSH 执行后端、cwd / env snapshot、workspace 与 remote file sync。 |
+| Execute Code Sandbox | [code_execution_tool.py](../../../submodules/hermes-agent/tools/code_execution_tool.py) | 临时 Python 脚本 + `hermes_tools.py` RPC stub、工具白名单、env scrub、timeout / stdout cap。 |
+| File Safety / Ops | [file_tools.py](../../../submodules/hermes-agent/tools/file_tools.py)、[file_operations.py](../../../submodules/hermes-agent/tools/file_operations.py)、[file_safety.py](../../../submodules/hermes-agent/agent/file_safety.py) | file tools 跟随 terminal env，敏感路径 deny、cross-profile guard、atomic write / patch。 |
 | ACP Edit Approval | [edit_approval.py](../../../submodules/hermes-agent/acp_adapter/edit_approval.py) | diff-based edit proposal、敏感路径检查和 ACP client approval bridge。 |
 
 ## 后续待研读主题

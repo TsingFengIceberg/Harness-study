@@ -6,6 +6,7 @@
 
 - OpenClaw Tool System：[tool-system.md](tool-system.md)
 - OpenClaw Context Management：[context-management.md](context-management.md)
+- OpenClaw Sandbox / Workspace：[sandbox-workspace.md](sandbox-workspace.md)
 - 横向 Permission / Security：[../../comparison/permission-security.md](../../comparison/permission-security.md)
 - 横向 Tool System：[../../comparison/tool-system.md](../../comparison/tool-system.md)
 - 横向 QA：[../../comparison/qa.md](../../comparison/qa.md#permission--security--guardrail--权限安全与防护)

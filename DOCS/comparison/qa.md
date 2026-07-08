@@ -537,6 +537,111 @@ A: 不是。LocalSandbox 更准确地说是本地 path-mapping sandbox：它把 
 
 A: OpenHands 的 sandbox 是平台化 SWE Agent 的远程隔离工位：App Server 创建 sandbox，sandbox 内运行 Agent Server，Terminal / FileEditor 在 workspace 里执行。DeerFlow 的 sandbox 是 LangGraph 工具调用的按需执行工作台：Gateway / worker 启动 agent runtime，`SandboxMiddleware(lazy_init=True)` 挂在 middleware chain 中，第一次需要 sandbox 的工具调用才 acquire sandbox。可以概括为：OpenHands 是“先分房间再开工”，DeerFlow 是“工作流跑到要动手时才领工具台”。
 
+### Q: Claw-Code 的 sandbox 到底是什么？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: Claw-Code 的 sandbox 主要是本地 CLI 的执行边界组合：当前 workspace 是核心围栏，`PermissionMode` 控制读 / 写 / 高危动作，`PermissionEnforcer` 和文件工具检查路径是否留在 workspace 内，bash 工具还可以在 Linux 下用 `unshare` 套 user / mount / pid / ipc / uts / optional network namespace。它不是 OpenHands 那种远程 sandbox，也不是 DeerFlow 那种 provider 化 sandbox abstraction。详见 [Claw-Code Sandbox / Workspace](../projects/claw-code/sandbox-workspace.md)。
+
+### Q: Claw-Code 的 WorkspaceWrite 是不是可以写任意本机文件？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 不是。`WorkspaceWrite` 的含义是可以写 workspace 内资源。`PermissionEnforcer.check_file_write(...)` 在 `WorkspaceWrite` 下会检查 path 是否位于 `workspace_root` 内；如果路径在 workspace 外，会拒绝并要求 `DangerFullAccess`。真实文件工具如 `write_file_in_workspace(...)` / `edit_file_in_workspace(...)` 也会执行 workspace boundary enforcement。
+
+### Q: Claw-Code 的 bash sandbox 是强容器隔离吗？
+
+> **状态**: to-verify
+> **来源**: source-code / discussion
+
+A: 第一轮已读代码确认 Claw-Code 会在 Linux 且 `unshare` 可用时为 bash 构造 user / mount / pid / ipc / uts / optional network namespace，并设置 `.sandbox-home`、`.sandbox-tmp` 和 sandbox 环境变量。但当前未看到完整 bind mount / remount readonly / chroot / pivot_root / allowed_mounts 强制裁剪，因此不应直接写成 Docker / VM 级强隔离。更谨慎的说法是：它是 bash 的本地 Linux namespace wrapper，和 permission / path validation 共同构成防线。
+
+### Q: `bash_validation.rs` 的完整 validation pipeline 是否每次 bash 执行都会调用？
+
+> **状态**: to-verify
+> **来源**: source-code / discussion
+
+A: 暂不能这样断言。第一轮 grep 已确认 `bash_validation.rs` 定义了 `validate_command(command, mode, workspace)`，并有 read-only、sed、destructive、path traversal 等检查和测试；但在已读主工具执行路径里，已经确认的是 `tools/src/lib.rs` 的 `classify_bash_permission(...)` 以及 `PermissionEnforcer` 动态 required mode 检查。`validate_command(...)` 在实际 CLI bash 执行链路中的接入点需要继续核验，因此当前只写成“存在 bash validation 安全检查模块”，不写成“每次 bash 都会走完整 pipeline”。
+
+### Q: Claw-Code 和 OpenHands / DeerFlow 的 sandbox 精髓差异是什么？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: OpenHands 的 sandbox 是远程隔离工位，sandbox 内跑 Agent Server；DeerFlow 的 sandbox 是 LangGraph 工具调用按需 acquire 的 provider 化工作台；Claw-Code 的 sandbox 是本地 CLI workspace 执行边界，靠 workspace 围栏、权限模式、动态分类、文件路径检查和 bash namespace wrapper 限制危险动作。可以概括为：OpenHands 把 Agent 放进房间，DeerFlow 让工具领工作台，Claw-Code 在本地工地加围栏和安全棚。
+
+### Q: OpenClaw 的 sandbox 到底是什么？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: OpenClaw 的 sandbox 是 Agent session 级的产品化隔离运行时上下文。它先按 `mode=off/non-main/all` 判断当前 session 是否 sandboxed，再按 global / agent config 创建或复用 Docker / SSH / custom backend，准备 workspace mount、fsBridge、browser bridge、tool policy，并在 `createOpenClawCodingTools` 中把 read / write / edit / exec / plugin / browser 工具重新接到 sandbox context。详见 [OpenClaw Sandbox / Workspace](../projects/openclaw/sandbox-workspace.md)。
+
+### Q: OpenClaw sandbox 的 workspaceAccess 有什么作用？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: `workspaceAccess` 控制 sandbox workspace 和原始 agent workspace 的关系：`rw` 时 sandbox 可以直接读写原始 workspace；`ro` / `none` 时 sandbox 使用独立工作区。工具装配时 `ro` 会隐藏 write / edit，fsBridge 还会按 mount writable 状态做最终写入判断。
+
+### Q: OpenClaw sandbox 和 Claw-Code sandbox 最大区别是什么？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: Claw-Code 的 sandbox 是本地 CLI 执行边界，主要围绕当前 workspace、permission mode、文件路径检查和 bash `unshare` wrapper；OpenClaw 的 sandbox 是 session runtime 工位，会创建 / 复用 Docker 或 SSH backend，并改变工具菜单、exec target、文件桥、browser bridge 和 plugin tool 能力。可以概括为：Claw-Code 是本地施工围栏，OpenClaw 是多端 Agent 工作室里的隔离工位。
+
+### Q: OpenClaw sandbox 为什么会影响工具菜单？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 因为 OpenClaw 的 sandbox 不是只包 bash，而是 session 级 `SandboxContext`。启用后 read / write / edit / exec / apply_patch / plugin / browser 等工具都会围绕 sandbox workspace、fsBridge、exec target 和 tool policy 重新装配；比如 workspace read-only 时会隐藏写工具，exec target 会从 host 切到 sandbox，plugin tools 也会受 sandbox policy 限制。
+
+### Q: Hermes Agent 的 sandbox 到底是什么？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: Hermes 的 sandbox 更准确地说是可配置 Terminal Environment：默认 `local` 直接在宿主机执行，也可以切到 Docker、Singularity、Modal、Daytona、SSH 等 backend。terminal、file tools 和 remote `execute_code` 都复用这套环境；local `execute_code` 另有临时 Python 子进程 + RPC 工具白名单的小沙箱。因此 Hermes 不是单一固定 Docker sandbox，而是长期个人 Agent 的可切换执行工作台。详见 [Hermes Agent Sandbox / Workspace](../projects/hermes-agent/sandbox-workspace.md)。
+
+### Q: Hermes 默认会不会把命令放进 Docker / VM？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 不会。默认 `TERMINAL_ENV=local`，`LocalEnvironment` 直接在宿主机当前用户权限下执行 bash。只有显式配置 `TERMINAL_ENV=docker/singularity/modal/daytona/ssh`，terminal 和 file tools 才会进入对应容器、云 sandbox 或远程机器。因此 Hermes 的默认安全模型不是“强隔离容器”，而是本地执行 + dangerous command approval + secret env scrub + file safety guard。
+
+### Q: Hermes 的 file tools 是否总是在宿主文件系统上读写？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 不一定。Hermes 的 `read_file` / `write_file` / `patch` 通过 `ShellFileOperations` 调当前 terminal backend 的 `execute(...)`。如果当前 backend 是 local，它们操作宿主文件系统；如果是 Docker、SSH、Modal、Daytona 或 Singularity，它们会在对应环境里执行 shell file operations。相对路径会先按 live terminal cwd、registered task/session cwd、`TERMINAL_CWD` 等解析。
+
+### Q: Hermes 的 Docker backend 和 OpenClaw / OpenHands sandbox 有什么区别？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: Hermes Docker 是 terminal execution backend：主 Agent loop 仍在 Hermes 主进程里，工具调用时把 terminal / file 操作下发到 Docker 容器。OpenClaw sandbox 是 session runtime context，会重写工具菜单、exec target、fsBridge、browser bridge 和 policy；OpenHands sandbox 则更像远程开发工位，Agent Server 直接跑在 sandbox 内。Hermes Docker 更像个人助理的可选容器工作台，不是整个平台会话都搬进 sandbox。
+
+### Q: Hermes 有没有类似 Claw-Code WorkspaceWrite 的统一 workspace jail？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: 第一轮看下来没有看到等价的统一 `WorkspaceWrite` jail。Hermes 通过 `TERMINAL_CWD` / ACP cwd 决定相对路径锚点，通过 sensitive path denylist、`HERMES_WRITE_SAFE_ROOT`、cross-profile soft guard、ACP edit approval 和 backend 隔离来约束写入。也就是说，Hermes 的 workspace 更像当前工作目录和审批语义，不是全局 permission mode 下的文件系统围栏。
+
+### Q: 五个项目的 sandbox / workspace 一句话怎么区分？
+
+> **状态**: verified
+> **来源**: source-code / discussion
+
+A: OpenHands 是远程开发园区工位，Agent Server 在 sandbox 内工作；DeerFlow 是工作流工厂工具台，第一次 sandbox tool call 才 acquire provider；Claw-Code 是本地施工围栏，workspace boundary + permission + bash wrapper；OpenClaw 是多端工作室隔离工位，session sandbox context 会重写工具面；Hermes 是长期个人助理工作台，terminal/file/execute_code 接到可切换 local / container / cloud / SSH backend。
+
 ## Tool System / 工具体系
 
 ### Q: 为什么后续专题叫 Tool System，而不是只叫 tool-calling？

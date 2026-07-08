@@ -28,9 +28,9 @@
 DOCS/
 ├── projects/          ← 纵向深挖：每个项目的研读笔记
 │   ├── deer-flow/     ← DeerFlow 笔记（含 sandbox-workspace.md 与早期归档 docs-old/）
-│   ├── claw-code/     ← Claw-Code 笔记（本地 Coding CLI runtime / Agent Loop）
-│   ├── hermes-agent/  ← Hermes Agent 笔记（长期个人 Agent / run_conversation）
-│   ├── openclaw/      ← OpenClaw 笔记（事件驱动 Session / Message loop）
+│   ├── claw-code/     ← Claw-Code 笔记（本地 Coding CLI runtime / Agent Loop / sandbox-workspace）
+│   ├── hermes-agent/  ← Hermes Agent 笔记（长期个人 Agent / run_conversation / sandbox-workspace）
+│   ├── openclaw/      ← OpenClaw 笔记（事件驱动 Session / Message loop / sandbox-workspace）
 │   └── openhands/     ← OpenHands 笔记（平台化 SWE Agent Harness）
 ├── comparison/        ← 横向对比：同一维度横切多个项目
 │   ├── agent-loop.md  ← Agent Loop 横向总结
@@ -48,6 +48,9 @@ DOCS/
 |---|---|
 | 某个项目的源码怎么设计的 | [`DOCS/projects/<项目名>/`](DOCS/projects/) |
 | Claw-Code 本地 Agent Loop | [`DOCS/projects/claw-code/agent-loop.md`](DOCS/projects/claw-code/agent-loop.md) |
+| Claw-Code Sandbox / Workspace | [`DOCS/projects/claw-code/sandbox-workspace.md`](DOCS/projects/claw-code/sandbox-workspace.md) |
+| OpenClaw Sandbox / Workspace | [`DOCS/projects/openclaw/sandbox-workspace.md`](DOCS/projects/openclaw/sandbox-workspace.md) |
+| Hermes Agent Sandbox / Workspace | [`DOCS/projects/hermes-agent/sandbox-workspace.md`](DOCS/projects/hermes-agent/sandbox-workspace.md) |
 | Tool System 项目笔记 | [`DOCS/projects/claw-code/tool-system.md`](DOCS/projects/claw-code/tool-system.md)、[`DOCS/projects/deer-flow/tool-system.md`](DOCS/projects/deer-flow/tool-system.md)、[`DOCS/projects/openclaw/tool-system.md`](DOCS/projects/openclaw/tool-system.md)、[`DOCS/projects/hermes-agent/tool-system.md`](DOCS/projects/hermes-agent/tool-system.md)、[`DOCS/projects/openhands/tool-system.md`](DOCS/projects/openhands/tool-system.md) |
 | DeerFlow / Hermes / OpenClaw / OpenHands Agent Loop | [`DOCS/projects/deer-flow/agent-loop.md`](DOCS/projects/deer-flow/agent-loop.md)、[`DOCS/projects/hermes-agent/agent-loop.md`](DOCS/projects/hermes-agent/agent-loop.md)、[`DOCS/projects/openclaw/agent-loop.md`](DOCS/projects/openclaw/agent-loop.md)、[`DOCS/projects/openhands/agent-loop.md`](DOCS/projects/openhands/agent-loop.md) |
 | Agent Loop 横向总结 | [`DOCS/comparison/agent-loop.md`](DOCS/comparison/agent-loop.md) |

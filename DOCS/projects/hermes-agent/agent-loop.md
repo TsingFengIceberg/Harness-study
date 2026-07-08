@@ -23,6 +23,7 @@
 - tool result message 追加：[tool_executor.py:1461-1485](../../../submodules/hermes-agent/agent/tool_executor.py#L1461-L1485)
 - iteration budget：[iteration_budget.py:16-58](../../../submodules/hermes-agent/agent/iteration_budget.py#L16-L58)
 - interrupt / steer：[run_agent.py:2487-2638](../../../submodules/hermes-agent/run_agent.py#L2487-L2638)
+- Sandbox / Workspace：[sandbox-workspace.md](sandbox-workspace.md)
 
 ## 和 Claw-Code / DeerFlow 的差异
 
@@ -307,7 +308,7 @@ A: 概念上像“下一轮补一句方向”，工程上不能随便插一条�
 ## 相关文档
 
 - 项目入口：[README.md](README.md)
-- Claw-Code Agent Loop 对照：[../submodules/claw-code/agent-loop.md](../submodules/claw-code/agent-loop.md)
-- DeerFlow Agent Loop 对照：[../submodules/deer-flow/agent-loop.md](../submodules/deer-flow/agent-loop.md)
+- Claw-Code Agent Loop 对照：[../claw-code/agent-loop.md](../claw-code/agent-loop.md)
+- DeerFlow Agent Loop 对照：[../deer-flow/agent-loop.md](../deer-flow/agent-loop.md)
 - 横向 QA：[../../comparison/qa.md](../../comparison/qa.md)
 - 项目定位对比：[../../comparison/project-positioning.md](../../comparison/project-positioning.md)

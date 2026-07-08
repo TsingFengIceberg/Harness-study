@@ -16,6 +16,7 @@
 | [tool-system.md](tool-system.md) | draft | OpenClaw Tool System：AgentTool、createOpenClawCodingTools、policy pipeline、before_tool_call runtime、sequential/parallel 执行与 Tool Search。 |
 | [context-management.md](context-management.md) | draft | OpenClaw Context Management：AgentContext.messages、transformContext / convertToLlm、streaming message、steer/followUp、compaction 与 session persistence。 |
 | [permission-security.md](permission-security.md) | draft | OpenClaw Permission / Security：tool policy pipeline、before_tool_call runtime、plugin approval、embedded / gateway 审批路由与 subagent 控制面限制。 |
+| [sandbox-workspace.md](sandbox-workspace.md) | draft | OpenClaw Sandbox / Workspace：session 级 Docker / SSH / browser / fsBridge 隔离工位、workspaceAccess、tool policy 与 exec target 重配。 |
 
 ## 源码入口
 
@@ -29,6 +30,10 @@
 | Harness 上下文 hook | [agent-harness.ts](../../../submodules/openclaw/packages/agent-core/src/harness/agent-harness.ts) | `CoreAgentHarness` 安装 context hook、tool hook、prepareNextTurn 和 session write flush。 |
 | 工具装配 | [agent-tools.ts](../../../submodules/openclaw/src/agents/agent-tools.ts) | `createOpenClawCodingTools` 按 run/session/channel/model/sandbox/policy 动态组装工具面。 |
 | 工具治理 | [agent-tools.before-tool-call.ts](../../../submodules/openclaw/src/agents/agent-tools.before-tool-call.ts) | before_tool_call policy runtime：plugin hooks、approval、diagnostics、loop detection 等。 |
+| Sandbox context | [context.ts](../../../submodules/openclaw/src/agents/sandbox/context.ts) | `resolveSandboxContext(...)` 装配 session 级 sandbox runtime、workspace layout、backend、browser 和 fsBridge。 |
+| Sandbox config | [config.ts](../../../submodules/openclaw/src/agents/sandbox/config.ts) | sandbox mode、backend、scope、workspaceAccess、Docker / SSH / browser / prune / tool policy 配置解析。 |
+| Docker sandbox | [docker.ts](../../../submodules/openclaw/src/agents/sandbox/docker.ts) | Docker container create / start / inspect / exec、read-only root、network、mount 和 config hash。 |
+| Sandbox fsBridge | [fs-bridge.ts](../../../submodules/openclaw/src/agents/sandbox/fs-bridge.ts) | host / sandbox 文件桥，负责路径映射、读写、rename / remove / stat 和 path safety。 |
 | Tool Policy | [tool-policy-pipeline.ts](../../../submodules/openclaw/src/agents/tool-policy-pipeline.ts) | profile / provider / agent / group / sender / sandbox / subagent / inherited 多层工具可见性策略。 |
 | Plugin Approval | [plugin-approvals.ts](../../../submodules/openclaw/src/infra/plugin-approvals.ts) | plugin tool 审批请求、allow-once / allow-always / deny 决策、timeout 与审批生命周期。 |
 | Tool Search | [tool-search.ts](../../../submodules/openclaw/src/agents/tool-search.ts) | search / describe / call / code-mode 工具目录服务。 |
