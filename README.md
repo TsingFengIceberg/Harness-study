@@ -38,6 +38,7 @@ DOCS/
 │   ├── context-management.md ← Context Management 横向总结
 │   ├── permission-security.md ← Permission / Security / Guardrail 横向总结
 │   ├── sandbox-systems.md ← Sandbox / Workspace 横向总结
+│   ├── multi-agent.md ← Multi-Agent / Subagent 横向总结
 │   └── qa.md          ← 横向学习 QA：跨项目问题、讨论结论、待核验点
 └── synthesis/         ← 拔高归纳：共性设计模式与架构分类
     └── faq.md         ← 最终沉淀 FAQ：已验证、可复用的核心问答
@@ -61,6 +62,7 @@ DOCS/
 | DeerFlow Sandbox / Workspace | [`DOCS/projects/deer-flow/sandbox-workspace.md`](DOCS/projects/deer-flow/sandbox-workspace.md) |
 | OpenHands Sandbox / Workspace | [`DOCS/projects/openhands/sandbox-workspace.md`](DOCS/projects/openhands/sandbox-workspace.md) |
 | Sandbox / Workspace 横向总结 | [`DOCS/comparison/sandbox-systems.md`](DOCS/comparison/sandbox-systems.md) |
+| Multi-Agent / Subagent 横向总结 | [`DOCS/comparison/multi-agent.md`](DOCS/comparison/multi-agent.md) |
 | 生产部署取舍对比 | [`DOCS/comparison/production-deployment-tradeoffs.md`](DOCS/comparison/production-deployment-tradeoffs.md) |
 | 整体功能特色与项目定位分析 | [`DOCS/comparison/project-positioning.md`](DOCS/comparison/project-positioning.md) |
 | 多个项目在某个维度上怎么不同 | [`DOCS/comparison/`](DOCS/comparison/) |
@@ -137,6 +139,20 @@ Sandbox / Workspace 专题已完成 DeerFlow、OpenHands、Claw-Code、OpenClaw 
 | Hermes Agent | 可配置 Terminal Environment，默认 local，可切 Docker / SSH / Modal / Daytona | 长期个人助理的工具工作台 |
 
 第一轮横向理解是：**sandbox 不只是“有没有 Docker”，而是模型动作在哪里执行、workspace 边界在哪里、bash / terminal 如何受控、权限审批放在哪一层，以及长任务 / 多任务 / 子 agent 如何避免互相踩。**
+
+## Multi-Agent / Subagent 第一轮总结
+
+Multi-Agent / Subagent 专题已完成 DeerFlow、Claw-Code、OpenClaw、Hermes Agent 与 OpenHands 的第一轮源码研读，详见 [`DOCS/comparison/multi-agent.md`](DOCS/comparison/multi-agent.md)：
+
+| 项目 | Multi-Agent 精髓 | 比喻 |
+|---|---|---|
+| DeerFlow | Lead Agent 通过 `task` 工具动态派工，SubagentExecutor 跑独立 LangGraph subagent，Delegation Ledger 留档 | 工作流工厂 |
+| Hermes Agent | `delegate_task` 创建 child AIAgent，支持 leaf / orchestrator、批量并行、后台分身、active registry 与 interrupt | 私人助理分身术 |
+| OpenHands | `enable_sub_agents` 打开平台能力，`AgentDefinition` 注册专业工种，`TaskToolSet` 派工并以 TaskObservation / UI card 回流 | 远程开发平台外包工位 |
+| OpenClaw | ACP 父子 session 谱系、parent-owned-background、spawnDepth、subagentRole / controlScope 管理后台子会话 | 多会话工作室总控台 |
+| Claw-Code | TaskPacket、TaskRegistry、Worker boot、TeamRegistry、worktree / permission / acceptance 构成本地任务协作系统 | 本地施工队任务看板 |
+
+第一轮横向理解是：**多 Agent 的共同骨架是“派工、隔离、执行、回报、治理”；差异主要来自承载层不同，所以它会表现成 LangGraph `task` tool、Hermes `delegate_task`、OpenHands `TaskToolSet` / `AgentDefinition`、OpenClaw ACP 父子 session，或 Claw-Code TaskPacket / Worker / Team。**
 
 ## 使用方式
 

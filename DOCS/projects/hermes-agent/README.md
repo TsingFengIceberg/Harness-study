@@ -6,7 +6,7 @@
 
 - **Submodule**: [hermes-agent/](../../../submodules/hermes-agent/) — 指向 `NousResearch/hermes-agent`
 - **官方仓库**: [github.com/NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent)
-- **当前快照**: `05cbddc01234ea120cccc1f62d36f1ef352b0d52`
+- **当前快照**: `58e1647b498291bdd28563714513292406d6a876`
 
 ## 研究定位
 
@@ -29,6 +29,7 @@ Hermes Agent 在本仓库中定位为 **Memory-evolving personal agent harness**
 | [context-management.md](context-management.md) | Hermes Context Management：session-stable system prompt、临时 recall context、provider repair/sanitize、preflight / pre-API compression 与错误恢复 | draft |
 | [permission-security.md](permission-security.md) | Hermes Permission / Security：toolsets 范围、Tool Search bridge scope gate、危险命令审批、ACP edit approval、plugin hooks、tool guardrails 与 memory / skills 污染风险 | draft |
 | [sandbox-workspace.md](sandbox-workspace.md) | Hermes Sandbox / Workspace：可配置 Terminal Environment、local / Docker / Modal / Daytona / SSH 后端、file tools 执行环境与 `execute_code` 小沙箱 | draft |
+| [multi-agent.md](multi-agent.md) | Hermes Multi-Agent：`delegate_task`、child AIAgent、leaf / orchestrator、blocked tools、批量并行与后台分身完成队列 | draft |
 
 ## 源码入口
 
@@ -61,5 +62,6 @@ Hermes Agent 在本仓库中定位为 **Memory-evolving personal agent harness**
 
 - 整体定位：[项目定位与功能特色对比](../../comparison/project-positioning.md)
 - 横向 QA：[Harness Study 横向 QA](../../comparison/qa.md)
-- Agent Loop 横向专题：`../../comparison/agent-loop.md`（待撰写）
+- Agent Loop 横向专题：[../../comparison/agent-loop.md](../../comparison/agent-loop.md)
+- Multi-Agent 横向专题：[../../comparison/multi-agent.md](../../comparison/multi-agent.md)
 - 记忆与上下文专题：`../../comparison/memory-context.md`（待撰写）

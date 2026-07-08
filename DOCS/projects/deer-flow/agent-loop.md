@@ -11,6 +11,7 @@
 - 创建 run 并启动后台任务：[services.py:356](../../../submodules/deer-flow/backend/app/gateway/services.py#L356)
 - 后台 worker 主体：[worker.py:121](../../../submodules/deer-flow/backend/packages/harness/deerflow/runtime/runs/worker.py#L121)
 - `agent.astream(...)` 驱动位置：[worker.py:305-334](../../../submodules/deer-flow/backend/packages/harness/deerflow/runtime/runs/worker.py#L305-L334)
+- Multi-Agent 笔记：[multi-agent.md](multi-agent.md)
 - lead agent factory：[agent.py:424-428](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L424-L428)
 - lead agent 装配：[agent.py:431-562](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L431-L562)
 - middleware 组装：[agent.py:270-399](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L270-L399)

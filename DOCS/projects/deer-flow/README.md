@@ -5,7 +5,7 @@
 ## 源码
 
 - **Submodule**: [deer-flow/](../../../submodules/deer-flow/) — 指向 `bytedance/deer-flow`
-- **当前快照**: `0808738c5876b04b4aa8e9aca7379a0a62b4232d`
+- **当前快照**: `c9fb9768d476e28de0294ac7a23cab9819b93f83`
 - **官方仓库**: [github.com/bytedance/deer-flow](https://github.com/bytedance/deer-flow)
 
 ## 笔记目录
@@ -40,6 +40,7 @@
 | [agent-loop.md](agent-loop.md) | Gateway Run + LangGraph agent runtime 控制流：run 创建、`agent.astream(...)`、middleware、工具调用、状态与终止条件 | draft |
 | [tool-system.md](tool-system.md) | LangGraph 标准生产线 + middleware 化工具治理：`BaseTool` / `ToolCallRequest` / `ToolMessage` / `Command`、sandbox 工具、deferred MCP Tool Search 与生产部署取舍 | draft |
 | [context-management.md](context-management.md) | DeerFlow Context Management：ThreadState、DynamicContext、Summarization、DurableContext、middleware projection 与 LangGraph checkpoint | draft |
+| [multi-agent.md](multi-agent.md) | DeerFlow Multi-Agent：Lead Agent 动态派工、`task` 工具、SubagentExecutor、子 agent 状态隔离、delegation ledger 派工台账 | draft |
 | [permission-security.md](permission-security.md) | DeerFlow Permission / Security：Gateway authz、GuardrailMiddleware、workflow safety middleware、RunManager、Sandbox 与三层防线 | draft |
 | [sandbox-workspace.md](sandbox-workspace.md) | DeerFlow Sandbox / Workspace：`SandboxMiddleware(lazy_init=True)`、`ensure_sandbox_initialized(...)`、LocalSandbox path mapping、host bash 默认禁用与 AIO provider | draft |
 
@@ -56,6 +57,9 @@
 | 权限 / Guardrail | [middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/guardrails/middleware.py) | 工具调用前调用 `GuardrailProvider` 做 allow / deny 策略检查，拒绝时返回 error `ToolMessage`。 |
 | Sandbox lifecycle | [middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/sandbox/middleware.py) | `SandboxMiddleware(lazy_init=True)`，按需获取 / 复用 sandbox，并把 `sandbox_id` 写回 state。 |
 | Sandbox tools | [tools.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/sandbox/tools.py) | `ensure_sandbox_initialized(...)` 和 bash / file / grep / glob 等 sandbox tool 的真正入口。 |
+| Multi-Agent task tool | [task_tool.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/builtins/task_tool.py) | Lead Agent 调用 subagent 的桥：解析 `subagent_type`、继承父 runtime context、启动 `SubagentExecutor` 并返回 `ToolMessage(name="task")`。 |
+| Subagent executor | [executor.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/subagents/executor.py) | 子 agent 的后台执行器：独立 LangGraph agent、background task、isolated event loop、状态、取消、超时与结果提取。 |
+| Delegation ledger | [delegation_ledger.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/delegation_ledger.py) | 从 `messages` 中抽取 `task` 派工记录，形成 `ThreadState.delegations` 派工台账并供 durable context 投影。 |
 | Local sandbox | [local_sandbox.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/sandbox/local/local_sandbox.py) | LocalSandbox path mapping、路径逃逸检查、文件读写与本地命令执行封装。 |
 | Local provider | [local_sandbox_provider.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/sandbox/local/local_sandbox_provider.py) | 按 `(user_id, thread_id)` 缓存 LocalSandbox，并建立 `/mnt/user-data/...` 等虚拟路径映射。 |
 | AIO sandbox provider | [aio_sandbox_provider.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/community/aio_sandbox/aio_sandbox_provider.py) | Docker / K8s backend、warm pool、replicas、idle timeout 与 orphan reconciliation。 |
@@ -72,4 +76,5 @@
 ## 相关文档
 
 - 横向对比见 [DOCS/comparison/](../../comparison/README.md)
+- Multi-Agent 横向专题：[Multi-Agent / Subagent 横向总结](../../comparison/multi-agent.md)
 - 综合归纳见 [DOCS/synthesis/](../../synthesis/README.md)

@@ -6,7 +6,7 @@
 
 - **Submodule**: [openclaw/](../../../submodules/openclaw/) — 指向 `openclaw/openclaw`
 - **官方仓库**: [github.com/openclaw/openclaw](https://github.com/openclaw/openclaw)
-- **当前快照**: `780ca1d25315b34d3118e1db2d8dcafcc16415f3`
+- **当前快照**: `9eeebf7cb13ada247ae94d8e3ab6810dc1b3070a`
 
 ## 笔记索引
 
@@ -17,6 +17,7 @@
 | [context-management.md](context-management.md) | draft | OpenClaw Context Management：AgentContext.messages、transformContext / convertToLlm、streaming message、steer/followUp、compaction 与 session persistence。 |
 | [permission-security.md](permission-security.md) | draft | OpenClaw Permission / Security：tool policy pipeline、before_tool_call runtime、plugin approval、embedded / gateway 审批路由与 subagent 控制面限制。 |
 | [sandbox-workspace.md](sandbox-workspace.md) | draft | OpenClaw Sandbox / Workspace：session 级 Docker / SSH / browser / fsBridge 隔离工位、workspaceAccess、tool policy 与 exec target 重配。 |
+| [multi-agent.md](multi-agent.md) | draft | OpenClaw Multi-Agent：ACP 父子 session、lineage metadata、parent-owned-background、subagent role / control scope 与事件回流。 |
 
 ## 源码入口
 
@@ -54,3 +55,4 @@ OpenClaw 的 Agent Loop 可以概括为：
 - 横向 QA：[OpenClaw 的权限治理和 Claw-Code 的两道权限门有什么本质不同？](../../comparison/qa.md#q-openclaw-的权限治理和-claw-code-的两道权限门有什么本质不同)
 - Tool System 横向专题：[Tool System 横向总结](../../comparison/tool-system.md)
 - Permission / Security 横向专题：[Permission / Security / Guardrail 横向笔记](../../comparison/permission-security.md)
+- Multi-Agent 横向专题：[Multi-Agent / Subagent 横向总结](../../comparison/multi-agent.md)

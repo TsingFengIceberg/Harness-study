@@ -31,6 +31,7 @@ Claw-Code 在本仓库中定位为 **Claude Code-like 本地 Coding CLI Harness*
 | [context-management.md](context-management.md) | 本地 CLI Agent 的上下文组装：`SystemPromptBuilder`、`Session.messages`、provider message conversion、usage 阈值、auto compaction 与 context-window retry | draft |
 | [permission-security.md](permission-security.md) | Permission / Security：`PermissionPolicy` / `PermissionPrompter` 第一层授权、`PermissionEnforcer` 动态复查、Pre/Post ToolUse hooks 与 hook vs middleware 比较 | draft |
 | [sandbox-workspace.md](sandbox-workspace.md) | Sandbox / Workspace：本地 workspace 围栏、`WorkspaceWrite`、文件路径边界、bash validation 与 Linux `unshare` namespace wrapper | draft |
+| [multi-agent.md](multi-agent.md) | Multi-Agent：`TaskPacket`、`TaskRegistry`、Worker boot、TeamRegistry、worktree / permission / acceptance 共同构成的本地施工队调度板 | draft |
 
 ## 后续待研读主题
 
@@ -47,3 +48,4 @@ Claw-Code 在本仓库中定位为 **Claude Code-like 本地 Coding CLI Harness*
 - Agent Loop 横向专题：[Agent Loop 横向总结](../../comparison/agent-loop.md)
 - 工具系统横向专题：[Tool System 横向总结](../../comparison/tool-system.md)
 - 权限安全横向专题：[Permission / Security / Guardrail 横向笔记](../../comparison/permission-security.md)
+- Multi-Agent 横向专题：[Multi-Agent / Subagent 横向总结](../../comparison/multi-agent.md)

@@ -7,6 +7,7 @@
 - 项目入口：[README.md](README.md)
 - Agent Loop：[agent-loop.md](agent-loop.md)
 - Tool System：[tool-system.md](tool-system.md)
+- Multi-Agent：[multi-agent.md](multi-agent.md)
 - Sandbox / Workspace：[sandbox-workspace.md](sandbox-workspace.md)
 - Claw-Code Context Management：[../claw-code/context-management.md](../claw-code/context-management.md)
 - OpenClaw Context Management：[../openclaw/context-management.md](../openclaw/context-management.md)
