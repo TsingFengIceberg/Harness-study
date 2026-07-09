@@ -24,7 +24,7 @@
 | [tool-system.md](tool-system.md) | Claw-Code / DeerFlow / OpenHands / OpenClaw / Hermes Agent | Tool System 第一轮横向总结：覆盖 Claw-Code 集中式工具中枢、DeerFlow LangGraph 标准生产线、OpenHands 控制面 / software-agent-sdk 执行面分离、OpenClaw 事件化工具调度与 Hermes toolsets / Tool Search / guardrail / memory-skills 工具工作台，提炼两道权限门、ToolSearch / Tool Search、sequential / parallel 调度、ActionEvent / ObservationEvent 等跨项目比较框架。 |
 | [context-management.md](context-management.md) | Claw-Code / OpenClaw / Hermes Agent / DeerFlow / OpenHands | Context Management 第一轮横向总结：围绕“模型下一轮看什么”，用本地施工日志、会话调度室、个人助理脑、状态流水线工厂、平台事件账本等比喻比较五类上下文管理模型。 |
 | [multi-agent.md](multi-agent.md) | DeerFlow / Claw-Code / OpenClaw / Hermes Agent / OpenHands | Multi-Agent / Subagent 第一轮横向总结：提炼“派工、隔离、执行、回报、治理”的统一设计原则，对比 LangGraph `task` tool、Hermes `delegate_task`、OpenHands `TaskToolSet` / `AgentDefinition`、OpenClaw ACP 父子 session 与 Claw-Code TaskPacket / Worker / Team。 |
-| [model-routing-cost-token-budget.md](model-routing-cost-token-budget.md) | DeerFlow / Hermes Agent / OpenHands / OpenClaw / Claw-Code | Model Routing / Cost / Token Budget 横向总结：把模型视为可调度资源，比较主模型 / 子模型 / thinking 档位、token budget、context compression、成本归因和 multi-agent 成本放大防线。 |
+| [model-routing-cost-token-budget.md](model-routing-cost-token-budget.md) | DeerFlow / Hermes Agent / OpenHands / OpenClaw / Claw-Code / LiteLLM | Model Routing / Cost / Token Budget 横向总结：把模型视为可调度资源，比较主模型 / 子模型 / thinking 档位、token budget、context compression、成本归因和 multi-agent 成本放大防线；LiteLLM 作为 LLM Gateway / AI Gateway 样本补充 provider routing、virtual key、spend tracking、预算治理，并记录 DeerFlow 接入 LiteLLM 作为模型网关的分层方案。 |
 | [permission-security.md](permission-security.md) | Claw-Code / DeerFlow / OpenClaw / OpenHands / Hermes Agent | Permission / Security 第一轮横向笔记：从 Claw-Code 本地工具调用双闸门出发，对比 DeerFlow 工作流工厂安全生产线、OpenClaw 工具门禁 + 审批工单系统、OpenHands Action 风险安检 + 工位隔离、Hermes 长期个人助理自我保护系统，并标记 hooks 是外挂监工、middleware 是内建工位这一核心差异。 |
 | [sandbox-systems.md](sandbox-systems.md) | DeerFlow / OpenHands / Claw-Code / OpenClaw / Hermes Agent | Sandbox / Workspace 第一轮横向总结：比较远程开发园区、工作流工厂生产线、本地施工围栏、多端协作工作室隔间与长期个人助理工作台五类执行环境边界。 |
 | [production-deployment-tradeoffs.md](production-deployment-tradeoffs.md) | Claw-Code / OpenClaw / Hermes Agent / DeerFlow / OpenHands | 生产部署取舍：从实际运行、部署、长期运维、多用户、多端交互、长任务可靠性、安全隔离和成本角度比较五类 Agent Harness 设计。 |
@@ -47,6 +47,7 @@
 | Claw-Code | [DOCS/projects/claw-code/](../projects/claw-code/README.md) |
 | Hermes Agent | [DOCS/projects/hermes-agent/](../projects/hermes-agent/README.md) |
 | OpenHands | [DOCS/projects/openhands/](../projects/openhands/README.md) |
+| LiteLLM | [DOCS/projects/litellm/](../projects/litellm/README.md) |
 | learn-claude-code | `DOCS/projects/learn-claude-code/`（待建立） |
 
 ## 相关文档
