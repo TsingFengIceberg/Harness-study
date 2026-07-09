@@ -1,6 +1,6 @@
 # Multi-Agent / Subagent 横向总结：派工、隔离、执行、回报与治理
 
-> **日期**: 2026-07-08 | **状态**: draft | **涉及版本**: DeerFlow `c9fb9768d476e28de0294ac7a23cab9819b93f83` / Claw-Code `4ea31c1bc91c4e9bcbd67d51c550c01e127e6d0d` / OpenClaw `9eeebf7cb13ada247ae94d8e3ab6810dc1b3070a` / Hermes Agent `58e1647b498291bdd28563714513292406d6a876` / OpenHands `2abf0b1303c8d3c8dcd9fb080507395afbaa21d4` + software-agent-sdk `65ee52f817f5b30292abe5f2ac620f84576eb91f`
+> **日期**: 2026-07-08 | **状态**: draft | **涉及版本**: DeerFlow `c9fb9768d476e28de0294ac7a23cab9819b93f83` / Claw-Code `4ea31c1bc91c4e9bcbd67d51c550c01e127e6d0d` / OpenClaw `57db713ff73f8bf177feac882c1fa40531eea282` / Hermes Agent `88a58ff1355eabe468b4dcd4e152a596932632e6` / OpenHands `1869baf49914309f2115cd8f75d5c7a57a92b371` + software-agent-sdk `ebdb4566aca5a9834578ff8067a7aa6d26730cc4`
 
 ## 相关项目笔记
 

@@ -39,6 +39,7 @@ DOCS/
 │   ├── permission-security.md ← Permission / Security / Guardrail 横向总结
 │   ├── sandbox-systems.md ← Sandbox / Workspace 横向总结
 │   ├── multi-agent.md ← Multi-Agent / Subagent 横向总结
+│   ├── model-routing-cost-token-budget.md ← Model Routing / Cost / Token Budget 横向总结
 │   └── qa.md          ← 横向学习 QA：跨项目问题、讨论结论、待核验点
 └── synthesis/         ← 拔高归纳：共性设计模式与架构分类
     └── faq.md         ← 最终沉淀 FAQ：已验证、可复用的核心问答
@@ -63,6 +64,7 @@ DOCS/
 | OpenHands Sandbox / Workspace | [`DOCS/projects/openhands/sandbox-workspace.md`](DOCS/projects/openhands/sandbox-workspace.md) |
 | Sandbox / Workspace 横向总结 | [`DOCS/comparison/sandbox-systems.md`](DOCS/comparison/sandbox-systems.md) |
 | Multi-Agent / Subagent 横向总结 | [`DOCS/comparison/multi-agent.md`](DOCS/comparison/multi-agent.md) |
+| Model Routing / Cost / Token Budget 横向总结 | [`DOCS/comparison/model-routing-cost-token-budget.md`](DOCS/comparison/model-routing-cost-token-budget.md) |
 | 生产部署取舍对比 | [`DOCS/comparison/production-deployment-tradeoffs.md`](DOCS/comparison/production-deployment-tradeoffs.md) |
 | 整体功能特色与项目定位分析 | [`DOCS/comparison/project-positioning.md`](DOCS/comparison/project-positioning.md) |
 | 多个项目在某个维度上怎么不同 | [`DOCS/comparison/`](DOCS/comparison/) |
@@ -153,6 +155,20 @@ Multi-Agent / Subagent 专题已完成 DeerFlow、Claw-Code、OpenClaw、Hermes 
 | Claw-Code | TaskPacket、TaskRegistry、Worker boot、TeamRegistry、worktree / permission / acceptance 构成本地任务协作系统 | 本地施工队任务看板 |
 
 第一轮横向理解是：**多 Agent 的共同骨架是“派工、隔离、执行、回报、治理”；差异主要来自承载层不同，所以它会表现成 LangGraph `task` tool、Hermes `delegate_task`、OpenHands `TaskToolSet` / `AgentDefinition`、OpenClaw ACP 父子 session，或 Claw-Code TaskPacket / Worker / Team。**
+
+## Model Routing / Cost / Token Budget 第一轮总结
+
+Model Routing / Cost / Token Budget 专题已完成五个主线 Harness 的第一轮讨论沉淀，详见 [`DOCS/comparison/model-routing-cost-token-budget.md`](DOCS/comparison/model-routing-cost-token-budget.md)：
+
+| 项目 | 模型 / 成本 / token budget 精髓 | 比喻 |
+|---|---|---|
+| DeerFlow | run config / app_config 解析模型，SubagentConfig 配置子模型，TokenBudgetMiddleware 做 run 级预算闸门 | 工作流工厂的能源调度室 |
+| Hermes Agent | parent / child AIAgent 可分模型，max_iterations、child timeout、context compressor 和 background review 共同管长期成本 | 私人助理的用脑预算表 |
+| OpenHands | LLM profiles、AgentDefinition.model、LLM metrics、Context Condenser 和 event log 投影共同构成平台计费面 | 远程开发平台的工位计费系统 |
+| OpenClaw | subagent model / thinking defaults、per-call override、runTimeoutSeconds、resolvedModel / estimated cost 组成多会话模型档位 | 多会话控制台的模型档位面板 |
+| Claw-Code | TaskPacket.model / provider 加上 scope、worktree、permission、acceptance，把成本控制前移到任务单 | 本地施工队的任务成本单 |
+
+第一轮横向理解是：**不要把模型当成全局常量，要把模型当成可调度资源。主 Agent、子 Agent、后台任务、摘要器、记忆更新器、critic、planner、worker 都可以有不同的模型、thinking 档位、上下文预算和运行上限；成熟 Harness 的成本控制，不是“少用模型”，而是“让每一类工作用合适的模型和合适的预算”。**
 
 ## 使用方式
 

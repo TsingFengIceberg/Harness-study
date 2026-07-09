@@ -1,6 +1,6 @@
 # Hermes Agent Multi-Agent：`delegate_task`、Child AIAgent 与后台分身
 
-> **日期**: 2026-07-08 | **状态**: draft | **涉及版本**: `58e1647b498291bdd28563714513292406d6a876`
+> **日期**: 2026-07-08 | **状态**: draft | **涉及版本**: `88a58ff1355eabe468b4dcd4e152a596932632e6`
 
 ## 相关文档
 

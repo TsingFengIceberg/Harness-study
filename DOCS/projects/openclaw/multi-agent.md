@@ -1,6 +1,6 @@
 # OpenClaw Multi-Agent：ACP 父子 Session、Lineage 与后台所有权
 
-> **日期**: 2026-07-08 | **状态**: draft | **涉及版本**: `9eeebf7cb13ada247ae94d8e3ab6810dc1b3070a`
+> **日期**: 2026-07-08 | **状态**: draft | **涉及版本**: `57db713ff73f8bf177feac882c1fa40531eea282`
 
 ## 相关文档
 

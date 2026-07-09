@@ -6,7 +6,7 @@
 
 - **Submodule**: [hermes-agent/](../../../submodules/hermes-agent/) — 指向 `NousResearch/hermes-agent`
 - **官方仓库**: [github.com/NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent)
-- **当前快照**: `58e1647b498291bdd28563714513292406d6a876`
+- **当前快照**: `88a58ff1355eabe468b4dcd4e152a596932632e6`
 
 ## 研究定位
 
