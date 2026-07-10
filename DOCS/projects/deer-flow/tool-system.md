@@ -7,6 +7,9 @@
 - 项目入口：[README.md](README.md)
 - Agent Loop：[agent-loop.md](agent-loop.md)
 - Sandbox / Workspace：[sandbox-workspace.md](sandbox-workspace.md)
+- 自进化 / Custom Agent：[self-evolution-custom-agents.md](self-evolution-custom-agents.md)
+- RAG 相关能力映射：[rag.md](rag.md)
+- MCP 基础概念：[../../concepts/mcp.md](../../concepts/mcp.md)
 - 横向对比：[Tool System 横向总结](../../comparison/tool-system.md)
 - 生产部署取舍：[production-deployment-tradeoffs.md](../../comparison/production-deployment-tradeoffs.md)
 - 横向 QA：[qa.md](../../comparison/qa.md#tool-system--工具体系)
@@ -338,6 +341,8 @@ OpenClaw：
 DeerFlow：
   当前主线是 MCP deferred schema promotion，重点是把 MCP 工具表压缩进 LangGraph 工具生产线。
 ```
+
+这里的“Search”检索对象是工具的名称、描述和 schema，目的是帮模型发现正确的**能力接口**；它不从业务文档中召回回答问题的**事实证据**，因此不是完整 RAG。它可以帮助模型找到一个外部 `search_knowledge_base` MCP tool，但实际的文档索引、检索、ACL、rerank 和 citation 仍属于该外部知识服务。详见 [MCP 基础概念](../../concepts/mcp.md) 与 [DeerFlow RAG 相关能力映射](rag.md)。
 
 ## clarification：工具调用变成图控制流
 

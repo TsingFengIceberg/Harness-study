@@ -23,10 +23,13 @@
 
 ## 文档导航
 
-学习笔记位于 `DOCS/` 目录，按**三层金字塔**组织：
+学习笔记位于 `DOCS/` 目录，由一个可复用的**概念底座**和**三层研究金字塔**组成：
 
 ```
 DOCS/
+├── concepts/          ← 概念底座：跨项目的 RAG、MCP 等基础机制
+│   ├── rag.md         ← RAG：检索增强生成、现代检索与安全边界
+│   └── mcp.md         ← MCP：外部能力接入协议、工具与安全边界
 ├── projects/          ← 纵向深挖：每个项目的研读笔记
 │   ├── deer-flow/     ← DeerFlow 笔记（含 sandbox-workspace.md 与早期归档 docs-old/）
 │   ├── claw-code/     ← Claw-Code 笔记（本地 Coding CLI runtime / Agent Loop / sandbox-workspace）
@@ -52,6 +55,9 @@ DOCS/
 | 想看什么 | 去哪里 |
 |---|---|
 | 某个项目的源码怎么设计的 | [`DOCS/projects/<项目名>/`](DOCS/projects/) |
+| RAG 是什么、与 Memory / 文件上传 / Skills 有何区别 | [`DOCS/concepts/rag.md`](DOCS/concepts/rag.md) |
+| MCP 是什么、如何连接外部能力、与 RAG 有何区别 | [`DOCS/concepts/mcp.md`](DOCS/concepts/mcp.md) |
+| DeerFlow 当前有哪些 RAG 相关能力、哪些没有 | [`DOCS/projects/deer-flow/rag.md`](DOCS/projects/deer-flow/rag.md) |
 | LiteLLM LLM Gateway / Model Routing | [`DOCS/projects/litellm/README.md`](DOCS/projects/litellm/README.md) |
 | Claw-Code 本地 Agent Loop | [`DOCS/projects/claw-code/agent-loop.md`](DOCS/projects/claw-code/agent-loop.md) |
 | Claw-Code Sandbox / Workspace | [`DOCS/projects/claw-code/sandbox-workspace.md`](DOCS/projects/claw-code/sandbox-workspace.md) |

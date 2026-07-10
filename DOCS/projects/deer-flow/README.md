@@ -43,6 +43,8 @@
 | [multi-agent.md](multi-agent.md) | DeerFlow Multi-Agent：Lead Agent 动态派工、`task` 工具、SubagentExecutor、子 agent 状态隔离、delegation ledger 派工台账 | draft |
 | [permission-security.md](permission-security.md) | DeerFlow Permission / Security：Gateway authz、GuardrailMiddleware、workflow safety middleware、RunManager、Sandbox 与三层防线 | draft |
 | [sandbox-workspace.md](sandbox-workspace.md) | DeerFlow Sandbox / Workspace：`SandboxMiddleware(lazy_init=True)`、`ensure_sandbox_initialized(...)`、LocalSandbox path mapping、host bash 默认禁用与 AIO provider | draft |
+| [self-evolution-custom-agents.md](self-evolution-custom-agents.md) | DeerFlow 自进化与 Custom Agent：Goal Evaluator、长期 memory / correction、可选 Skill Evolution、`skill_manage` 安全写入，以及 `SOUL.md` / `config.yaml` / HTTP API 显式管理 | draft |
+| [rag.md](rag.md) | DeerFlow RAG 相关能力映射：上传文件的 agentic file access、长期 memory、Skill discovery、MCP 外部知识服务边界，以及当前缺少的原生向量 RAG 管线 | draft |
 
 ## 源码入口
 
@@ -54,6 +56,12 @@
 | 耐久上下文投影 | [durable_context_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/durable_context_middleware.py) | 捕获 delegation / skill context，并把 summary_text / delegations / skill_context 投影给模型。 |
 | 上下文压缩 | [summarization_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/summarization_middleware.py) | 压缩旧 messages，保留尾部消息，写入 `summary_text` state channel。 |
 | 记忆更新 | [memory_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/memory_middleware.py) | agent 完成后过滤 user / final assistant 消息，异步更新长期 memory。 |
+| Skill Evolution | [skill_evolution_config.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/config/skill_evolution_config.py) | `skill_evolution.enabled` 总开关；开启后 Agent 才能管理 `skills/custom`。 |
+| Skill 管理工具 | [skill_manage_tool.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/skill_manage_tool.py) | 创建 / patch / 编辑 / 删除 custom Skill，写入前执行格式校验、安全扫描并记录变更历史。 |
+| Custom Agent 配置 | [agents_config.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/config/agents_config.py) | per-user Custom Agent 的 `config.yaml` / `SOUL.md` 路径、schema 和加载规则。 |
+| Custom Agent API | [agents.py](../../../submodules/deer-flow/backend/app/gateway/routers/agents.py) | 显式管理 Custom Agent 的 `GET` / `POST` / `PUT /api/agents` API，默认由 `agents_api.enabled` 关闭。 |
+| 上传文件上下文 | [uploads_middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/uploads_middleware.py) | 注入文件路径、outline / preview，并引导 Agent 用 `read_file` / `grep` / `glob` 按需访问文件；不是向量 RAG。 |
+| MCP 工具装配 | [mcp/tools.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/mcp/tools.py) | 发现 enabled MCP server 的 tools；可作为外部知识库 / RAG service 的接入边界。 |
 | 权限 / Guardrail | [middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/guardrails/middleware.py) | 工具调用前调用 `GuardrailProvider` 做 allow / deny 策略检查，拒绝时返回 error `ToolMessage`。 |
 | Sandbox lifecycle | [middleware.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/sandbox/middleware.py) | `SandboxMiddleware(lazy_init=True)`，按需获取 / 复用 sandbox，并把 `sandbox_id` 写回 state。 |
 | Sandbox tools | [tools.py](../../../submodules/deer-flow/backend/packages/harness/deerflow/sandbox/tools.py) | `ensure_sandbox_initialized(...)` 和 bash / file / grep / glob 等 sandbox tool 的真正入口。 |

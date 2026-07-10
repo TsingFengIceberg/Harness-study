@@ -16,6 +16,7 @@
 - lead agent 装配：[agent.py:431-562](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L431-L562)
 - middleware 组装：[agent.py:270-399](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/lead_agent/agent.py#L270-L399)
 - Sandbox / Workspace 笔记：[sandbox-workspace.md](sandbox-workspace.md)
+- 自进化 / Custom Agent 笔记：[self-evolution-custom-agents.md](self-evolution-custom-agents.md)
 - 共享 runtime middleware：[tool_error_handling_middleware.py:128-207](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/middlewares/tool_error_handling_middleware.py#L128-L207)
 - 工具集合装配：[tools.py:44-175](../../../submodules/deer-flow/backend/packages/harness/deerflow/tools/tools.py#L44-L175)
 - ThreadState schema：[thread_state.py:149-157](../../../submodules/deer-flow/backend/packages/harness/deerflow/agents/thread_state.py#L149-L157)

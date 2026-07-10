@@ -9,6 +9,8 @@
 - Tool System：[tool-system.md](tool-system.md)
 - Multi-Agent：[multi-agent.md](multi-agent.md)
 - Sandbox / Workspace：[sandbox-workspace.md](sandbox-workspace.md)
+- 自进化 / Custom Agent：[self-evolution-custom-agents.md](self-evolution-custom-agents.md)
+- RAG 相关能力映射：[rag.md](rag.md)
 - Claw-Code Context Management：[../claw-code/context-management.md](../claw-code/context-management.md)
 - OpenClaw Context Management：[../openclaw/context-management.md](../openclaw/context-management.md)
 - Hermes Agent Context Management：[../hermes-agent/context-management.md](../hermes-agent/context-management.md)
