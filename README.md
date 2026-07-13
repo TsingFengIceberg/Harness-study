@@ -14,6 +14,9 @@
 | [openhands/](submodules/openhands/) | OpenHands 平台控制面：Agent Canvas、App Server、Sandbox、自动化与多后端运行 | [OpenHands/OpenHands](https://github.com/OpenHands/OpenHands) |
 | [software-agent-sdk/](submodules/software-agent-sdk/) | OpenHands 执行面：Agent Server、SDK Conversation / Agent、`openhands-tools` 工具包 | [OpenHands/software-agent-sdk](https://github.com/OpenHands/software-agent-sdk) |
 | [litellm/](submodules/litellm/) | LLM Gateway / AI Gateway：统一 LLM provider 接入、OpenAI-compatible proxy、model routing、成本 / token budget 与 guardrails | [BerriAI/litellm](https://github.com/BerriAI/litellm) |
+| [dify/](submodules/dify/) | LLM 应用开发平台：模型、RAG / 知识库、Workflow、Agent、工具扩展与应用 API / 交付 | [langgenius/dify](https://github.com/langgenius/dify) |
+| [coze-studio/](submodules/coze-studio/) | Coze 开源 Agent / 应用开发平台：Agent、App、Workflow、Plugin、Knowledge Base 与 Chat SDK | [coze-dev/coze-studio](https://github.com/coze-dev/coze-studio) |
+| [cozeloop/](submodules/cozeloop/) | Coze 相关 AgentOps / LLMOps 平台：Prompt 开发、评测实验、Trace 与观测；不等同于 Coze Studio Agent runtime | [coze-dev/coze-loop](https://github.com/coze-dev/coze-loop) |
 
 ## 学习参考
 
@@ -36,7 +39,10 @@ DOCS/
 │   ├── hermes-agent/  ← Hermes Agent 笔记（长期个人 Agent / run_conversation / sandbox-workspace）
 │   ├── openclaw/      ← OpenClaw 笔记（事件驱动 Session / Message loop / sandbox-workspace）
 │   ├── openhands/     ← OpenHands 笔记（平台化 SWE Agent Harness）
-│   └── litellm/       ← LiteLLM 笔记（LLM Gateway / Model Routing / Cost / Token Budget）
+│   ├── litellm/       ← LiteLLM 笔记（LLM Gateway / Model Routing / Cost / Token Budget）
+│   ├── dify/          ← Dify 笔记（LLM Application / RAG / Workflow / Agent）
+│   ├── coze-studio/   ← Coze Studio 笔记（Visual Agent / App Platform）
+│   └── cozeloop/      ← CozeLoop 笔记（AgentOps / Evaluation / Trace）
 ├── comparison/        ← 横向对比：同一维度横切多个项目
 │   ├── agent-loop.md  ← Agent Loop 横向总结
 │   ├── tool-system.md ← Tool System 横向总结
@@ -59,6 +65,10 @@ DOCS/
 | MCP 是什么、如何连接外部能力、与 RAG 有何区别 | [`DOCS/concepts/mcp.md`](DOCS/concepts/mcp.md) |
 | DeerFlow 当前有哪些 RAG 相关能力、哪些没有 | [`DOCS/projects/deer-flow/rag.md`](DOCS/projects/deer-flow/rag.md) |
 | LiteLLM LLM Gateway / Model Routing | [`DOCS/projects/litellm/README.md`](DOCS/projects/litellm/README.md) |
+| Dify LLM 应用 / RAG / Workflow / Agent 平台 | [`DOCS/projects/dify/README.md`](DOCS/projects/dify/README.md) |
+| Coze Studio Agent / App / Workflow 平台 | [`DOCS/projects/coze-studio/README.md`](DOCS/projects/coze-studio/README.md) |
+| CozeLoop Prompt / Evaluation / Trace AgentOps 平台 | [`DOCS/projects/cozeloop/README.md`](DOCS/projects/cozeloop/README.md) |
+| Coze Studio 与 Dify、或 Lark CLI 与 Lark OpenAPI MCP 的扩展讨论 | [`DOCS/comparison/qa.md`](DOCS/comparison/qa.md#项目定位) / [`MCP 外部能力接入`](DOCS/comparison/qa.md#mcp--外部能力接入) |
 | Claw-Code 本地 Agent Loop | [`DOCS/projects/claw-code/agent-loop.md`](DOCS/projects/claw-code/agent-loop.md) |
 | Claw-Code Sandbox / Workspace | [`DOCS/projects/claw-code/sandbox-workspace.md`](DOCS/projects/claw-code/sandbox-workspace.md) |
 | OpenClaw Sandbox / Workspace | [`DOCS/projects/openclaw/sandbox-workspace.md`](DOCS/projects/openclaw/sandbox-workspace.md) |

@@ -25,3 +25,12 @@
 [submodule "litellm"]
 	path = submodules/litellm
 	url = https://github.com/BerriAI/litellm.git
+[submodule "dify"]
+	path = submodules/dify
+	url = https://github.com/langgenius/dify.git
+[submodule "coze-studio"]
+	path = submodules/coze-studio
+	url = https://github.com/coze-dev/coze-studio.git
+[submodule "cozeloop"]
+	path = submodules/cozeloop
+	url = https://github.com/coze-dev/coze-loop.git

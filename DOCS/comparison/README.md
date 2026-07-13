@@ -48,6 +48,9 @@
 | Hermes Agent | [DOCS/projects/hermes-agent/](../projects/hermes-agent/README.md) |
 | OpenHands | [DOCS/projects/openhands/](../projects/openhands/README.md) |
 | LiteLLM | [DOCS/projects/litellm/](../projects/litellm/README.md) |
+| Dify | [DOCS/projects/dify/](../projects/dify/README.md) |
+| Coze Studio | [DOCS/projects/coze-studio/](../projects/coze-studio/README.md) |
+| CozeLoop | [DOCS/projects/cozeloop/](../projects/cozeloop/README.md) |
 | learn-claude-code | `DOCS/projects/learn-claude-code/`（待建立） |
 
 ## 相关文档

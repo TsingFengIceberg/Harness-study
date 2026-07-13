@@ -8,6 +8,7 @@
 - [RAG：让模型先查证据，再基于证据回答](rag.md)
 - [DeerFlow Tool System](../projects/deer-flow/tool-system.md)
 - [DeerFlow RAG 相关能力映射](../projects/deer-flow/rag.md)
+- [Lark CLI 与官方 Lark OpenAPI MCP 的 Agent 接入比较](../comparison/qa.md#q-lark-cli-和官方-lark-openapi-mcp-交给-agent-使用时有什么区别共同点和联系)
 
 ## 一句话��释
 
