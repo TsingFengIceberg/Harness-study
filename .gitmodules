@@ -34,3 +34,9 @@
 [submodule "cozeloop"]
 	path = submodules/cozeloop
 	url = https://github.com/coze-dev/coze-loop.git
+[submodule "langchain"]
+	path = submodules/langchain
+	url = https://github.com/langchain-ai/langchain.git
+[submodule "langgraph"]
+	path = submodules/langgraph
+	url = https://github.com/langchain-ai/langgraph.git

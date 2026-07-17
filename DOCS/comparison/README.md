@@ -51,6 +51,8 @@
 | Dify | [DOCS/projects/dify/](../projects/dify/README.md) |
 | Coze Studio | [DOCS/projects/coze-studio/](../projects/coze-studio/README.md) |
 | CozeLoop | [DOCS/projects/cozeloop/](../projects/cozeloop/README.md) |
+| LangChain | [DOCS/projects/langchain/](../projects/langchain/README.md) |
+| LangGraph | [DOCS/projects/langgraph/](../projects/langgraph/README.md) |
 | learn-claude-code | `DOCS/projects/learn-claude-code/`（待建立） |
 
 ## 相关文档

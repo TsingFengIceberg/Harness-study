@@ -17,6 +17,8 @@
 | [dify/](submodules/dify/) | LLM 应用开发平台：模型、RAG / 知识库、Workflow、Agent、工具扩展与应用 API / 交付 | [langgenius/dify](https://github.com/langgenius/dify) |
 | [coze-studio/](submodules/coze-studio/) | Coze 开源 Agent / 应用开发平台：Agent、App、Workflow、Plugin、Knowledge Base 与 Chat SDK | [coze-dev/coze-studio](https://github.com/coze-dev/coze-studio) |
 | [cozeloop/](submodules/cozeloop/) | Coze 相关 AgentOps / LLMOps 平台：Prompt 开发、评测实验、Trace 与观测；不等同于 Coze Studio Agent runtime | [coze-dev/coze-loop](https://github.com/coze-dev/coze-loop) |
+| [langchain/](submodules/langchain/) | Agent / LLM 应用组件与组装框架：模型、消息、Runnable、Tool、Retriever、Agent 与 provider 集成 | [langchain-ai/langchain](https://github.com/langchain-ai/langchain) |
+| [langgraph/](submodules/langgraph/) | 有状态 Agent 编排 runtime：StateGraph、Pregel、Checkpoint、Interrupt 与 durable execution | [langchain-ai/langgraph](https://github.com/langchain-ai/langgraph) |
 
 ## 学习参考
 
@@ -42,7 +44,9 @@ DOCS/
 │   ├── litellm/       ← LiteLLM 笔记（LLM Gateway / Model Routing / Cost / Token Budget）
 │   ├── dify/          ← Dify 笔记（LLM Application / RAG / Workflow / Agent）
 │   ├── coze-studio/   ← Coze Studio 笔记（Visual Agent / App Platform）
-│   └── cozeloop/      ← CozeLoop 笔记（AgentOps / Evaluation / Trace）
+│   ├── cozeloop/      ← CozeLoop 笔记（AgentOps / Evaluation / Trace）
+│   ├── langchain/     ← LangChain 笔记（Agent / LLM Components and Assembly）
+│   └── langgraph/     ← LangGraph 笔记（Stateful Agent Orchestration Runtime）
 ├── comparison/        ← 横向对比：同一维度横切多个项目
 │   ├── agent-loop.md  ← Agent Loop 横向总结
 │   ├── tool-system.md ← Tool System 横向总结
@@ -68,6 +72,8 @@ DOCS/
 | Dify LLM 应用 / RAG / Workflow / Agent 平台 | [`DOCS/projects/dify/README.md`](DOCS/projects/dify/README.md) |
 | Coze Studio Agent / App / Workflow 平台 | [`DOCS/projects/coze-studio/README.md`](DOCS/projects/coze-studio/README.md) |
 | CozeLoop Prompt / Evaluation / Trace AgentOps 平台 | [`DOCS/projects/cozeloop/README.md`](DOCS/projects/cozeloop/README.md) |
+| LangChain Agent / LLM 应用组件与组装框架 | [`DOCS/projects/langchain/README.md`](DOCS/projects/langchain/README.md) |
+| LangGraph 有状态 Agent 编排 runtime | [`DOCS/projects/langgraph/README.md`](DOCS/projects/langgraph/README.md) |
 | Coze Studio 与 Dify、或 Lark CLI 与 Lark OpenAPI MCP 的扩展讨论 | [`DOCS/comparison/qa.md`](DOCS/comparison/qa.md#项目定位) / [`MCP 外部能力接入`](DOCS/comparison/qa.md#mcp--外部能力接入) |
 | Claw-Code 本地 Agent Loop | [`DOCS/projects/claw-code/agent-loop.md`](DOCS/projects/claw-code/agent-loop.md) |
 | Claw-Code Sandbox / Workspace | [`DOCS/projects/claw-code/sandbox-workspace.md`](DOCS/projects/claw-code/sandbox-workspace.md) |
