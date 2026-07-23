@@ -29,6 +29,7 @@ LangGraph 在本仓库中定位为 **有状态 Agent orchestration runtime** 的
 
 | 文档 | 状态 | 说明 |
 |---|---|---|
+| [LangChain / LangGraph 面试学习路线](../langchain/interview-roadmap.md) | draft | 两个项目的分层学习顺序、高频题、实践路径与生产边界。 |
 | `state-graph.md` | planned | StateGraph、channel / reducer、Node、Edge、conditional routing 与编译过程。 |
 | `pregel-runtime.md` | planned | Pregel 执行循环、task 调度、stream、retry、错误与停止条件。 |
 | `checkpoint-persistence.md` | planned | Checkpointer、thread、checkpoint tuple、memory / SQLite / Postgres 持久化与恢复。 |

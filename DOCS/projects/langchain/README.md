@@ -36,7 +36,8 @@ LangSmith：提供 tracing、调试、评测与生产观测平台；其公开 Gi
 
 | 文档 | 状态 | 说明 |
 |---|---|---|
-| `core-abstractions.md` | planned | Message、ChatModel、Runnable、Tool、Retriever 等核心协议及其组合方式。 |
+| [interview-roadmap.md](interview-roadmap.md) | draft | LangChain / LangGraph 面试学习路线、知识地图、高频题与生产边界。 |
+| [core-abstractions.md](core-abstractions.md) | draft | 第一课：Message、Runnable、Tool、LCEL 数据流与课后纠偏。 |
 | `agent-runtime.md` | planned | LangChain v1 Agent 工厂、middleware、tool loop 与 LangGraph runtime 的衔接。 |
 | `integrations-and-testing.md` | planned | Provider integrations、model profiles、standard tests 与兼容性治理。 |
 | `retrieval-rag.md` | planned | Document、Text Splitter、Embedding、VectorStore、Retriever 与 RAG 组装边界。 |
