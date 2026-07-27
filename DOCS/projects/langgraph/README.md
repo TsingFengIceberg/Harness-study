@@ -6,7 +6,7 @@
 
 - **Submodule**: [langgraph/](../../../submodules/langgraph/) — 指向 `langchain-ai/langgraph`
 - **官方仓库**: [github.com/langchain-ai/langgraph](https://github.com/langchain-ai/langgraph)
-- **当前快照**: `49ae27c2ae983cfb92091b0dea9f7bc37a716479`（2026-07-17）
+- **当前快照**: `30c4d58db86455128e42ddec96b1ba53c553ba22`（2026-07-27）
 
 ## 研究定位
 
@@ -30,7 +30,7 @@ LangGraph 在本仓库中定位为 **有状态 Agent orchestration runtime** 的
 | 文档 | 状态 | 说明 |
 |---|---|---|
 | [LangChain / LangGraph 面试学习路线](../langchain/interview-roadmap.md) | draft | 两个项目的分层学习顺序、高频题、实践路径与生产边界。 |
-| `state-graph.md` | planned | StateGraph、channel / reducer、Node、Edge、conditional routing 与编译过程。 |
+| [state-graph.md](state-graph.md) | draft | 第二课进行中：State、State schema、部分更新、Node、Edge、Reducer 与运行流程。 |
 | `pregel-runtime.md` | planned | Pregel 执行循环、task 调度、stream、retry、错误与停止条件。 |
 | `checkpoint-persistence.md` | planned | Checkpointer、thread、checkpoint tuple、memory / SQLite / Postgres 持久化与恢复。 |
 | `interrupt-command-hitl.md` | planned | Interrupt、Command、resume、human-in-the-loop 与可审计控制流。 |
