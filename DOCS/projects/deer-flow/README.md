@@ -5,7 +5,7 @@
 ## 源码
 
 - **Submodule**: [deer-flow/](../../../submodules/deer-flow/) — 指向 `bytedance/deer-flow`
-- **当前快照**: `62b73fd2ea2d07e7742ecd0d571ff021820b61ac`（2026-07-27）
+- **当前快照**: `2654bc60da315ffeda9b7e15959dd0530e62f6aa`（2026-07-28）
 - **官方仓库**: [github.com/bytedance/deer-flow](https://github.com/bytedance/deer-flow)
 
 ## 笔记目录

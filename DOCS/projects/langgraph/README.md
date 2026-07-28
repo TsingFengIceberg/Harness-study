@@ -30,10 +30,10 @@ LangGraph 在本仓库中定位为 **有状态 Agent orchestration runtime** 的
 | 文档 | 状态 | 说明 |
 |---|---|---|
 | [LangChain / LangGraph 面试学习路线](../langchain/interview-roadmap.md) | draft | 两个项目的分层学习顺序、高频题、实践路径与生产边界。 |
-| [state-graph.md](state-graph.md) | draft | 第二课进行中：State、State schema、部分更新、Node、Edge、Reducer 与运行流程。 |
-| `pregel-runtime.md` | planned | Pregel 执行循环、task 调度、stream、retry、错误与停止条件。 |
+| [state-graph.md](state-graph.md) | draft | 第二课：State、Node、Edge、Reducer、superstep 以及 Runnable / StateGraph 边界。 |
+| [pregel-runtime.md](pregel-runtime.md) | draft | 第三课：Channel 层级、task 调度、版本、pending writes、checkpoint 与 durable execution。 |
 | `checkpoint-persistence.md` | planned | Checkpointer、thread、checkpoint tuple、memory / SQLite / Postgres 持久化与恢复。 |
-| `interrupt-command-hitl.md` | planned | Interrupt、Command、resume、human-in-the-loop 与可审计控制流。 |
+| [interrupt-command-hitl.md](interrupt-command-hitl.md) | draft | 第四课：Interrupt、Command、resume、运行时动态控制与 human-in-the-loop。 |
 | `prebuilt-agent-tools.md` | planned | `create_react_agent`、ToolNode、tool validation 与标准 Agent tool loop。 |
 | `deer-flow-integration.md` | planned | DeerFlow 如何在 LangGraph runtime 上叠加 lead agent、middleware、sandbox、memory 与 subagent。 |
 

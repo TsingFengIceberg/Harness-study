@@ -6,7 +6,7 @@
 
 - **Submodule**: [cozeloop/](../../../submodules/cozeloop/) — 指向 `coze-dev/coze-loop`
 - **官方仓库**: [github.com/coze-dev/coze-loop](https://github.com/coze-dev/coze-loop)
-- **当前快照**: `7c1f11ad8c4aed699a0ddfafc3c0f5084066c372`（2026-07-27）
+- **当前快照**: `e56c15bf6f3db86960a7c1ff06ba4abff101ec2d`（2026-07-28）
 - **许可**: [Apache License 2.0](../../../submodules/cozeloop/LICENSE)
 
 ## 研究定位

@@ -9,8 +9,8 @@
 - **官方仓库（控制面）**: [github.com/OpenHands/OpenHands](https://github.com/OpenHands/OpenHands)
 - **官方仓库（执行面）**: [github.com/OpenHands/software-agent-sdk](https://github.com/OpenHands/software-agent-sdk)
 - **当前快照**:
-  - `openhands`: `ee9e78b7defdfa744e0bbe48c9cafa90b6135ad7`
-  - `software-agent-sdk`: `310989d306114efd0fcadbcbed9ff9c21d4a5963`
+  - `openhands`: `200dba420ce127a76fc758d39f011af36fe17508`
+  - `software-agent-sdk`: `c1c32e609419c27cdfbefd47a94171d15ea34f9d`
   - 同步日期：2026-07-27
 
 ## 研究定位

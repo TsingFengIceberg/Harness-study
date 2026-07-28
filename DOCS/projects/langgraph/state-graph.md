@@ -5,6 +5,7 @@
 ## 相关文档
 
 - [LangGraph 学习入口](README.md)
+- [第三课：Pregel Channel 与任务调度](pregel-runtime.md)
 - [LangChain / LangGraph 面试学习路线](../langchain/interview-roadmap.md)
 - [第一课：Message、Runnable 与 Tool](../langchain/core-abstractions.md)
 - 源码：[StateGraph 实现](../../../submodules/langgraph/libs/langgraph/langgraph/graph/state.py)
@@ -1162,4 +1163,4 @@ CompiledStateGraph
 
 ## 本课小结与下一步
 
-至此，State、State schema、Partial State、Node、运行时输入、Edge、conditional edge、循环、并行分叉、barrier 汇合、Reducer、Pregel superstep，以及 Runnable pipeline 与 StateGraph 的边界已经串成完整基础链路。下一课建议进入 Pregel / channel runtime 深入专题，继续核验 task preparation、channel version、pending writes、checkpoint 与 durable execution 的连接。
+至此，State、State schema、Partial State、Node、运行时输入、Edge、conditional edge、循环、并行分叉、barrier 汇合、Reducer、Pregel superstep，以及 Runnable pipeline 与 StateGraph 的边界已经串成完整基础链路。下一课进入 [Pregel Channel 与任务调度](pregel-runtime.md)，继续核验 task preparation、channel version、pending writes、checkpoint 与 durable execution 的连接。

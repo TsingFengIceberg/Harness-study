@@ -6,7 +6,7 @@
 
 - **Submodule**: [dify/](../../../submodules/dify/) — 指向 `langgenius/dify`
 - **官方仓库**: [github.com/langgenius/dify](https://github.com/langgenius/dify)
-- **当前快照**: `58e2bcbba12eeefe7e0cd2b895063fa9458062ff`（2026-07-27）
+- **当前快照**: `eef709e475ba641fd35eb213f0a1a4fb1e374191`（2026-07-28）
 - **许可提示**: [Dify Open Source License](../../../submodules/dify/LICENSE)，以 Apache 2.0 为基础并附加条件；不要简单等同为无附加条件的 Apache-2.0。
 
 ## 研究定位

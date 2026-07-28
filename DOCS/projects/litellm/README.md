@@ -6,7 +6,7 @@
 
 - **Submodule**: [litellm/](../../../submodules/litellm/) — 指向 `BerriAI/litellm`
 - **官方仓库**: [github.com/BerriAI/litellm](https://github.com/BerriAI/litellm)
-- **当前快照**: `24123269ccb76f36298a2457589f08bd3141072c`（2026-07-27）
+- **当前快照**: `daf22ec8712e406f502da4268efcb1743d5564ff`（2026-07-28）
 
 ## 研究定位
 

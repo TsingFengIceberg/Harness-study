@@ -6,7 +6,7 @@
 
 - **Submodule**: [langchain/](../../../submodules/langchain/) — 指向 `langchain-ai/langchain`
 - **官方仓库**: [github.com/langchain-ai/langchain](https://github.com/langchain-ai/langchain)
-- **当前快照**: `39701d6b8e9dc62b57f63fec1d10d2d1f4293303`（2026-07-27）
+- **当前快照**: `73160209c3e60a8311f6e3402686d8982d735f83`（2026-07-28）
 
 ## 研究定位
 
