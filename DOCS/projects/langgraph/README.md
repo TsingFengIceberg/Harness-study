@@ -34,7 +34,8 @@ LangGraph 在本仓库中定位为 **有状态 Agent orchestration runtime** 的
 | [pregel-runtime.md](pregel-runtime.md) | draft | 第三课：Channel 层级、task 调度、版本、pending writes、checkpoint 与 durable execution。 |
 | `checkpoint-persistence.md` | planned | Checkpointer、thread、checkpoint tuple、memory / SQLite / Postgres 持久化与恢复。 |
 | [interrupt-command-hitl.md](interrupt-command-hitl.md) | draft | 第四课：Interrupt、Command、resume、运行时动态控制与 human-in-the-loop。 |
-| `prebuilt-agent-tools.md` | planned | `create_react_agent`、ToolNode、tool validation 与标准 Agent tool loop。 |
+| [prebuilt-agent-tools.md](prebuilt-agent-tools.md) | draft | 第五课：ToolNode、Tool Call / ToolMessage、工具执行边界与标准 Agent tool loop。 |
+| [streaming-observability.md](streaming-observability.md) | draft | 第六课：messages、State updates、custom event、Task / checkpoint 观察与前端接入边界。 |
 | `deer-flow-integration.md` | planned | DeerFlow 如何在 LangGraph runtime 上叠加 lead agent、middleware、sandbox、memory 与 subagent。 |
 
 ## 初始源码入口
@@ -47,6 +48,7 @@ LangGraph 在本仓库中定位为 **有状态 Agent orchestration runtime** 的
 | StateGraph | [state.py](../../../submodules/langgraph/libs/langgraph/langgraph/graph/state.py) | State schema、channel、node / edge 注册和 graph compile。 |
 | Pregel 主体 | [main.py](../../../submodules/langgraph/libs/langgraph/langgraph/pregel/main.py) | graph invoke / stream 的执行入口、step 调度与 checkpoint 交互。 |
 | Runtime context | [runtime.py](../../../submodules/langgraph/libs/langgraph/langgraph/runtime.py) | 节点可见 runtime context、store 与 stream writer。 |
+| Streaming 类型 | [types.py](../../../submodules/langgraph/libs/langgraph/langgraph/types.py) | stream mode、StreamWriter 与结构化 stream part。 |
 | Checkpoint 基础 | [__init__.py](../../../submodules/langgraph/libs/checkpoint/langgraph/checkpoint/base/__init__.py) | Checkpointer 接口、checkpoint / metadata / tuple 类型与版本语义。 |
 | 预构建 ReAct Agent | [chat_agent_executor.py](../../../submodules/langgraph/libs/prebuilt/langgraph/prebuilt/chat_agent_executor.py) | 模型节点、工具节点、路由和 Agent state 的预构建组合。 |
 | ToolNode | [tool_node.py](../../../submodules/langgraph/libs/prebuilt/langgraph/prebuilt/tool_node.py) | tool call 解析、执行、错误处理、状态 / store 注入与 tool result 回流。 |
