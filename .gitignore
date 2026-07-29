@@ -14,8 +14,12 @@ __pycache__/
 .venv/
 venv/
 
-# Project config (local only)
+# Project config and Agent handoff (local only)
+.claude/
 CLAUDE.md
+AGENTS.md
+HANDOFF.md
+handoff/
 deep-research-prompt.md
 
 # Node

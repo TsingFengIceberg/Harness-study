@@ -31,6 +31,7 @@
 |---|---|---|
 | [rag.md](rag.md) | RAG / 检索增强生成：外部知识如何成为带证据的模型上下文；与 Memory、上传文件、搜索、Skills、MCP 的边界。 | [DeerFlow RAG 相关能力映射](../projects/deer-flow/rag.md) |
 | [mcp.md](mcp.md) | MCP：Host / Client / Server、Tools / Resources / Prompts 三面能力、七层安全防线、交互流程、传输方式，以及它��� RAG / Tool Calling / Skills 的区���。 | [DeerFlow Tool System](../projects/deer-flow/tool-system.md) |
+| [idempotency.md](idempotency.md) | 幂等键：重复请求、重试、并发、外部副作用、outbox / inbox 与 Agent replay 的安全边界。 | [LangGraph Checkpoint 与 Time Travel](../projects/langgraph/checkpoint-persistence.md) |
 
 ## 后续候选主题
 
