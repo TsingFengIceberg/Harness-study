@@ -1,8 +1,12 @@
-# Harness Study
+# Agent Systems Study
 
-横向学习多个 Agent Harness 的设计思路与实现对比。
+Study production AI agent systems from harness architecture and framework internals to orchestration, tools, evaluation, safety, and interview-ready engineering practice.
 
-## 研究项目
+系统学习生产级 AI Agent 系统：从 Harness 架构与框架源码，到编排、工具、评测、安全与面试导向的工程实践。
+
+本仓库以开源源码和官方资料为事实基础，纵向研读 Agent Harness、框架、平台与基础设施，横向比较共性机制，并将结论沉淀为概念笔记、项目研究、架构对比和面试课程。
+
+## 研究范围
 
 | 项目 | 说明 | 官方仓库 |
 |---|---|---|
@@ -22,16 +26,18 @@
 
 ## 学习参考
 
-| 资料 | 说明 | 官方仓库 |
+| 资料 | 说明 | 来源 |
 |---|---|---|
 | [claude-code-complete-guide_v2/](submodules/claude-code-complete-guide_v2/) | Claude Code 完全指南 V2，作为理解 Claude Code-like Harness 架构、工具系统、权限、安全、上下文、多 Agent、Hooks / Skills / Plugins 等机制的学习参考；不作为本仓库核心 Harness 实现项目 | [bcefghj/claude-code-complete-guide_v2](https://github.com/bcefghj/claude-code-complete-guide_v2) |
+| [Agent 面试资料](references/agent-interview/README.md) | 第三方 2026-02-23 与 2026-07 两版 Agent 面试 PDF、机械提取稿和来源说明；用于建立问题集，不自动视为已核验结论 | 本地第三方资料 |
 
 ## 文档导航
 
-学习笔记位于 `DOCS/` 目录，由一个可复用的**概念底座**和**三层研究金字塔**组成：
+学习笔记位于 `DOCS/` 目录，由**面试专项**、可复用的**概念底座**和**三层研究金字塔**组成：
 
 ```
 DOCS/
+├── interview/         ← 面试专项：联合问题目录、学习路线、口述答案与追问
 ├── concepts/          ← 概念底座：跨项目的 RAG、MCP 等基础机制
 │   ├── rag.md         ← RAG：检索增强生成、现代检索与安全边界
 │   └── mcp.md         ← MCP：外部能力接入协议、工具与安全边界
@@ -60,10 +66,11 @@ DOCS/
     └── faq.md         ← 最终沉淀 FAQ：已验证、可复用的核心问答
 ```
 
-此外，[claude-code-complete-guide_v2/](submodules/claude-code-complete-guide_v2/) 作为 Claude Code 架构学习参考资料，以 submodule 形式保留在 `submodules/` 目录，不纳入 `DOCS/projects/` 的核心项目研读目录。
+此外，[claude-code-complete-guide_v2/](submodules/claude-code-complete-guide_v2/) 作为 Claude Code 架构学习参考资料，以 submodule 形式保留；[Agent 面试资料](references/agent-interview/README.md) 作为第三方问题来源保留原始 PDF 与机械提取稿。二者都不自动构成本仓库的源码核验结论。
 
 | 想看什么 | 去哪里 |
 |---|---|
+| Agent 面试联合学习路线与问题目录 | [`DOCS/interview/agent/`](DOCS/interview/agent/) |
 | 某个项目的源码怎么设计的 | [`DOCS/projects/<项目名>/`](DOCS/projects/) |
 | RAG 是什么、与 Memory / 文件上传 / Skills 有何区别 | [`DOCS/concepts/rag.md`](DOCS/concepts/rag.md) |
 | MCP 是什么、如何连接外部能力、与 RAG 有何区别 | [`DOCS/concepts/mcp.md`](DOCS/concepts/mcp.md) |
