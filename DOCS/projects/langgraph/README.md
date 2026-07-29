@@ -39,6 +39,8 @@ LangGraph 在本仓库中定位为 **有状态 Agent orchestration runtime** 的
 | [subgraph-multi-agent.md](subgraph-multi-agent.md) | draft | 第七课：子图嵌套、多 Agent 分工、State 契约、父子 Checkpoint 与拆分边界。 |
 | [state-memory-context.md](state-memory-context.md) | draft | 第九课：State、messages、Checkpoint、Store、Memory、RAG 与模型上下文边界。 |
 | [graph-reliability.md](graph-reliability.md) | draft | 第十课：Retry、Timeout、Cache、Error Handler、循环预算、恢复与外部副作用边界。 |
+| [dynamic-send-functional-api.md](dynamic-send-functional-api.md) | draft | 第十一课：Dynamic Send、运行时 fan-out、Functional API、Future 与恢复重放边界。 |
+| [production-refund-agent.md](production-refund-agent.md) | draft | 第十二课：高风险退款 Agent 的 Tool Loop、风险门、HITL、Checkpoint、幂等副作用与 Streaming 全链路。 |
 | `deer-flow-integration.md` | planned | DeerFlow 如何在 LangGraph runtime 上叠加 lead agent、middleware、sandbox、memory 与 subagent。 |
 
 ## 初始源码入口
