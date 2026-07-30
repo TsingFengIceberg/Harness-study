@@ -28,6 +28,8 @@
 |---|---|---|
 | [claude-code-complete-guide_v2/](submodules/claude-code-complete-guide_v2/) | Claude Code 完全指南 V2，作为理解 Claude Code-like Harness 架构、工具系统、权限、安全、上下文、多 Agent、Hooks / Skills / Plugins 等机制的学习参考；不作为本仓库核心 Harness 实现项目 | [bcefghj/claude-code-complete-guide_v2](https://github.com/bcefghj/claude-code-complete-guide_v2) |
 | [Agent 面试资料](references/agent-interview/README.md) | 第三方 2026-02-23 与 2026-07 两版 Agent 面试 PDF、机械提取稿和来源说明；用于建立问题集，不自动视为已核验结论 | 本地第三方资料 |
+| [Xiaolin AI 面试知识库](references/agent-interview/xiaolinnote/README.md) | Agent、RAG、LLM 工具调用和大模型工程四个专题；用于问题发现、全文检索和来源对照，内容保持 `to-verify` | [小林面试笔记 AI 专题](https://www.xiaolinnote.com/ai/) |
+| [JavaGuide AI 知识库](references/agent-interview/javaguide/README.md) | AI 侧栏 6 个分组、28 个页面，覆盖面试题、大模型基础、Agent、RAG 和系统设计；内容保持 `to-verify` | [JavaGuide AI 应用开发](https://javaguide.cn/ai/ai-core-concepts.html) |
 
 ## 文档导航
 
@@ -64,11 +66,13 @@ DOCS/
     └── faq.md         ← 最终沉淀 FAQ：已验证、可复用的核心问答
 ```
 
-此外，[claude-code-complete-guide_v2/](submodules/claude-code-complete-guide_v2/) 作为 Claude Code 架构学习参考资料，以 submodule 形式保留；[Agent 面试资料](references/agent-interview/README.md) 作为第三方问题来源保留原始 PDF 与机械提取稿。二者都不自动构成本仓库的源码核验结论。
+此外，[claude-code-complete-guide_v2/](submodules/claude-code-complete-guide_v2/) 作为 Claude Code 架构学习参考资料，以 submodule 形式保留；[Agent 面试资料](references/agent-interview/README.md) 保留原始 PDF、机械提取稿，以及 [Xiaolin](references/agent-interview/xiaolinnote/README.md) 和 [JavaGuide](references/agent-interview/javaguide/README.md) 两套独立网页知识库。所有第三方资料都只用于问题发现、检索和来源对照，不自动构成本仓库的源码核验结论。
 
 | 想看什么 | 去哪里 |
 |---|---|
 | Agent 面试联合学习路线与问题目录 | [`DOCS/interview/agent/`](DOCS/interview/agent/) |
+| Xiaolin Agent / RAG / Tool Calling / LLM 面试资料 | [`references/agent-interview/xiaolinnote/`](references/agent-interview/xiaolinnote/README.md) |
+| JavaGuide AI 应用开发知识库 | [`references/agent-interview/javaguide/`](references/agent-interview/javaguide/README.md) |
 | 某个项目的源码怎么设计的 | [`DOCS/projects/<项目名>/`](DOCS/projects/) |
 | RAG 是什么、与 Memory / 文件上传 / Skills 有何区别 | [`DOCS/concepts/rag.md`](DOCS/concepts/rag.md) |
 | MCP 是什么、如何连接外部能力、与 RAG 有何区别 | [`DOCS/concepts/mcp.md`](DOCS/concepts/mcp.md) |
