@@ -63,7 +63,9 @@
 - 已完成第一课 [Agent、Workflow、Agent Loop 与 Agent Harness](topics/agent-workflow-loop-harness.md) 的概念边界、退款场景和 30 秒回答；
 - 已完成 [Q1-Q6 模拟面试](qa/agent-workflow-loop-harness.md)，覆盖四个概念、下一步控制权、Harness 完整性、Runner / Scorer 与真实状态判分；
 - Workflow 与混合式系统结构已达到 `understood`；Agent 准确定义、Loop 边界、Runner / Scorer 和真实结果判分仍为 `learning` 或待复习；
-- 下一课进入完整 Agent Eval Harness，不提前扩展到复杂 Benchmark 或 LLM-as-Judge 组合策略。
+- 已完成 [Agent Eval Harness](topics/agent-eval-harness.md) 第一轮知识讲解与 [EH-Q1-EH-Q10 模拟面试](qa/agent-eval-harness.md)，掌握 Reset、Environment / Sandbox 和 Logger / Scorer 的基本边界；
+- Dataset / Sample、完整执行顺序、User Simulator 和 Harness 一句话定义仍为 `learning`；用户因疲劳暂停，EH-Q11-EH-Q13 保留为后续复习入口；
+- 下一大点切换到 ReAct、Plan-and-Execute、Graph Agent、Reflection 等架构模式，Harness 后续从待回答题继续。
 
 ## 第一阶段建议
 

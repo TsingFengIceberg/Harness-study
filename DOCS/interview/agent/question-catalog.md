@@ -27,8 +27,8 @@
 | F02 | OpenAI Agents SDK、AutoGen / CrewAI、Google ADK 和自研 Loop 如何选？ | Both | to-verify | 待按官方源码 / 文档核验。 |
 | M01 | Multi-Agent 有哪些结构、通信与责任边界？ | Both | to-verify | [Multi-Agent 对比](../../comparison/multi-agent.md) |
 | H01 | Agent Harness 是什么，与 Agent Loop 有什么区别？ | Jul | to-verify | [知识笔记 K4](topics/agent-workflow-loop-harness.md#k4agent-harness-管外部运行与评测) / [模拟 QA Q3、Q6](qa/agent-workflow-loop-harness.md#q3-harness-completeness) |
-| H02 | Dataset、Environment、Tool Adapter、Runner、Scorer、Sandbox 如何协作？ | Jul | to-verify | [初步知识 K5](topics/agent-workflow-loop-harness.md#k5eval-harness-初步组成) / [模拟 QA Q4](qa/agent-workflow-loop-harness.md#q4-minimal-eval-harness)；完整专题待下一课。 |
-| E01 | Agent 应评最终结果、轨迹、策略、安全还是成本？ | Both | to-verify | CozeLoop 等项目笔记可复用。 |
+| H02 | Dataset、Environment、Tool Adapter、Runner、Scorer、Sandbox 如何协作？ | Jul | to-verify | [完整知识笔记](topics/agent-eval-harness.md) / [EH-Q1-EH-Q10](qa/agent-eval-harness.md)；EH-Q11-EH-Q13 待复习。 |
+| E01 | Agent 应评最终结果、轨迹、策略、安全还是成本？ | Both | to-verify | [Harness 真实成功标准](topics/agent-eval-harness.md#eh-k6硬性条件不能被语言质量抵消)；完整 Eval 专题待后续。 |
 | E02 | LLM-as-Judge、程序判分、人工标注如何组合？ | Both | to-verify | 待建立 Eval 专题。 |
 | E03 | Eval 泄漏、过拟合、统计波动和不可复现如何处理？ | Jul | to-verify | 待建立 Eval 专题。 |
 | E04 | SWE-bench、WebArena、OSWorld、tau-bench 等 benchmark 测什么？ | Both | to-verify | 必须回到 benchmark 官方资料。 |
@@ -45,7 +45,7 @@
 | SYS02 | 如何设计浏览器购物 Agent？ | Jul | to-verify | 待结合 WebArena / Browser Harness。 |
 | SYS03 | 如何设计企业知识库 Agent？ | Jul | to-verify | RAG、安全与权限笔记可复用。 |
 | SYS04 | 如何设计客服工具 Agent？ | Jul | to-verify | [生产退款 Agent](../../projects/langgraph/production-refund-agent.md) |
-| Q01 | 高频编码题、Debug 题和面试官连续追问 | Both | to-verify | [第一轮模拟面试 Q1-Q6](qa/agent-workflow-loop-harness.md)；其余待逐题拆分。 |
+| Q01 | 高频编码题、Debug 题和面试官连续追问 | Both | to-verify | [第一轮 Q1-Q6](qa/agent-workflow-loop-harness.md) / [Harness EH-Q1-EH-Q10](qa/agent-eval-harness.md)；其余待逐题拆分。 |
 
 ## 当前课程记录
 
@@ -55,12 +55,14 @@
 | A02 | learning | 已有 LangGraph 基础，但本轮表达时容易把整个 Workflow Runtime 归入 Agent Loop。 |
 | A04 | understood / 待复习 | 已能识别确定性 Workflow 包住局部 Agent 节点的混合结构。 |
 | H01 | understood / 待复习 | 已理解 Loop 管内部推进、Harness 管外部运行与评测，尚未再次脱稿口述。 |
-| H02 | learning | 已初步接触 Dataset、Environment、Runner 和 Scorer，完整 Harness 尚未开始。 |
+| H02 | learning / paused | 已完成 Harness 第一轮教学与 EH-Q1-EH-Q10；EH-Q11-EH-Q13 因疲劳留待复习。 |
 
 第一课的知识正文与真实问答分开记录，并互相索引：
 
 - [知识笔记：Agent、Workflow、Agent Loop 与 Agent Harness](topics/agent-workflow-loop-harness.md)
 - [模拟面试 QA：Q1-Q6](qa/agent-workflow-loop-harness.md)
+- [知识笔记：Agent Eval Harness](topics/agent-eval-harness.md)
+- [模拟面试 QA：EH-Q1-EH-Q10](qa/agent-eval-harness.md)
 
 ## 逐题整理模板
 

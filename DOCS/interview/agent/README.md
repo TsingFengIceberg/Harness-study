@@ -1,6 +1,6 @@
 # Agent 面试学习
 
-> **日期**: 2026-07-30 | **状态**: draft | **当前阶段**: 联合课程已开始，完成首轮概念边界与模拟面试
+> **日期**: 2026-07-30 | **状态**: draft | **当前阶段**: 已完成概念边界与 Eval Harness 第一轮，转入架构模式
 
 ## 学习目标
 
@@ -38,6 +38,8 @@
 | [question-catalog.md](question-catalog.md) | draft | 联合问题总表；后续逐题去重、拆分和关联正式笔记。 |
 | [Agent / Workflow / Loop / Harness 知识笔记](topics/agent-workflow-loop-harness.md) | to-verify / learning | 第一课知识正文：四个概念的层次、退款场景与 Eval Harness 初步边界。 |
 | [Agent / Workflow / Loop / Harness 模拟面试 QA](qa/agent-workflow-loop-harness.md) | to-verify / learning | 第一课 Q1-Q6 的真实回答、纠偏、参考答案和待复习点。 |
+| [Agent Eval Harness 知识笔记](topics/agent-eval-harness.md) | to-verify / learning | 第二课知识正文：题、场、跑、记、判、复及完整运行链。 |
+| [Agent Eval Harness 模拟面试 QA](qa/agent-eval-harness.md) | to-verify / paused | EH-Q1-EH-Q10 回答与纠偏；EH-Q11-EH-Q13 留待回看。 |
 
 后续主题笔记按实际课程推进创建，不预先生成大量空文件。知识正文放在 `topics/`，真实模拟面试记录放在 `qa/`；两类文档通过知识点和题号双向索引。每篇笔记聚焦一个可形成完整回答的主题，例如 Eval Harness、Tool Calling、Memory / Context 和 Agent Security。
 
@@ -86,6 +88,6 @@ PDF 提供“面试官可能怎么问”；现有项目与概念笔记提供“�
 
 ## 当前下一步
 
-第一课已经完成 [Agent、Workflow、Agent Loop 与 Agent Harness](topics/agent-workflow-loop-harness.md) 的概念边界教学，并进行了 [Q1-Q6 模拟面试](qa/agent-workflow-loop-harness.md)。当前没有题目达到 `fluent`；需要在后续课程中复测“下一步控制权”“Loop 内部推进与 Harness 外部评测”以及“最终文本与真实状态”的区别。
+第一课已完成 [Agent、Workflow、Agent Loop 与 Agent Harness](topics/agent-workflow-loop-harness.md) 的概念边界和 [Q1-Q6 模拟面试](qa/agent-workflow-loop-harness.md)。第二课已完成 [Agent Eval Harness](topics/agent-eval-harness.md) 第一轮教学和 [EH-Q1-EH-Q10 模拟面试](qa/agent-eval-harness.md)；用户因疲劳暂停，EH-Q11-EH-Q13 保留为后续复习入口。当前没有题目达到 `fluent`。
 
-下一课进入完整的 Agent Eval Harness：Dataset / Task、Environment / Reset、Tool Adapter、Runner、Scorer、Sandbox、Logger / Trace 与 Replayer。与此同时继续按 PDF 原页补全两版问题级清单，不依赖机械提取稿直接形成结论。
+下一大点切换到 ReAct、Plan-and-Execute、Graph Agent、Reflection 等架构模式。Harness 专题后续从未回答问题继续，不重新从头讲；课程仍以 PDF 原页为主，机械提取稿只用于定位。
