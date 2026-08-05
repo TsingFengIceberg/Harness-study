@@ -30,6 +30,7 @@
 | [Agent 面试资料](references/agent-interview/README.md) | 第三方 2026-02-23 与 2026-07 两版 Agent 面试 PDF、机械提取稿和来源说明；用于建立问题集，不自动视为已核验结论 | 本地第三方资料 |
 | [Xiaolin AI 面试知识库](references/agent-interview/xiaolinnote/README.md) | Agent、RAG、LLM 工具调用和大模型工程四个专题；用于问题发现、全文检索和来源对照，内容保持 `to-verify` | [小林面试笔记 AI 专题](https://www.xiaolinnote.com/ai/) |
 | [JavaGuide AI 知识库](references/agent-interview/javaguide/README.md) | AI 侧栏 6 个分组、28 个页面，覆盖面试题、大模型基础、Agent、RAG 和系统设计；内容保持 `to-verify` | [JavaGuide AI 应用开发](https://javaguide.cn/ai/ai-core-concepts.html) |
+| [SWE Agent 评测论文资料](references/swe-agent-evaluation/README.md) | SWE Agent evaluation 代表性论文原文；论文事实仍需在学习笔记中标明具体章节、表格和版本 | [SWE-bench arXiv](https://arxiv.org/abs/2310.06770) |
 
 ## 文档导航
 
@@ -38,6 +39,8 @@
 ```
 DOCS/
 ├── interview/         ← 面试专项：联合问题目录、学习路线、口述答案与追问
+│   ├── agent/         ← Agent 面试联合课程与模拟 QA
+│   └── swe-agent-evaluation/ ← SWE Agent 评测论文、benchmark 机制与 QA
 ├── concepts/          ← 概念底座：跨项目的 RAG、MCP 等基础机制
 │   ├── rag.md         ← RAG：检索增强生成、现代检索与安全边界
 │   └── mcp.md         ← MCP：外部能力接入协议、工具与安全边界
@@ -71,6 +74,7 @@ DOCS/
 | 想看什么 | 去哪里 |
 |---|---|
 | Agent 面试联合学习路线与问题目录 | [`DOCS/interview/agent/`](DOCS/interview/agent/) |
+| SWE Agent 评测论文与 benchmark 学习 | [`DOCS/interview/swe-agent-evaluation/`](DOCS/interview/swe-agent-evaluation/) |
 | Xiaolin Agent / RAG / Tool Calling / LLM 面试资料 | [`references/agent-interview/xiaolinnote/`](references/agent-interview/xiaolinnote/README.md) |
 | JavaGuide AI 应用开发知识库 | [`references/agent-interview/javaguide/`](references/agent-interview/javaguide/README.md) |
 | 某个项目的源码怎么设计的 | [`DOCS/projects/<项目名>/`](DOCS/projects/) |

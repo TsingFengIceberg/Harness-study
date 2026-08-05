@@ -7,6 +7,7 @@
 | 专项 | 状态 | 说明 |
 |---|---|---|
 | [Agent 面试学习](agent/README.md) | draft | 合并 2026-02-23 与 2026-07 两版第三方资料，建立去重问题目录、学习路线、正式笔记与口述答案。 |
+| [SWE Agent Evaluation](swe-agent-evaluation/README.md) | draft / learning | 按代表性论文与官方 benchmark 研究真实仓库任务、执行环境、Agent rollout、补丁判分和评测前沿。 |
 
 ## 证据原则
 

@@ -24,3 +24,6 @@ deep-research-prompt.md
 
 # Node
 node_modules/
+
+# Local paper archive
+/references/swe-agent-evaluation/papers/

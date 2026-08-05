@@ -31,7 +31,7 @@
 | E01 | Agent 应评最终结果、轨迹、策略、安全还是成本？ | Both | to-verify | [Harness 真实成功标准](topics/agent-eval-harness.md#eh-k6硬性条件不能被语言质量抵消)；完整 Eval 专题待后续。 |
 | E02 | LLM-as-Judge、程序判分、人工标注如何组合？ | Both | to-verify | 待建立 Eval 专题。 |
 | E03 | Eval 泄漏、过拟合、统计波动和不可复现如何处理？ | Jul | to-verify | 待建立 Eval 专题。 |
-| E04 | SWE-bench、WebArena、OSWorld、tau-bench 等 benchmark 测什么？ | Both | to-verify | 必须回到 benchmark 官方资料。 |
+| E04 | SWE-bench、WebArena、OSWorld、tau-bench 等 benchmark 测什么？ | Both | to-verify | [SWE Agent Evaluation](../swe-agent-evaluation/README.md) / [SWE-bench 原始论文](../swe-agent-evaluation/swe-bench.md)；其他 benchmark 待按官方资料扩展。 |
 | O01 | Trace、Span、State diff、trajectory replay 如何支持排障？ | Both | to-verify | [Streaming / Observability](../../projects/langgraph/streaming-observability.md) |
 | O02 | 线上 bad case 如何脱敏、标注并回流离线回归集？ | Jul | to-verify | 待建立 EvalOps 专题。 |
 | P01 | Python asyncio、TaskGroup、限流、GIL 与 Agent 并发有什么关系？ | Feb | to-verify | 待建立 Python 工程专题。 |
